@@ -1,0 +1,20 @@
+{
+  "ecmaFeatures": {
+    "jsx": true,
+    "modules": true
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "rules": {
+    "react/prop-types": 0,
+    "react/jsx-filename-extension": 0,
+    "import/prefer-default-export": 0
+  },
+  "plugins": [
+    "react"
+  ]
+}
