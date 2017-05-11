@@ -8,7 +8,7 @@ describe('<Home />', () => {
   let component;
 
   beforeEach(() => {
-    component = shallow(<Home />)
+    component = shallow(<Home />);
   });
 
   test('verify snapshot', () => {
