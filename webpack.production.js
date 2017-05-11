@@ -1,18 +1,19 @@
 /* eslint-disable */
 var webpack = require('webpack');
+var path = require('path');
 var config = require('./config');
 
 module.exports = {
   entry: [
-    'babel-polyfill',
-    'isomorphic-fetch',
-    './src/index.production.js',
+    './src/index.js',
   ],
   devtool: 'source-map',
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      comments: false
-    })
-  ]
+  output: {
+    filename: 'react-kinetic-core.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/static/',
+    library: 'react-kinetic-core',
+    libraryTarget: 'amd'
+  },
+  plugins: []
 };

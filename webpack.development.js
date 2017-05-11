@@ -1,5 +1,6 @@
 /* eslint-disable */
 var webpack = require('webpack');
+var path = require('path');
 var config = require('./config');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 
@@ -12,6 +13,11 @@ module.exports = {
     'webpack/hot/only-dev-server',
     './src/examples/index.js',
   ],
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'static'),
+    publicPath: '/static/'
+  },
   devtool: 'inline-source-map',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

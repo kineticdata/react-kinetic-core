@@ -10,11 +10,7 @@ module.exports = {
   devtool: webpackEnvConfig.devTool,
   plugins: webpackEnvConfig.plugins,
   devServer: webpackEnvConfig.devServer,
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'static'),
-    publicPath: '/static/'
-  },
+  output: webpackEnvConfig.output,
   module: {
     rules: [
       {
@@ -56,6 +52,5 @@ module.exports = {
     alias: {
       'react-kinetic-core': path.resolve(__dirname, 'src/index.js')
     },
-    extensions: ['.js', '.jsx']
   },
 };
