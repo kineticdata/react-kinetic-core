@@ -52,5 +52,6 @@ module.exports = {
     alias: {
       'react-kinetic-core': path.resolve(__dirname, 'src/index.js')
     },
+    extensions: ['.js', '.jsx'],
   },
 };

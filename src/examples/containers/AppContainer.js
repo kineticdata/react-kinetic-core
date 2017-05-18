@@ -1,16 +1,39 @@
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
+import { Grid, Row, Col, Navbar, Nav, NavItem } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import '../app.scss';
 
 import { Home } from '../components/Home';
+import { Modals } from '../components/Modals';
 
 export const AppContainer = () =>
-  <div className="layout">
-    <ul>
-      <li><Link to="/">Home</Link></li>
-    </ul>
-    <hr />
-    <Route exact path="/" component={Home} />
+  <div>
+    <Navbar>
+      <Navbar.Header>
+        <Navbar.Brand>
+          <Link to="/">React Kinetic Core</Link>
+        </Navbar.Brand>
+      </Navbar.Header>
+      <Nav pullRight>
+        <NavItem href="https://github.com/KineticCommunity/react-kinetic-core" target="_blank">GitHub</NavItem>
+      </Nav>
+    </Navbar>
+    <Grid>
+      <Row>
+        <Col xs="9">
+          <Route exact path="/" component={Home} />
+          <Route exact path="/modals" component={Modals} />
+        </Col>
+        <Col xs="3">
+          <Nav bsStyle="pills" stacked>
+            <LinkContainer to="/modals">
+              <NavItem href="#">Modals</NavItem>
+            </LinkContainer>
+          </Nav>
+        </Col>
+      </Row>
+    </Grid>
   </div>;
