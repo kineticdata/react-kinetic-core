@@ -8,6 +8,7 @@ import '../app.scss';
 
 import { Home } from '../components/Home';
 import { Modals } from '../components/Modals';
+import { Forms } from '../components/Forms';
 
 export const AppContainer = () =>
   <div>
@@ -26,11 +27,15 @@ export const AppContainer = () =>
         <Col xs="9">
           <Route exact path="/" component={Home} />
           <Route exact path="/modals" component={Modals} />
+          <Route exact path="/forms" component={Forms} />
         </Col>
         <Col xs="3">
           <Nav bsStyle="pills" stacked>
             <LinkContainer to="/modals">
               <NavItem href="#">Modals</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/forms">
+              <NavItem href="#">Forms</NavItem>
             </LinkContainer>
           </Nav>
         </Col>
