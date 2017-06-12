@@ -253,7 +253,7 @@ export const searchSubmissions = (options) => {
   });
 
   // Remove the response envelop and leave us with the submissions.
-  promise = promise.then(response => ({ submissions: response.daa.submissions }));
+  promise = promise.then(response => ({ submissions: response.data.submissions }));
 
   // Clean up any errors we receive. Make srue this is the last thing so that it
   // cleans up all errors.
