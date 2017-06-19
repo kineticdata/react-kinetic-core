@@ -35,8 +35,8 @@ export const handleErrors = ({ data, status, statusText }) => {
 export const paramBuilder = (options) => {
   const params = {};
 
-  if (options.includes) {
-    params.includes = options.includes;
+  if (options.include) {
+    params.include = options.include;
   }
 
   return params;

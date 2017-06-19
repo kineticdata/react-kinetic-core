@@ -160,3 +160,21 @@ describe('SubmissionSearch', () => {
     });
   });
 });
+
+describe('#searchSubmissions', () => {
+  describe('when successful', () => {
+    let response;
+    let testSubmission;
+
+    beforeEach(() => {
+      response = {
+        status: 200,
+        data: {
+          submissions: [],
+        },
+      };
+
+      // testSubmission = 
+    })
+  })
+});

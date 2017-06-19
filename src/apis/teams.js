@@ -47,3 +47,30 @@ export const fetchTeam = (options = {}) => {
 
   return promise;
 };
+
+export const updateTeam = (options = {}) => {
+  const {
+    teamSlug,
+    team,
+  } = options;
+
+  if (!teamSlug) {
+    throw new Error('updateTeam failed! The option "teamSlug" is required.');
+  }
+
+  if (!team) {
+    throw new Error('updateTeam failed! The option "team" is required.');
+  }
+
+  // Build URL and fetch the space.
+  let promise = axios.put(`${bundle.apiLocation()}/teams/${teamSlug}`, {
+    params: paramBuilder(options),
+  });
+  // Remove the response envelop and leave us with the space one.
+  promise = promise.then(response => ({ team: response.data.team }));
+
+  // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
+  promise = promise.catch(handleErrors);
+
+  return promise;
+};

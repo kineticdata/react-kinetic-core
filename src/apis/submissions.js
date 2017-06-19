@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { attributeTranslator, handleErrors, paramBuilder } from './http';
+import { handleErrors, paramBuilder } from './http';
 
 
 const VALID_TIMELINES = ['closedAt', 'createdAt', 'submittedAt', 'updatedAt'];
