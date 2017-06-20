@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react';
+import isPlainObject from 'lodash.isplainobject';
+import isString from 'lodash.isstring';
 import { bundle, K } from '../core-helpers';
 
 const formPath = (formSlug, kappSlug) =>
@@ -6,6 +8,24 @@ const formPath = (formSlug, kappSlug) =>
 
 const submissionPath = submissionId =>
   `${bundle.spaceLocation()}/submissions/${submissionId}`;
+
+export const path = ({ submission, kapp, form }) =>
+  submission ? submissionPath(submission) : formPath(form, kapp);
+
+export const queryString = ({ review, values }) => {
+  const parameters = [];
+  if (review === true) {
+    parameters.push('review');
+  } else if (isString(review)) {
+    parameters.push(`review=${encodeURIComponent(review)}`);
+  }
+  if (isPlainObject(values)) {
+    Object.keys(values).forEach((field) => {
+      parameters.push(`${encodeURIComponent(`values[${field}]`)}=${encodeURIComponent(values[field])}`);
+    });
+  }
+  return parameters.join('&');
+};
 
 export class CoreForm extends PureComponent {
   componentDidMount() {
@@ -22,15 +42,13 @@ export class CoreForm extends PureComponent {
   }
 
   loadForm() {
-    const { submission, kapp, form } = this.props;
-    const path = this.submission ? submissionPath(submission) : formPath(form, kapp);
     this.form = new Promise(
       (resolve) => {
         K.load({
-          path: this.props.review ? `${path}?review` : path,
+          path: `${path(this.props)}?${queryString(this.props)}`,
           container: this.container,
-          loaded: (formData) => {
-            resolve(formData);
+          loaded: (form) => {
+            resolve(form);
             if (typeof this.props.loaded === 'function') {
               this.props.loaded(form);
             }
