@@ -81,7 +81,7 @@ export const createTeam = (options = {}) => {
   } = options;
 
   if (!team) {
-    throw new Error('updateTeam failed! The option "team" is required.');
+    throw new Error('createTeam failed! The option "team" is required.');
   }
 
   // Build URL and fetch the space.
@@ -90,6 +90,28 @@ export const createTeam = (options = {}) => {
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ team: response.data.team }));
+
+  // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
+  promise = promise.catch(handleErrors);
+
+  return promise;
+};
+
+export const deleteTeam = (options = {}) => {
+  const {
+    teamSlug,
+  } = options;
+
+  if (!teamSlug) {
+    throw new Error('deleteTeam failed! The option "teamSlug" is required.');
+  }
+
+  // Build URL and fetch the space.
+  let promise = axios.delete(`${bundle.apiLocation()}/teams/${teamSlug}`, {
+    params: paramBuilder(options),
+  });
+  // Remove the response envelop and leave us with the space one.
+  // promise = promise.then(response => ({ team: response.data.team }));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);
