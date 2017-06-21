@@ -33,8 +33,8 @@ describe('teams api', () => {
 
       test('does not return errors', () => {
         expect.assertions(1);
-        return fetchTeams().then(({ errors }) => {
-          expect(errors).toBeUndefined();
+        return fetchTeams().then(({ serverError }) => {
+          expect(serverError).toBeUndefined();
         });
       });
 
@@ -127,7 +127,7 @@ describe('teams api', () => {
         response = {
           status: 500,
         };
-        axios.get = rejectPromiseWith(response);
+        axios.get = rejectPromiseWith({ response });
       });
 
       test('throws an exception when no team slug is provided', () => {
@@ -136,8 +136,8 @@ describe('teams api', () => {
 
       test('does return errors', () => {
         expect.assertions(1);
-        return fetchTeam({ teamSlug: 'fake', xlatAttributes: true }).then(({ errors }) => {
-          expect(errors).toBeDefined();
+        return fetchTeam({ teamSlug: 'fake', xlatAttributes: true }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
         });
       });
     });

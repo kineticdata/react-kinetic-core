@@ -127,7 +127,7 @@ describe('forms api', () => {
         response = {
           status: 500,
         };
-        axios.get = rejectPromiseWith(response);
+        axios.get = rejectPromiseWith({ response });
       });
 
       test('throws an exception when no form slug is provided', () => {
@@ -136,8 +136,8 @@ describe('forms api', () => {
 
       test('does return errors', () => {
         expect.assertions(1);
-        return fetchForm({ formSlug: 'fake', xlatAttributes: true }).then(({ errors }) => {
-          expect(errors).toBeDefined();
+        return fetchForm({ formSlug: 'fake', xlatAttributes: true }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
         });
       });
     });

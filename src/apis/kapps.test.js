@@ -33,8 +33,8 @@ describe('kapps api', () => {
 
       test('does not return errors', () => {
         expect.assertions(1);
-        return fetchKapps().then(({ errors }) => {
-          expect(errors).toBeUndefined();
+        return fetchKapps().then(({ serverError }) => {
+          expect(serverError).toBeUndefined();
         });
       });
 
@@ -125,13 +125,13 @@ describe('kapps api', () => {
         response = {
           status: 500,
         };
-        axios.get = rejectPromiseWith(response);
+        axios.get = rejectPromiseWith({ response });
       });
 
       test('does return errors', () => {
         expect.assertions(1);
-        return fetchKapp({ includes: 'attributes', xlatAttributes: true }).then(({ errors }) => {
-          expect(errors).toBeDefined();
+        return fetchKapp({ includes: 'attributes', xlatAttributes: true }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
         });
       });
     });

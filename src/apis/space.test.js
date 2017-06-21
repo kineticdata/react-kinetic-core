@@ -32,8 +32,8 @@ describe('space api', () => {
 
       test('does not return errors', () => {
         expect.assertions(1);
-        return fetchSpace().then(({ errors }) => {
-          expect(errors).toBeUndefined();
+        return fetchSpace().then(({ serverError }) => {
+          expect(serverError).toBeUndefined();
         });
       });
 
@@ -63,13 +63,13 @@ describe('space api', () => {
         response = {
           status: 500,
         };
-        axios.get = rejectPromiseWith(response);
+        axios.get = rejectPromiseWith({ response });
       });
 
       test('does return errors', () => {
         expect.assertions(1);
-        return fetchSpace({ includes: 'attributes', xlatAttributes: true }).then(({ errors }) => {
-          expect(errors).toBeDefined();
+        return fetchSpace({ includes: 'attributes', xlatAttributes: true }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
         });
       });
     });
