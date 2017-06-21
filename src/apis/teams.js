@@ -63,7 +63,29 @@ export const updateTeam = (options = {}) => {
   }
 
   // Build URL and fetch the space.
-  let promise = axios.put(`${bundle.apiLocation()}/teams/${teamSlug}`, {
+  let promise = axios.put(`${bundle.apiLocation()}/teams/${teamSlug}`, team, {
+    params: paramBuilder(options),
+  });
+  // Remove the response envelop and leave us with the space one.
+  promise = promise.then(response => ({ team: response.data.team }));
+
+  // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
+  promise = promise.catch(handleErrors);
+
+  return promise;
+};
+
+export const createTeam = (options = {}) => {
+  const {
+    team,
+  } = options;
+
+  if (!team) {
+    throw new Error('updateTeam failed! The option "team" is required.');
+  }
+
+  // Build URL and fetch the space.
+  let promise = axios.post(`${bundle.apiLocation()}/teams`, team, {
     params: paramBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.

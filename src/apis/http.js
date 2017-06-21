@@ -19,17 +19,15 @@ export const attributeTranslator = (attributeKey, envelop) => (result) => {
   return result;
 };
 
-export const handleErrors = ({ data, status, statusText }) => {
-  if ([401, 500].includes(status)) {
-    // For server-side errors grab the status text and return that.
-    return { errors: [statusText] };
-  } else if (data.errors) {
+export const handleErrors = (error) => {
+  const { data, status, statusText } = error.response;
+  if (status === 400) {
     // If the errors returned are from server-side validations or constraints.
-    return { errors: data.errors };
+    return data.errors ? { errors: data.errors } : data;
   }
 
-  // Catch-all, just assume there's a statusText.
-  return { errors: [statusText] };
+  // For all other server-side errors.
+  return { serverError: { status, statusText } };
 };
 
 export const paramBuilder = (options) => {
