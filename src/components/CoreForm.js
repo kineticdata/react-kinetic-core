@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import isPlainObject from 'lodash.isplainobject';
 import isString from 'lodash.isstring';
+import shallowEqual from 'shallowequal';
 import { bundle, K } from '../core-helpers';
 
 const formPath = (formSlug, kappSlug) =>
@@ -27,45 +28,94 @@ export const queryString = ({ review, values }) => {
   return parameters.join('&');
 };
 
-export class CoreForm extends PureComponent {
-  componentDidMount() {
-    this.loadForm();
+export const applyGuard = (func, context, args) =>
+  typeof func === 'function' && func.apply(context, args);
+
+export class CoreForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { pending: true, error: null };
   }
 
-  componentDidUpdate() {
-    this.form.then(form => form.close());
-    this.loadForm();
+  componentDidMount() {
+    this.loadForm(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!shallowEqual(this.props, nextProps)) {
+      this.closeForm();
+      this.setState({ pending: true, error: null });
+      this.loadForm(nextProps);
+    }
   }
 
   componentWillUnmount() {
+    this.closeForm();
+  }
+
+  closeForm() {
     this.form.then(form => form.close());
   }
 
-  loadForm() {
+  loadForm(props) {
     this.form = new Promise(
       (resolve) => {
         K.load({
-          path: `${path(this.props)}?${queryString(this.props)}`,
+          path: `${path(props)}?${queryString(props)}`,
           container: this.container,
           loaded: (form) => {
             resolve(form);
-            if (typeof this.props.loaded === 'function') {
-              this.props.loaded(form);
-            }
+            this.setState({ pending: false });
+            applyGuard(props.onLoaded || props.loaded, undefined, [form]);
           },
-          unauthorized: this.props.unauthorized,
-          forbidden: this.props.forbidden,
-          notFound: this.props.notFound,
-          error: this.props.error,
-          created: this.props.created,
-          updated: this.props.updated,
-          completed: this.props.completed,
+          unauthorized: (...args) => {
+            this.setState({ error: 'unauthorized' });
+            applyGuard(props.onUnauthorized || props.unauthorized, undefined, args);
+          },
+          forbidden: (...args) => {
+            this.setState({ error: 'forbidden' });
+            applyGuard(props.onForbidden || props.forbidden, undefined, args);
+          },
+          notFound: (...args) => {
+            this.setState({ error: 'notFound' });
+            applyGuard(props.onNotFound || props.notFound, undefined, args);
+          },
+          error: (...args) => {
+            this.setState({ pending: false });
+            applyGuard(props.onError || props.error, undefined, args);
+          },
+          created: props.onCreated || props.created,
+          updated: props.onUpdated || props.updated,
+          completed: props.onCompleted || props.completed,
         });
       },
     );
   }
 
   render() {
-    return <div ref={(element) => { this.container = element; }} />;
+    return (
+      <div className="embedded-core-form">
+        <div
+          ref={(element) => { this.container = element; }}
+          style={this.state.pending || this.state.error ? { display: 'none' } : {}}
+        />
+        {
+          this.state.pending && this.props.pendingComponent &&
+          <this.props.pendingComponent />
+        }
+        {
+          this.state.error === 'unauthorized' && this.props.unauthorizedComponent &&
+          <this.props.unauthorizedComponent />
+        }
+        {
+          this.state.error === 'forbidden' && this.props.forbiddenComponent &&
+          <this.props.forbiddenComponent />
+        }
+        {
+          this.state.error === 'notFound' && this.props.notFoundComponent &&
+          <this.props.notFoundComponent />
+        }
+      </div>
+    );
   }
 }
