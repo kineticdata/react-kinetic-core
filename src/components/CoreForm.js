@@ -53,6 +53,19 @@ export class CoreForm extends Component {
     this.closeForm();
   }
 
+  getGlobalsPromise() {
+    if (!this.globalsPromise) {
+      if (typeof this.props.globals === 'function') {
+        this.globalsPromise = this.props.globals();
+      } else if (this.props.globals instanceof Promise) {
+        this.globalsPromise = this.props.globals;
+      } else {
+        this.globalsPromise = Promise.resolve();
+      }
+    }
+    return this.globalsPromise;
+  }
+
   closeForm() {
     this.form.then(form => form.close());
   }
@@ -60,33 +73,35 @@ export class CoreForm extends Component {
   loadForm(props) {
     this.form = new Promise(
       (resolve) => {
-        K.load({
-          path: `${path(props)}?${queryString(props)}`,
-          container: this.container,
-          loaded: (form) => {
-            resolve(form);
-            this.setState({ pending: false });
-            applyGuard(props.onLoaded || props.loaded, undefined, [form]);
-          },
-          unauthorized: (...args) => {
-            this.setState({ error: 'unauthorized' });
-            applyGuard(props.onUnauthorized || props.unauthorized, undefined, args);
-          },
-          forbidden: (...args) => {
-            this.setState({ error: 'forbidden' });
-            applyGuard(props.onForbidden || props.forbidden, undefined, args);
-          },
-          notFound: (...args) => {
-            this.setState({ error: 'notFound' });
-            applyGuard(props.onNotFound || props.notFound, undefined, args);
-          },
-          error: (...args) => {
-            this.setState({ pending: false });
-            applyGuard(props.onError || props.error, undefined, args);
-          },
-          created: props.onCreated || props.created,
-          updated: props.onUpdated || props.updated,
-          completed: props.onCompleted || props.completed,
+        this.getGlobalsPromise().then(() => {
+          K.load({
+            path: `${path(props)}?${queryString(props)}`,
+            container: this.container,
+            loaded: (form) => {
+              resolve(form);
+              this.setState({ pending: false });
+              applyGuard(props.onLoaded || props.loaded, undefined, [form]);
+            },
+            unauthorized: (...args) => {
+              this.setState({ error: 'unauthorized' });
+              applyGuard(props.onUnauthorized || props.unauthorized, undefined, args);
+            },
+            forbidden: (...args) => {
+              this.setState({ error: 'forbidden' });
+              applyGuard(props.onForbidden || props.forbidden, undefined, args);
+            },
+            notFound: (...args) => {
+              this.setState({ error: 'notFound' });
+              applyGuard(props.onNotFound || props.notFound, undefined, args);
+            },
+            error: (...args) => {
+              this.setState({ pending: false });
+              applyGuard(props.onError || props.error, undefined, args);
+            },
+            created: props.onCreated || props.created,
+            updated: props.onUpdated || props.updated,
+            completed: props.onCompleted || props.completed,
+          });
         });
       },
     );
