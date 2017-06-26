@@ -148,25 +148,25 @@ export class SubmissionSearch {
   limit(limit) {
     this.validateOuter('Limit cannot be nested');
     this.searchMeta.limit = limit;
-    return self;
+    return this;
   }
 
   pageToken(pageToken) {
     this.validateOuter('Page Token cannot be nested');
     this.searchMeta.pageToken = pageToken;
-    return self;
+    return this;
   }
 
   include(include) {
     this.searchMeta.include.push(include);
-    return self;
+    return this;
   }
 
   includes(includes) {
     const newIncludes = [...new Set([...this.searchMeta.include, ...includes])];
     this.searchMeta.include = newIncludes;
       // _.uniq(_.concat(this.searchMeta.include, includes));
-    return self;
+    return this;
   }
 
   /*
@@ -231,25 +231,28 @@ export const searchSubmissions = (options) => {
   } = options;
 
   let path = '';
-  if (typeof kapp === 'undefined' && typeof form === 'undefined') {
-    // Space scoped.
-    path = `${bundle.apiLocation()}/submissions`;
-  } else if (typeof form !== 'undefined') {
+  if (typeof form !== 'undefined') {
     // Form scoped.
     path = `${bundle.apiLocation()}/kapps/${kapp || bundle.kappSlug()}/submissions`;
   } else {
     // Kapp scoped.
-    path = `${bundle.apiLocation()}/kapps/${kapp}/submissions`;
+    path = `${bundle.apiLocation()}/kapps/${kapp || bundle.kappSlug()}/submissions`;
   }
 
+  const meta = { ...search };
   // Format includes.
   if (search.include.length > 0) {
-    search.include = search.include.join();
+    meta.include = search.include.join();
+  }
+
+  if (typeof search.query === 'string' && search.query.length > 0) {
+    delete meta.query;
+    meta.q = search.query;
   }
 
   // Fetch the submissions.
   let promise = axios.get(path, {
-    params: paramBuilder(options),
+    params: { ...meta, ...paramBuilder(options) },
   });
 
   // Remove the response envelop and leave us with the submissions.
