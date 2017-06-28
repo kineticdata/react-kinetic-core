@@ -21,7 +21,7 @@ export const attributeTranslator = (attributeKey, envelop) => (result) => {
 
 export const handleErrors = (error) => {
   const { data, status, statusText } = error.response;
-  if (status === 400) {
+  if (status === 400 && typeof data === 'object') {
     // If the errors returned are from server-side validations or constraints.
     return data.errors ? { errors: data.errors } : data;
   }
