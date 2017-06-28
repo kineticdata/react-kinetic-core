@@ -51,7 +51,7 @@ export const loadable = ({ onMount, onUnmount }) => WrappedComponent =>
     }
 
     componentWillUpdate(nextProps) {
-      if (this.props.match.url !== nextProps.match.url) {
+      if (this.props.match && this.props.match.url !== nextProps.match.url) {
         this.unmountComponent();
         this.mountComponent(nextProps);
       }
