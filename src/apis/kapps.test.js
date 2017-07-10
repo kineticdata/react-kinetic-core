@@ -49,15 +49,7 @@ describe('kapps api', () => {
         });
       });
 
-      test('does not translate attributes by default', () => {
-        expect.assertions(2);
-        return fetchKapps().then(({ kapps }) => {
-          expect(kapps[0].attributes).toBeDefined();
-          expect(kapps[0].attributes).toBeInstanceOf(Array);
-        });
-      });
-
-      test('.xlatAttributes translates attributes', () => {
+      test('translates attributes', () => {
         expect.assertions(2);
         return fetchKapps({ xlatAttributes: true }).then(({ kapps }) => {
           expect(kapps[0].attributes).toBeDefined();
@@ -101,15 +93,7 @@ describe('kapps api', () => {
         });
       });
 
-      test('does not translate attributes by default', () => {
-        expect.assertions(2);
-        return fetchKapp().then(({ kapp }) => {
-          expect(kapp.attributes).toBeDefined();
-          expect(kapp.attributes).toBeInstanceOf(Array);
-        });
-      });
-
-      test('.xlatAttributes translates attributes', () => {
+      test('translates attributes', () => {
         expect.assertions(2);
         return fetchKapp({ xlatAttributes: true }).then(({ kapp }) => {
           expect(kapp.attributes).toBeDefined();

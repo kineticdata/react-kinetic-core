@@ -49,15 +49,7 @@ describe('forms api', () => {
         });
       });
 
-      test('does not translate attributes by default', () => {
-        expect.assertions(2);
-        return fetchForms().then(({ forms }) => {
-          expect(forms[0].attributes).toBeDefined();
-          expect(forms[0].attributes).toBeInstanceOf(Array);
-        });
-      });
-
-      test('.xlatAttributes translates attributes', () => {
+      test('translates attributes', () => {
         expect.assertions(2);
         return fetchForms({ xlatAttributes: true }).then(({ forms }) => {
           expect(forms[0].attributes).toBeDefined();
@@ -103,17 +95,9 @@ describe('forms api', () => {
         });
       });
 
-      test('does not translate attributes by default', () => {
+      test('translates attributes', () => {
         expect.assertions(2);
         return fetchForm({ formSlug }).then(({ form }) => {
-          expect(form.attributes).toBeDefined();
-          expect(form.attributes).toBeInstanceOf(Array);
-        });
-      });
-
-      test('.xlatAttributes translates attributes', () => {
-        expect.assertions(2);
-        return fetchForm({ formSlug, xlatAttributes: true }).then(({ form }) => {
           expect(form.attributes).toBeDefined();
           expect(form.attributes).not.toBeInstanceOf(Array);
         });

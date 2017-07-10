@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { attributeTranslator, handleErrors, paramBuilder } from './http';
+import { deserializeAttributes, handleErrors, paramBuilder } from './http';
 
 const PROFILE_ENDPOINT = `${bundle.apiLocation()}/me`;
 
@@ -14,12 +14,8 @@ export const fetchProfile = (options = {}) => {
 
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ profile: response.data }));
-
-  // Translate attributes if requested.
-  if (options.xlatAttributes) {
-    promise = promise.then(attributeTranslator('userAttributes', 'profile'));
-    promise = promise.then(attributeTranslator('profileAttributes', 'profile'));
-  }
+  promise = promise.then(deserializeAttributes('userAttributes', 'profile'));
+  promise = promise.then(deserializeAttributes('profileAttributes', 'profile'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);
@@ -28,19 +24,22 @@ export const fetchProfile = (options = {}) => {
 };
 
 export const putProfile = (options = {}) => {
+  const {
+    profile
+  } = options;
+
+  serializeAttributes(profile, 'userAttributes');
+  serializeAttributes(profile, 'profileAttributes');
+
   // Build URL and fetch the space.
-  let promise = axios.put(PROFILE_ENDPOINT, {
+  let promise = axios.put(PROFILE_ENDPOINT, profile, {
     params: paramBuilder(options),
   });
 
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ profile: response.data.user }));
-
-  // Translate attributes if requested.
-  if (options.xlatAttributes) {
-    promise = promise.then(attributeTranslator('userAttributes', 'profile'));
-    promise = promise.then(attributeTranslator('profileAttributes', 'profile'));
-  }
+  promise = promise.then(deserializeAttributes('userAttributes', 'profile'));
+  promise = promise.then(deserializeAttributes('profileAttributes', 'profile'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);

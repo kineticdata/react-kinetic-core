@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { attributeTranslator, handleErrors, paramBuilder } from './http';
+import { deserializeAttributes, handleErrors, paramBuilder } from './http';
 
 export const fetchKapps = (options = {}) => {
   // Build URL and fetch the space.
@@ -9,11 +9,7 @@ export const fetchKapps = (options = {}) => {
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ kapps: response.data.kapps }));
-
-  // Translate attributes if requested.
-  if (options.xlatAttributes) {
-    promise = promise.then(attributeTranslator('attributes', 'kapps'));
-  }
+  promise = promise.then(deserializeAttributes('attributes', 'kapps'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);
@@ -32,11 +28,7 @@ export const fetchKapp = (options = {}) => {
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ kapp: response.data.kapp }));
-
-  // Translate attributes if requested.
-  if (options.xlatAttributes) {
-    promise = promise.then(attributeTranslator('attributes', 'kapp'));
-  }
+  promise = promise.then(deserializeAttributes('attributes', 'kapp'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);

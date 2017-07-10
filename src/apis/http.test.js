@@ -1,11 +1,56 @@
-import { attributeTranslator } from './http';
+import { deserializeAttributes, serializeAttributes } from './http';
 
 describe('http module', () => {
   describe('#handleErrors', () => {
     // What scenarios do we handle?
   });
 
-  describe('#attributeTranslator', () => {
+
+  describe('#serializeAttributes', () => {
+    describe('when translatable contains an attribute object', () => {
+      const xlatable = { attributes: { First: [1], Second: [2] } }
+      const result = serializeAttributes(xlatable, 'attributes');
+
+      test('returns an array', () => {
+        expect(result.attributes).toBeInstanceOf(Array);
+        expect(result.attributes).toHaveLength(2);
+      });
+
+      test('returned array contains objects', () => {
+        expect(result.attributes[0]).toBeDefined();
+        expect(result.attributes[0]).toHaveProperty('name', 'First');
+        expect(result.attributes[0]).toHaveProperty('values', [1]);
+      });
+
+      test('mutates the object passed', () => {
+        expect(xlatable.attributes).toBeDefined();
+        expect(xlatable.attributes).toBeInstanceOf(Array);
+      })
+    });
+
+    describe('when translatable contains an attribute array', () => {
+      const xlatable = {
+        attributes: [
+          { name: 'First', values: [1] },
+          { name: 'Second', values: [2] },
+        ]
+      };
+      const result = serializeAttributes(xlatable, 'attributes');
+
+      test('returns an array', () => {
+        expect(result.attributes).toBeInstanceOf(Array);
+        expect(result.attributes).toHaveLength(2);
+      });
+
+      test('returned array contains objects', () => {
+        expect(result.attributes[0]).toBeDefined();
+        expect(result.attributes[0]).toHaveProperty('name', 'First');
+        expect(result.attributes[0]).toHaveProperty('values', [1]);
+      });
+    });
+  });
+
+  describe('#deserializeAttributes', () => {
     //  - when the envelop is an array.
     // when the attribute key is not present
     test('when there is no envelop', () => {
@@ -14,7 +59,7 @@ describe('http module', () => {
           { name: 'A', values: ['B'] },
         ],
       };
-      const dest = attributeTranslator('attributes')(src);
+      const dest = deserializeAttributes('attributes')(src);
 
       expect(dest).toBeDefined();
       expect(dest.attributes).toBeInstanceOf(Object);
@@ -28,7 +73,7 @@ describe('http module', () => {
           ],
         },
       };
-      const dest = attributeTranslator('attributes', 'thing')(src);
+      const dest = deserializeAttributes('attributes', 'thing')(src);
 
       expect(dest).toBeDefined();
       expect(dest.thing.attributes).toBeInstanceOf(Object);
@@ -47,7 +92,7 @@ describe('http module', () => {
         ],
       };
 
-      const dest = attributeTranslator('attributes', 'thing')(src);
+      const dest = deserializeAttributes('attributes', 'thing')(src);
 
       expect(dest).toBeDefined();
       expect(dest.thing[0].attributes).toBeInstanceOf(Object);

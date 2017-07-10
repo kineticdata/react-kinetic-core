@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { attributeTranslator, handleErrors, paramBuilder } from './http';
+import {
+  deserializeAttributes,
+  serializeAttributes,
+  handleErrors,
+  paramBuilder,
+} from './http';
 
 export const fetchTeams = (options = {}) => {
   // Build URL and fetch the space.
@@ -9,11 +14,7 @@ export const fetchTeams = (options = {}) => {
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ teams: response.data.teams }));
-
-  // Translate attributes if requested.
-  if (options.xlatAttributes) {
-    promise = promise.then(attributeTranslator('attributes', 'teams'));
-  }
+  promise = promise.then(deserializeAttributes('attributes', 'teams'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);
@@ -36,11 +37,7 @@ export const fetchTeam = (options = {}) => {
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ team: response.data.team }));
-
-  // Translate attributes if requested.
-  if (options.xlatAttributes) {
-    promise = promise.then(attributeTranslator('attributes', 'team'));
-  }
+  promise = promise.then(deserializeAttributes('attributes', 'team'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);
@@ -62,12 +59,15 @@ export const updateTeam = (options = {}) => {
     throw new Error('updateTeam failed! The option "team" is required.');
   }
 
+  serializeAttributes(team, 'attributes');
+
   // Build URL and fetch the space.
   let promise = axios.put(`${bundle.apiLocation()}/teams/${teamSlug}`, team, {
     params: paramBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ team: response.data.team }));
+  promise = promise.then(deserializeAttributes('attributes', 'team'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);
@@ -84,12 +84,15 @@ export const createTeam = (options = {}) => {
     throw new Error('createTeam failed! The option "team" is required.');
   }
 
+  serializeAttributes(team, 'attributes');
+
   // Build URL and fetch the space.
   let promise = axios.post(`${bundle.apiLocation()}/teams`, team, {
     params: paramBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ team: response.data.team }));
+  promise = promise.then(deserializeAttributes('attributes', 'team'));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);

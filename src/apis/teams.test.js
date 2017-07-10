@@ -49,17 +49,9 @@ describe('teams api', () => {
         });
       });
 
-      test('does not translate attributes by default', () => {
+      test('translates attributes', () => {
         expect.assertions(2);
         return fetchTeams().then(({ teams }) => {
-          expect(teams[0].attributes).toBeDefined();
-          expect(teams[0].attributes).toBeInstanceOf(Array);
-        });
-      });
-
-      test('.xlatAttributes translates attributes', () => {
-        expect.assertions(2);
-        return fetchTeams({ xlatAttributes: true }).then(({ teams }) => {
           expect(teams[0].attributes).toBeDefined();
           expect(teams[0].attributes).not.toBeInstanceOf(Array);
         });
@@ -103,15 +95,7 @@ describe('teams api', () => {
         });
       });
 
-      test('does not translate attributes by default', () => {
-        expect.assertions(2);
-        return fetchTeam({ teamSlug }).then(({ team }) => {
-          expect(team.attributes).toBeDefined();
-          expect(team.attributes).toBeInstanceOf(Array);
-        });
-      });
-
-      test('.xlatAttributes translates attributes', () => {
+      test('translates attributes', () => {
         expect.assertions(2);
         return fetchTeam({ teamSlug, xlatAttributes: true }).then(({ team }) => {
           expect(team.attributes).toBeDefined();
