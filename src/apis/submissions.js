@@ -233,7 +233,7 @@ export const searchSubmissions = (options) => {
   let path = '';
   if (typeof form !== 'undefined') {
     // Form scoped.
-    path = `${bundle.apiLocation()}/kapps/${kapp || bundle.kappSlug()}/submissions`;
+    path = `${bundle.apiLocation()}/kapps/${kapp || bundle.kappSlug()}/forms/${form}/submissions`;
   } else {
     // Kapp scoped.
     path = `${bundle.apiLocation()}/kapps/${kapp || bundle.kappSlug()}/submissions`;
