@@ -5,6 +5,7 @@ import { K, bundle } from './core-helpers';
 import { loadable } from './components/utils/loadable';
 
 // APIs
+import * as CategoriesAPI from './apis/categories';
 import * as FormsAPI from './apis/forms';
 import * as KappsAPI from './apis/kapps';
 import * as SpaceAPI from './apis/space';
@@ -16,7 +17,7 @@ import * as ProfileAPI from './apis/profile';
 export { K, bundle, loadable };
 
 // Export APIs.
-export { FormsAPI, KappsAPI, SpaceAPI, SubmissionsAPI, TeamsAPI, ProfileAPI };
+export { CategoriesAPI, FormsAPI, KappsAPI, SpaceAPI, SubmissionsAPI, TeamsAPI, ProfileAPI };
 
 // Export Components.
 export const CoreForm = Form.CoreForm;
