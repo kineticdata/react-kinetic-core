@@ -9,6 +9,10 @@ export const deserializeAttributes = (attributeKey, envelop) => (result) => {
     // Attempt to translate the item normally.
     const attributes = xlatable[attributeKey];
 
+    if (!(xlatable[attributeKey] instanceof Array)) {
+      return result;
+    }
+
     xlatable[attributeKey] = attributes.reduce((attrs, attr) => {
       // eslint-disable-next-line
       attrs[attr.name] = attr.values;

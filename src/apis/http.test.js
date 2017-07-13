@@ -97,5 +97,12 @@ describe('http module', () => {
       expect(dest).toBeDefined();
       expect(dest.thing[0].attributes).toBeInstanceOf(Object);
     });
+
+    test('when attribute key does not exist', () => {
+      const src = { thing: {} };
+
+      const dest = deserializeAttributes('attributes', 'thing')(src);
+      expect(src).toEqual(src);
+    });
   });
 });
