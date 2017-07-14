@@ -12,12 +12,22 @@ import * as SpaceAPI from './apis/space';
 import * as SubmissionsAPI from './apis/submissions';
 import * as TeamsAPI from './apis/teams';
 import * as ProfileAPI from './apis/profile';
+import * as UsersAPI from './apis/users';
 
 // Export helpers.
 export { K, bundle, loadable };
 
 // Export APIs.
-export { CategoriesAPI, FormsAPI, KappsAPI, SpaceAPI, SubmissionsAPI, TeamsAPI, ProfileAPI };
+export {
+  CategoriesAPI,
+  FormsAPI,
+  KappsAPI,
+  SpaceAPI,
+  SubmissionsAPI,
+  TeamsAPI,
+  ProfileAPI,
+  UsersAPI,
+};
 
 // Export Components.
 export const CoreForm = Form.CoreForm;
