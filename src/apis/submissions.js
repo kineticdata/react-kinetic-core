@@ -264,3 +264,58 @@ export const searchSubmissions = (options) => {
 
   return promise;
 };
+
+export const fetchSubmission = (options) => {
+  const { id } = options;
+
+  if (!id) {
+    throw new Error('fetchSubmission failed! The option "id" is required.');
+  }
+
+  return axios.get(`${bundle.apiLocation()}/submissions/${id}`, { params: paramBuilder(options) })
+    // Remove the response envelop and leave us with the submission one.
+    .then(response => ({ submission: response.data.submission }))
+    // Clean up any errors we receive. Make sure this the last thing so that it
+    // cleans up any errors.
+    .catch(handleErrors);
+};
+
+export const createSubmission = (options) => {
+  const {
+    kappSlug = bundle.kappSlug(),
+    formSlug,
+    values,
+    completed = true,
+  } = options;
+
+  if (!formSlug) {
+    throw new Error('createSubmission failed! The option "formSlug" is required.');
+  } else if (!values) {
+    throw new Error('createSubmission failed! The option "values" is required.');
+  }
+
+  const path = `${bundle.spaceLocation()}/${kappSlug}/${formSlug}`;
+  const params = { ...paramBuilder(options), completed };
+
+  return axios.post(path, { values }, { params })
+    // Remove the response envelop and leave us with the submission one.
+    .then(response => ({ submission: response.data.submission }))
+    // Clean up any errors we receive. Make sure this the last thing so that it
+    // cleans up any errors.
+    .catch(handleErrors);
+};
+
+export const deleteSubmission = (options) => {
+  const { id } = options;
+
+  if (!id) {
+    throw new Error('deleteSubmission failed! The option "id" is required.');
+  }
+
+  return axios.delete(`${bundle.apiLocation()}/submissions/${id}`, { params: paramBuilder(options) })
+    // Remove the response envelop and leave us with the submission one.
+    .then(response => ({ submission: response.data.submission }))
+    // Clean up any errors we receive. Make sure this the last thing so that it
+    // cleans up any errors.
+    .catch(handleErrors);
+};
