@@ -1,4 +1,16 @@
-import { SubmissionSearch } from './submissions';
+import axios from 'axios';
+
+import { SubmissionSearch, fetchSubmission, deleteSubmission, createSubmission } from './submissions';
+import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
+
+// Mock out the bundle object from a dependency.
+jest.mock('../core-helpers', () => ({
+  bundle: {
+    spaceLocation: () => 'mock-space',
+    apiLocation: () => 'mock-space/app/api/v1',
+    kappSlug: () => 'mock-kapp',
+  },
+}));
 
 describe('SubmissionSearch', () => {
   let search;
@@ -177,4 +189,171 @@ describe('#searchSubmissions', () => {
       // testSubmission = 
     })
   })
+});
+
+describe('#fetchSubmission', () => {
+  describe('when successful', () => {
+    const id = 'abc123';
+    const values = { foo: 'bar' };
+
+    beforeEach(() => {
+      axios.get = resolvePromiseWith({
+        status: 200,
+        data: { submission: { id, values } },
+      });
+    });
+
+    test('does not return errors', () => {
+      expect.assertions(1);
+      return fetchSubmission({ id }).then(({ errors }) => {
+        expect(errors).toBeUndefined();
+      });
+    });
+
+    test('returns a submission', () => {
+      expect.assertions(1);
+      return fetchSubmission({ id }).then(({ submission }) => {
+        expect(submission).toMatchObject({ id, values });
+      });
+    });
+  });
+
+  describe('when unsuccessful', () => {
+    beforeEach(() => {
+      axios.get = rejectPromiseWith({ response: { status: 500 } });
+    });
+
+    test('throws an exception when no submission id is provided', () => {
+      expect(() => { fetchSubmission({}); }).toThrow();
+    });
+
+    test('does return errors', () => {
+      expect.assertions(1);
+      return fetchSubmission({ id: 'fake' }).then(({ serverError }) => {
+        expect(serverError).toBeDefined();
+      });
+    });
+  });
+});
+
+describe('#createSubmission', () => {
+  const id = 'abc123';
+  const kappSlug = 'catalog';
+  const formSlug = 'ipad-request';
+  const values = { foo: 'bar' };
+
+  describe('when successful', () => {
+    beforeEach(() => {
+      axios.post = resolvePromiseWith({
+        status: 200,
+        data: { submission: { id, values } },
+      });
+    });
+
+    test('does not return errors', () => {
+      expect.assertions(1);
+      return createSubmission({ kappSlug, formSlug, values }).then(({ errors }) => {
+        expect(errors).toBeUndefined();
+      });
+    });
+
+    test('returns a submission', () => {
+      expect.assertions(1);
+      return createSubmission({ kappSlug, formSlug, values }).then(({ submission }) => {
+        expect(submission).toMatchObject({ id, values });
+      });
+    });
+
+    test('test defaults (kapp = bundle.kappSlug(), complete = true)', () => {
+      expect.assertions(1);
+      return createSubmission({ formSlug, values }).then(() => {
+        expect(axios.post).toHaveBeenCalledWith(
+          'mock-space/app/api/v1/kapps/mock-kapp/forms/ipad-request/submissions',
+          { values },
+          { params: { completed: true } },
+        );
+      });
+    });
+
+    test('test draft submission', () => {
+      expect.assertions(1);
+      return createSubmission({ kappSlug, formSlug, values, completed: false }).then(() => {
+        expect(axios.post).toHaveBeenCalledWith(
+          'mock-space/app/api/v1/kapps/catalog/forms/ipad-request/submissions',
+          { values },
+          { params: { completed: false } },
+        );
+      });
+    });
+  });
+
+  describe('when unsuccessful', () => {
+    beforeEach(() => {
+      axios.post = rejectPromiseWith({ response: { status: 500 } });
+    });
+
+    test('throws an exception when no formSlug is provided', () => {
+      expect(() => {
+        createSubmission({});
+      }).toThrow('createSubmission failed! The option "formSlug" is required.');
+    });
+
+    test('throws an exception when no values object is provided', () => {
+      expect(() => {
+        createSubmission({ formSlug });
+      }).toThrow('createSubmission failed! The option "values" is required.');
+    });
+
+    test('does return errors', () => {
+      expect.assertions(1);
+      return createSubmission({ formSlug, values }).then(({ serverError }) => {
+        expect(serverError).toBeDefined();
+      });
+    });
+  });
+});
+
+describe('#deleteSubmission', () => {
+  describe('when successful', () => {
+    const id = 'abc123';
+    const values = { foo: 'bar' };
+
+    beforeEach(() => {
+      axios.delete = resolvePromiseWith({
+        status: 200,
+        data: { submission: { id, values } },
+      });
+    });
+
+    test('does not return errors', () => {
+      expect.assertions(1);
+      return deleteSubmission({ id }).then(({ errors }) => {
+        expect(errors).toBeUndefined();
+      });
+    });
+
+    test('returns a submission', () => {
+      expect.assertions(1);
+      return deleteSubmission({ id }).then(({ submission }) => {
+        expect(submission).toMatchObject({ id, values });
+      });
+    });
+  });
+
+  describe('when unsuccessful', () => {
+    beforeEach(() => {
+      axios.delete = rejectPromiseWith({ response: { status: 500 } });
+    });
+
+    test('throws an exception when no submission id is provided', () => {
+      expect(() => { deleteSubmission({}); }).toThrow();
+    });
+
+    test('does return errors', () => {
+      expect.assertions(1);
+      return deleteSubmission({ id: 'fake' }).then(({ serverError }) => {
+        expect(serverError).toBeDefined();
+      });
+    });
+  });
 });
