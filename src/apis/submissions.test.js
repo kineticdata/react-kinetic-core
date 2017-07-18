@@ -268,7 +268,7 @@ describe('#createSubmission', () => {
       expect.assertions(1);
       return createSubmission({ formSlug, values }).then(() => {
         expect(axios.post).toHaveBeenCalledWith(
-          'mock-space/mock-kapp/ipad-request',
+          'mock-space/app/api/v1/kapps/mock-kapp/forms/ipad-request/submissions',
           { values },
           { params: { completed: true } },
         );
@@ -279,7 +279,7 @@ describe('#createSubmission', () => {
       expect.assertions(1);
       return createSubmission({ kappSlug, formSlug, values, completed: false }).then(() => {
         expect(axios.post).toHaveBeenCalledWith(
-          'mock-space/catalog/ipad-request',
+          'mock-space/app/api/v1/kapps/catalog/forms/ipad-request/submissions',
           { values },
           { params: { completed: false } },
         );

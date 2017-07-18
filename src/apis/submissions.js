@@ -294,7 +294,7 @@ export const createSubmission = (options) => {
     throw new Error('createSubmission failed! The option "values" is required.');
   }
 
-  const path = `${bundle.spaceLocation()}/${kappSlug}/${formSlug}`;
+  const path = `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}/submissions`;
   const params = { ...paramBuilder(options), completed };
 
   return axios.post(path, { values }, { params })
