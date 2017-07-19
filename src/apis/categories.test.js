@@ -3,7 +3,7 @@ import axios from 'axios';
 import { fetchCategory, fetchCategories } from './categories';
 import { CategoryBuilder } from '../test_utils/category_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
-
+import { fetchDocMarkdown } from '../test_utils/docs';
 
 // Mock out the bundle object from a dependency.
 jest.mock('../core-helpers', () => ({
@@ -14,6 +14,19 @@ jest.mock('../core-helpers', () => ({
 }));
 
 describe('categories api', () => {
+  test('documentation', () => {
+    const methods = [
+      'fetchCategories', 'fetchCategory',
+    ];
+
+    expect.assertions(methods.length);
+    return fetchDocMarkdown('API.md').then((result) => {
+      methods.forEach((method) => {
+        const matches = result.filter(line => line.endsWith(method));
+        expect(matches).toHaveLength(1);
+      });
+    });
+  });
   describe('#fetchCategories', () => {
     describe('when successful', () => {
       let response;

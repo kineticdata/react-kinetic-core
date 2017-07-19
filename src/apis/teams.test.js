@@ -21,7 +21,7 @@ describe('teams api', () => {
     ];
 
     expect.assertions(methods.length);
-    return fetchDocMarkdown().then((result) => {
+    return fetchDocMarkdown('API.md').then((result) => {
       methods.forEach((method) => {
         const matches = result.filter(line => line.endsWith(method));
         expect(matches).toHaveLength(1);

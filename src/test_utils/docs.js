@@ -1,8 +1,8 @@
 import fs from 'fs';
 
-export const fetchDocMarkdown = () => {
+export const fetchDocMarkdown = (filename = '/README.md') => {
   const promise = new Promise((resolve, reject) => {
-    fs.readFile(`${__dirname}/../../docs/README.md`, (error, data) => {
+    fs.readFile(`${__dirname}/../../docs/${filename}`, (error, data) => {
       if (error) {
         reject(error);
       }
