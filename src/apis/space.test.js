@@ -3,7 +3,7 @@ import axios from 'axios';
 import { fetchSpace } from './space';
 import { SpaceBuilder } from '../test_utils/space_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
-
+import { fetchDocMarkdown } from '../test_utils/docs';
 
 // Mock out the bundle object from a dependency.
 jest.mock('../core-helpers', () => ({
@@ -13,6 +13,19 @@ jest.mock('../core-helpers', () => ({
 }));
 
 describe('space api', () => {
+  test('documentation', () => {
+    const methods = [
+      'fetchSpace',
+    ];
+
+    expect.assertions(methods.length);
+    return fetchDocMarkdown().then((result) => {
+      methods.forEach((method) => {
+        const matches = result.filter(line => line.endsWith(method));
+        expect(matches).toHaveLength(1);
+      });
+    });
+  });
   describe('#fetchSpace', () => {
     describe('when successful', () => {
       let response;

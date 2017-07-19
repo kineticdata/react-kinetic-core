@@ -3,6 +3,7 @@ import axios from 'axios';
 import { fetchTeam, fetchTeams, updateTeam, createTeam, deleteTeam } from './teams';
 import { TeamBuilder } from '../test_utils/team_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
+import { fetchDocMarkdown } from '../test_utils/docs';
 
 
 // Mock out the bundle object from a dependency.
@@ -14,6 +15,20 @@ jest.mock('../core-helpers', () => ({
 }));
 
 describe('teams api', () => {
+  test('documentation', () => {
+    const methods = [
+      'fetchTeams', 'fetchTeam', 'updateTeam', 'createTeam', 'deleteTeam',
+    ];
+
+    expect.assertions(methods.length);
+    return fetchDocMarkdown().then((result) => {
+      methods.forEach((method) => {
+        const matches = result.filter(line => line.endsWith(method));
+        expect(matches).toHaveLength(1);
+      });
+    });
+  });
+
   describe('#fetchTeams', () => {
     describe('when successful', () => {
       let response;
@@ -200,6 +215,7 @@ describe('teams api', () => {
   });
 
   describe('#createTeam', () => {
+    
     describe('when successful', () => {
       let response;
       let testTeam;

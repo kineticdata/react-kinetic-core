@@ -3,7 +3,7 @@ import axios from 'axios';
 import { fetchForm, fetchForms } from './forms';
 import { FormBuilder } from '../test_utils/form_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
-
+import { fetchDocMarkdown } from '../test_utils/docs';
 
 // Mock out the bundle object from a dependency.
 jest.mock('../core-helpers', () => ({
@@ -14,6 +14,19 @@ jest.mock('../core-helpers', () => ({
 }));
 
 describe('forms api', () => {
+  test('documentation', () => {
+    const methods = [
+      'fetchForms', 'fetchForm',
+    ];
+
+    expect.assertions(methods.length);
+    return fetchDocMarkdown().then((result) => {
+      methods.forEach((method) => {
+        const matches = result.filter(line => line.endsWith(method));
+        expect(matches).toHaveLength(1);
+      });
+    });
+  });
   describe('#fetchForms', () => {
     describe('when successful', () => {
       let response;

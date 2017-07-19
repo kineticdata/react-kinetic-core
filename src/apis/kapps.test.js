@@ -3,7 +3,7 @@ import axios from 'axios';
 import { fetchKapp, fetchKapps } from './kapps';
 import { KappBuilder } from '../test_utils/kapp_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
-
+import { fetchDocMarkdown } from '../test_utils/docs';
 
 // Mock out the bundle object from a dependency.
 jest.mock('../core-helpers', () => ({
@@ -14,6 +14,19 @@ jest.mock('../core-helpers', () => ({
 }));
 
 describe('kapps api', () => {
+  test('documentation', () => {
+    const methods = [
+      'fetchKapps', 'fetchKapp',
+    ];
+
+    expect.assertions(methods.length);
+    return fetchDocMarkdown().then((result) => {
+      methods.forEach((method) => {
+        const matches = result.filter(line => line.endsWith(method));
+        expect(matches).toHaveLength(1);
+      });
+    });
+  });
   describe('#fetchKapps', () => {
     describe('when successful', () => {
       let response;
