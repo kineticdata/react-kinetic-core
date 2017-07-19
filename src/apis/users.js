@@ -61,13 +61,62 @@ export const updateUser = (options = {}) => {
   serializeAttributes(user, 'profileAttributes');
 
   // Build URL and fetch the space.
-  let promise = axios.get(`${bundle.apiLocation()}/users/${username}`, user, {
+  let promise = axios.put(`${bundle.apiLocation()}/users/${username}`, user, {
     params: paramBuilder(options),
   });
   // Remove the response envelop and leave us with the user one.
   promise = promise.then(response => ({ user: response.data.user }));
   promise = promise.then(deserializeAttributes('attributes', 'user'));
   promise = promise.then(deserializeAttributes('profileAttributes', 'user'));
+
+  // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
+  promise = promise.catch(handleErrors);
+
+  return promise;
+};
+
+export const createUser = (options = {}) => {
+  const {
+    user,
+  } = options;
+
+  if (!user) {
+    throw new Error('createUser failed! The option "user" is required.');
+  }
+
+  serializeAttributes(user, 'attributes');
+  serializeAttributes(user, 'profileAttributes');
+
+  // Build URL and fetch the space.
+  let promise = axios.post(`${bundle.apiLocation()}/users`, user, {
+    params: paramBuilder(options),
+  });
+  // Remove the response envelop and leave us with the space one.
+  promise = promise.then(response => ({ user: response.data.user }));
+  promise = promise.then(deserializeAttributes('attributes', 'user'));
+  promise = promise.then(deserializeAttributes('profileAttributes', 'user'));
+
+  // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
+  promise = promise.catch(handleErrors);
+
+  return promise;
+};
+
+export const deleteUser = (options = {}) => {
+  const {
+    username,
+  } = options;
+
+  if (!username) {
+    throw new Error('deleteUser failed! The option "username" is required.');
+  }
+
+  // Build URL and fetch the space.
+  let promise = axios.delete(`${bundle.apiLocation()}/users/${username}`, {
+    params: paramBuilder(options),
+  });
+  // Remove the response envelop and leave us with the space one.
+  // promise = promise.then(response => ({ user: response.data.user }));
 
   // Clean up any errors we receive. Make sure this the last thing so that it cleans up any errors.
   promise = promise.catch(handleErrors);

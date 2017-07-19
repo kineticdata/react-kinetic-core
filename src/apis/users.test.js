@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { fetchUser, fetchUsers } from './users';
+import { fetchUser, fetchUsers, updateUser, createUser, deleteUser } from './users';
 import { UserBuilder } from '../test_utils/user_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
 
@@ -121,6 +121,189 @@ describe('users api', () => {
       test('does return errors', () => {
         expect.assertions(1);
         return fetchUser({ username: 'fake' }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
+        });
+      });
+    });
+  });
+
+  describe('#updateUser', () => {
+    describe('when successful', () => {
+      let response;
+      let testUser;
+      let username;
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+            user: {},
+          },
+        };
+        testUser = new UserBuilder().stub().withAttribute('Attribute', 'value').build();
+        username = testUser.username;
+        response.data.user = testUser;
+        axios.put = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return updateUser({ username, user: testUser }).then(({ errors }) => {
+          expect(errors).toBeUndefined();
+        });
+      });
+
+      test('returns a user', () => {
+        expect.assertions(1);
+        return updateUser({ username, user: testUser }).then(({ user }) => {
+          expect(user).toMatchObject({
+            username: testUser.username,
+            displayName: testUser.displayName,
+          });
+        });
+      });
+
+      test('translates attributes', () => {
+        expect.assertions(2);
+        return updateUser({ username, user: testUser }).then(({ user }) => {
+          expect(user.attributes).toBeDefined();
+          expect(user.attributes).not.toBeInstanceOf(Array);
+        });
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.put = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no user slug is provided', () => {
+        expect(() => { updateUser({ user: {} }); }).toThrow();
+      });
+
+      test('throws an uxception when no user object is provided', () => {
+        expect(() => { updateUser({ username: 'fake' }); }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return updateUser({ username: 'fake', user: {} }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
+        });
+      });
+    });
+  });
+
+  describe('#createUser', () => {
+    describe('when successful', () => {
+      let response;
+      let testUser;
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+            user: {},
+          },
+        };
+        testUser = new UserBuilder().stub().withAttribute('Attribute', 'value').build();
+        response.data.user = testUser;
+        axios.post = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return createUser({ user: testUser }).then(({ errors }) => {
+          expect(errors).toBeUndefined();
+        });
+      });
+
+      test('returns a user', () => {
+        expect.assertions(1);
+        return createUser({ user: testUser }).then(({ user }) => {
+          expect(user).toMatchObject({
+            username: testUser.username,
+            displayName: testUser.displayName,
+          });
+        });
+      });
+
+      test('translates attributes', () => {
+        expect.assertions(2);
+        return createUser({ user: testUser }).then(({ user }) => {
+          expect(user.attributes).toBeDefined();
+          expect(user.attributes).not.toBeInstanceOf(Array);
+        });
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.post = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no user object is provided', () => {
+        expect(() => { createUser({}); }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return createUser({ user: {} }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
+        });
+      });
+    });
+  });
+
+  describe('#deleteUser', () => {
+    describe('when successful', () => {
+      let response;
+      const username = 'testuser';
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+          },
+        };
+        axios.delete = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return deleteUser({ username }).then(({ errors }) => {
+          expect(errors).toBeUndefined();
+        });
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.delete = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no username is provided', () => {
+        expect(() => { deleteUser({}); }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return deleteUser({ username: 'fake' }).then(({ serverError }) => {
           expect(serverError).toBeDefined();
         });
       });
