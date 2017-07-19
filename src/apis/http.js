@@ -24,12 +24,14 @@ export const deserializeAttributes = (attributeKey, envelop) => (result) => {
 };
 
 export const serializeAttributes = (xlatable, attributeKey) => {
-  const attributes = xlatable[attributeKey];
-
-  // Do not try and serialize attribute sets that are already lists.
-  if (xlatable[attributeKey] instanceof Array) {
+  // If the attribute key is missing or is already in a list format then
+  // skip serialization.
+  // eslint-disable-next-line
+  if (!xlatable.hasOwnProperty(attributeKey) || xlatable[attributeKey] instanceof Array) {
     return xlatable;
   }
+
+  const attributes = xlatable[attributeKey];
 
   // Serialize the Object form into a List form.
   // eslint-disable-next-line no-param-reassign

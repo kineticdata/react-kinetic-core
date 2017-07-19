@@ -25,7 +25,7 @@ describe('http module', () => {
       test('mutates the object passed', () => {
         expect(xlatable.attributes).toBeDefined();
         expect(xlatable.attributes).toBeInstanceOf(Array);
-      })
+      });
     });
 
     describe('when translatable contains an attribute array', () => {
@@ -33,7 +33,7 @@ describe('http module', () => {
         attributes: [
           { name: 'First', values: [1] },
           { name: 'Second', values: [2] },
-        ]
+        ],
       };
       const result = serializeAttributes(xlatable, 'attributes');
 
@@ -47,6 +47,13 @@ describe('http module', () => {
         expect(result.attributes[0]).toHaveProperty('name', 'First');
         expect(result.attributes[0]).toHaveProperty('values', [1]);
       });
+    });
+
+    test('when attribute key does not exist', () => {
+      const src = { thing: {} };
+
+      const dest = serializeAttributes(src, 'attributes');
+      expect(src).toEqual(src);
     });
   });
 
