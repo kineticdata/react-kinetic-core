@@ -11,6 +11,20 @@
             - [createUser](#createuser)
             - [updateUser](#updateuser)
             - [deleteUser](#deleteuser)
+        - [Teams](#teams)
+            - [fetchTeams](#fetchteams)
+            - [fetchTeam](#fetchteam)
+            - [createTeam](#createteam)
+            - [updateTeam](#updateteam)
+            - [deleteTeam](#deleteteam)
+        - [Space](#space)
+            - [fetchSpace](#fetchspace)
+        - [Kapp](#kapp)
+            - [fetchKapps](#fetchkapps)
+            - [fetchKapp](#fetchkapp)
+        - [Forms](#forms)
+            - [fetchForms](#fetchforms)
+            - [fetchForm](#fetchform)
 
 <!-- markdown-toc end -->
 
@@ -84,7 +98,7 @@ Fetch all users for the current space.
 `options`:
 * `include` - API include parameters (see Kinetic CE reference documentation).
 
-Returns: `{ users: [ { /* ... */ } ] }`
+Resolves: `{ users: [ { /* ... */ } ] }`
 
 #### fetchUser
 
@@ -96,9 +110,19 @@ Fetch a specific user by username for the current space.
 * `username` - (required) The username of the user to retrieve.
 * `include` - API include parameters (see Kinetic CE reference documentation).
 
-Returns: `{ user: { /* ... */ } }`
+Resolves: `{ user: { /* ... */ } }`
 
 #### createUser
+
+Creates a new user in the current space.
+
+`UsersAPI.createUser(options)`
+
+`options`:
+* `user` - (required) the user object to create/insert.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ user: { /* ... */ } }`
 
 #### updateUser
 
@@ -113,3 +137,144 @@ Update a user using a username and a user object.
 
 
 #### deleteUser
+
+Deletes the user specified by the `username` option.
+
+`UsersAPI.deleteUser(options)`
+
+`options`:
+* `username` - (required) the username of the user to be deleted.
+
+Resolves: nothing.
+
+### Teams
+
+`import { TeamsAPI } from 'react-kinetic-core';`
+
+#### fetchTeams
+
+Fetch all teams for the current space.
+ 
+`TeamsAPI.fetchTeams(options)`
+
+`options`:
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ teams: [ { /* ... */ } ] }`
+
+#### fetchTeam
+
+Fetch a specific team by slug for the current space.
+
+`TeamsAPI.fetchTeam(options)`
+
+`options`:
+* `teamSlug` - (required) The slug of the team to retrieve.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ team: { /* ... */ } }`
+
+#### createTeam
+
+Creates a new team in the current space.
+
+`TeamsAPI.createTeam(options)`
+
+`options`:
+* `team` - (required) the team object to create/insert.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ team: { /* ... */ } }`
+
+#### updateTeam
+
+Update a team using a teamSlug and a team object.
+
+`TeamsAPI.updateTeam(options)`
+
+`options`:
+* `teamSlug` - (required) the slug of the team to be updated.
+* `team` - (required) the team object to send to the server.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+
+#### deleteTeam
+
+Deletes the team specified by the `teamSlug` option.
+
+`TeamsAPI.deleteTeam(options)`
+
+`options`:
+* `teamSlug` - (required) the slug of the team to be deleted.
+
+Resolves: nothing.
+
+### Space
+
+`import { SpaceAPI } from 'react-kinetic-core';`
+
+#### fetchSpace
+
+Fetches the current space.
+
+`SpaceAPI.fetchSpace(options)`
+
+`options`:
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+### Kapp
+
+`import { KappsAPI } from 'react-kinetic-core';`
+
+#### fetchKapps
+
+Fetches all Kapps for the current space.
+
+`KappsAPI.fetchKapps(options)`
+ 
+`options`:
+* `include` - API include parameters (see Kinetic CE reference documentation).
+ 
+Resolves: `{ kapps: [{ /* ... */ }] }`
+
+#### fetchKapp
+
+Fetches a Kapp from the current using the `kappSlug` option.
+
+`KappsAPI.fetchKapp(options)`
+
+`options`:
+* `kappSlug` - the slug of the Kapp to fetch. Defaults to the bundle kapp if not specified.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ kapp: { /* ... */ } }`
+
+### Forms
+
+`import { FormsAPI } from 'react-kinetic-core';`
+
+#### fetchForms
+
+Fetches all forms for the current space and Kapp. The Kapp can be overridden using the `kappSlug` option.
+
+`FormsAPI.fetchForms(options)`
+ 
+`options`:
+* `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+ 
+Resolves: `{ forms: [{ /* ... */ }] }`
+
+#### fetchForm
+
+Fetches the form specified by the `formSlug` option in the current space and Kapp.
+The Kapp can be overridden using the `kappSlug` option.
+
+`FormsAPI.fetchForms(options)`
+ 
+`options`:
+* `formSlug` - (required) the slug of the form to fetch.
+* `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+ 
+Resolves: `{ form: { /* ... */ } }`
