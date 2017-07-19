@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { fetchTeam, fetchTeams } from './teams';
+import { fetchTeam, fetchTeams, updateTeam, createTeam, deleteTeam } from './teams';
 import { TeamBuilder } from '../test_utils/team_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
 
@@ -121,6 +121,189 @@ describe('teams api', () => {
       test('does return errors', () => {
         expect.assertions(1);
         return fetchTeam({ teamSlug: 'fake', xlatAttributes: true }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
+        });
+      });
+    });
+  });
+
+  describe('#updateTeam', () => {
+    describe('when successful', () => {
+      let response;
+      let testTeam;
+      let teamSlug;
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+            team: {},
+          },
+        };
+        testTeam = new TeamBuilder().stub().withAttribute('Attribute', 'value').build();
+        teamSlug = testTeam.slug;
+        response.data.team = testTeam;
+        axios.put = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return updateTeam({ teamSlug, team: testTeam }).then(({ errors }) => {
+          expect(errors).toBeUndefined();
+        });
+      });
+
+      test('returns a team', () => {
+        expect.assertions(1);
+        return updateTeam({ teamSlug, team: testTeam }).then(({ team }) => {
+          expect(team).toMatchObject({
+            slug: testTeam.slug,
+            name: testTeam.name,
+          });
+        });
+      });
+
+      test('translates attributes', () => {
+        expect.assertions(2);
+        return updateTeam({ teamSlug, team: testTeam }).then(({ team }) => {
+          expect(team.attributes).toBeDefined();
+          expect(team.attributes).not.toBeInstanceOf(Array);
+        });
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.put = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no team slug is provided', () => {
+        expect(() => { updateTeam({ team: {} }); }).toThrow();
+      });
+
+      test('throws an uxception when no team object is provided', () => {
+        expect(() => { updateTeam({ teamSlug: 'fake' }); }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return updateTeam({ teamSlug: 'fake', team: {} }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
+        });
+      });
+    });
+  });
+
+  describe('#createTeam', () => {
+    describe('when successful', () => {
+      let response;
+      let testTeam;
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+            team: {},
+          },
+        };
+        testTeam = new TeamBuilder().stub().withAttribute('Attribute', 'value').build();
+        response.data.team = testTeam;
+        axios.post = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return createTeam({ team: testTeam }).then(({ errors }) => {
+          expect(errors).toBeUndefined();
+        });
+      });
+
+      test('returns a team', () => {
+        expect.assertions(1);
+        return createTeam({ team: testTeam }).then(({ team }) => {
+          expect(team).toMatchObject({
+            slug: testTeam.slug,
+            name: testTeam.name,
+          });
+        });
+      });
+
+      test('translates attributes', () => {
+        expect.assertions(2);
+        return createTeam({ team: testTeam }).then(({ team }) => {
+          expect(team.attributes).toBeDefined();
+          expect(team.attributes).not.toBeInstanceOf(Array);
+        });
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.post = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no team object is provided', () => {
+        expect(() => { createTeam({}); }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return createTeam({ team: {} }).then(({ serverError }) => {
+          expect(serverError).toBeDefined();
+        });
+      });
+    });
+  });
+
+  describe('#deleteTeam', () => {
+    describe('when successful', () => {
+      let response;
+      const teamSlug = 'testteam';
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+          },
+        };
+        axios.delete = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return deleteTeam({ teamSlug }).then(({ errors }) => {
+          expect(errors).toBeUndefined();
+        });
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.delete = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no teamSlug is provided', () => {
+        expect(() => { deleteTeam({}); }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return deleteTeam({ teamSlug: 'fake' }).then(({ serverError }) => {
           expect(serverError).toBeDefined();
         });
       });
