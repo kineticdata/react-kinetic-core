@@ -62,30 +62,22 @@ Only takes children. Intended to be a direct child of `CoreModal`.
 
 ### CoreForm
 
-| Property  | Type   | Description |
-| --------- | ------ | ----------- |
-| submission | string | A submission ID |
-| kapp | string  | A kapp slug. |
-| form | string | A form slug. |
-| review | bool | Renders the form in review mode if true. |
-| values | object | A map of field name to values for default values on the form. |
-| globals | func\|Promise | A function to load globals or a promise to complete loading globals. |
-| onLoaded | func | |
-| loaded | func | |
-| onUnauthorized | func | |
-| unauthorized | func | |
-| onForbidden | func | |
-| forbidden | func | |
-| onNotFound | func | |
-| notFound | func | |
-| onError | func | |
-| error | func | |
-| onCreated | func | |
-| created | func | |
-| onUpdated | func | |
-| updated | func | |
-| onCompleted | func | |
-| completed | func | |
+| Property  | Type   | Arguments | Description |
+| --------- | ------ | --------- | ----------- |
+| submission | string |  | A submission ID |
+| kapp | string  |   | A kapp slug. |
+| form | string |   | A form slug. |
+| review | bool |   | Renders the form in review mode if true. |
+| values | object |   | A map of field name to values for default values on the form. |
+| globals | func\|Promise |   | A function to load globals or a promise to complete loading globals. |
+| onLoaded | func | (form:object) | Handler for form loaded events. |
+| onUnauthorized  | func | (...args) | Handler for 401/unauthorized events. |
+| onForbidden | func | (...args) | Handler for 403/forbidden events. | 
+| onNotFound | func | (...args) | Handler for 404/not found events. |
+| onError | func | (...args) | Handler for all other error events. |
+| onCreated | func | (response, actions) | Handler for submission created events. |
+| onUpdated | func | (response, actions) | Handler for submission updated events. |
+| onCompleted | func | (response, actions) | Handler for submission completed events. |
 
 ### CoreFormModal
 
