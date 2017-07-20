@@ -61,7 +61,7 @@ The API functions automatically translate attributes into a friendly JS format. 
   "slug": "thing",
   "attributes": [
     { "name": "Attribute1", "values": ["Value1"] },
-    { "name": "Attribute2", "values": ["Value2-1", ""Value2-2"] }
+    { "name": "Attribute2", "values": ["Value2-1", "Value2-2"] }
   ]
 }
 ```
@@ -73,8 +73,8 @@ Will be automatically translated to look like this:
   "name": "Thing",
   "slug": "thing",
   "attributes": {
-    "Attribute1": ["Value1"] },
-    "Attribute2": ["Value2-1", ""Value2-2"] }
+    "Attribute1": ["Value1"],
+    "Attribute2": ["Value2-1", ""Value2-2"]
   }
 }
 ```
