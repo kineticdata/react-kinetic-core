@@ -1,10 +1,12 @@
 # Installation
 
-`npm install --save react-kinetic-core`
+`yarn add react-kinetic-core`
 
 or
 
-`yarn add react-kinetic-core`
+`npm install --save react-kinetic-core`
+
+
 
 In order to use the `CoreModal` components you will need to include the appropriate CSS:
 

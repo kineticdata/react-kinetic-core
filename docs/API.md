@@ -89,6 +89,47 @@ For resources with multiple types of attributes, such as `Users` which have `att
 
 When you include child items, for example the forms for a kapp (`include=form,form.attributes`) the API helpers will not "crawl" through child objects to translate their attributes. It only translates the top level object or collection of objects.
 
+## Examples
+
+### Promises
+
+The API functions, with the exception of helpers such as `SubmissionsAPI.SubmissionSearch`, all return promises.
+
+Here's an example of retrieving a list of teams:
+
+```
+TeamsAPI.fetchTeams().then(
+  ({ serverError, teams }) => {
+    serverError ?
+      dispatch(actions.setErrors(serverError)) :
+      dispatch(actions.setTeams(teams)));
+```
+
+In the event of using `redux-promise` you can simply have an action creator and handle the `serverError` vs `teams` logic in the reducer:
+
+```
+export const actions = {
+  fetchTeams: () => ({ type: types.FETCH_TEAMS, payload: TeamsAPI.fetchTeams() }),
+};
+```
+
+### Sagas
+
+In Sagas you would use the same deconstruction style in your saga:
+
+```
+export function* fetchTeamsSaga() {
+  const { serverError, teams } = TeamsAPI.fetchTeams();
+  
+  if (serverError) {
+    yield put(actions.setError(serverError));
+  } else {
+    yield put(actions.setTeams(teams));
+  }
+}
+
+```
+
 ## Users
 
 `import { UsersAPI } from 'react-kinetic-core';`
