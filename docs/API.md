@@ -4,6 +4,9 @@
 - [API Functions](#api-functions)
     - [Error Handling](#error-handling)
     - [Attribute Translation](#attribute-translation)
+    - [Examples](#examples)
+        - [Promises](#promises)
+        - [Sagas](#sagas)
     - [Users](#users)
         - [fetchUsers](#fetchusers)
         - [fetchUser](#fetchuser)
@@ -37,6 +40,7 @@
             - [Execution Functions](#execution-functions)
         - [searchSubmissions](#searchsubmissions)
         - [fetchSubmission](#fetchsubmission)
+        - [createSubmission](#createsubmission)
         - [deleteSubmission](#deletesubmission)
 
 <!-- markdown-toc end -->
