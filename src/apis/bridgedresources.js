@@ -141,3 +141,18 @@ export const fetch = (options = {}) => {
     })
     .catch(handleErrors);
 };
+
+export const count = (options = {}) => {
+  const {
+    formSlug,
+    bridgedResourceName,
+  } = options;
+
+  if (!formSlug) { throw new Error('Property "formSlug" is required.'); }
+  if (!bridgedResourceName) { throw new Error('Property "bridgedResourceName" is required.'); }
+
+  return axios
+    .get(`${bridgedResourceUrl(options)}/count`)
+    .then(({ data }) => ({ count: data.count }))
+    .catch(handleErrors);
+};
