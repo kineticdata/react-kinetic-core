@@ -199,7 +199,7 @@ describe('users api', () => {
         expect(() => { updateUser({ user: {} }); }).toThrow();
       });
 
-      test('throws an uxception when no user object is provided', () => {
+      test('throws an exception when no user object is provided', () => {
         expect(() => { updateUser({ username: 'fake' }); }).toThrow();
       });
 
