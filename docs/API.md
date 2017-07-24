@@ -495,3 +495,53 @@ Delete a submission given a specific ID.
 * `id` - (required) the ID of the submission to fetch.
 * `include` - API include parameters (see Kinetic CE reference documentation).
 
+## Bridged Resources
+
+`import { BridgedResourcesAPI } from 'react-kinetic-core';`
+
+### fetch
+
+Fetches data from a bridged resource.
+
+`BridgedResourcesAPI.fetch(options)`
+
+`options`:
+* `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
+* `formSlug` - (required) the slug of the form on which the resource is defined.
+* `bridgedResourceName` - (required) the name of the bridged resource.
+* `limit` - the maximum number of records to retrieve.
+* `offset` - the offset of the first record to retrieve.
+* `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
+* `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
+
+When a single record is returned it resolves:
+
+`{ record: { 'Field A': 'Value A'} }`
+
+When multiple records are returned it resolves:
+
+```
+{
+  records: [{ 'Field A', 'Value A' }, { /* ... */ }],
+  metadata: { count: 2, nextPageToken: '...' }
+}
+```
+
+### count
+
+Fetches a count of the number of records that match a bridge query.
+
+`BridgedResourcesAPI.count(options)`
+
+`options`:
+* `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
+* `formSlug` - (required) the slug of the form on which the resource is defined.
+* `bridgedResourceName` - (required) the name of the bridged resource.
+* `limit` - the maximum number of records to retrieve.
+* `offset` - the offset of the first record to retrieve.
+* `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
+* `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
+
+Resolves:
+
+`{ count: 2 }`
