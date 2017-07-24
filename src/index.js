@@ -13,6 +13,7 @@ import * as SubmissionsAPI from './apis/submissions';
 import * as TeamsAPI from './apis/teams';
 import * as ProfileAPI from './apis/profile';
 import * as UsersAPI from './apis/users';
+import * as BridgedResourcesAPI from './apis/bridgedresources';
 
 // Export helpers.
 export { K, bundle, loadable };
@@ -27,6 +28,7 @@ export {
   TeamsAPI,
   ProfileAPI,
   UsersAPI,
+  BridgedResourcesAPI,
 };
 
 // Export Components.
