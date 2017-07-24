@@ -43,6 +43,13 @@ export const serializeAttributes = (xlatable, attributeKey) => {
 
 
 export const handleErrors = (error) => {
+  if (error instanceof Error) {
+    // When the error is an Error object an exception was thrown in the process.
+    // so we'll just 'convert' it to a 400 error to be handled downstream.
+    return { serverError: { status: 400, statusText: error.message } };
+  }
+
+  // Destructure out the information needed.
   const { data, status, statusText } = error.response;
   if (status === 400 && typeof data === 'object') {
     // If the errors returned are from server-side validations or constraints.
