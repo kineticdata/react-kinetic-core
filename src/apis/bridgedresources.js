@@ -39,7 +39,7 @@ export const bridgedResourceUrl = (options) => {
       throw new Error('Property "attributes" expected as array of strings.');
     }
     if (options.attributes.length > 0) {
-      url += `${paramSeparator(url)}attributes=${Array.join(options.attributes.map(encodeURIComponent), ',')}`;
+      url += `${paramSeparator(url)}attributes=${options.attributes.map(encodeURIComponent).join(',')}`;
     }
   }
   // append any parameter values if they were specified
@@ -48,7 +48,7 @@ export const bridgedResourceUrl = (options) => {
       `values[${encodeURIComponent(key)}]=${encodeURIComponent(options.values[key])}`
     ));
     // Add the appropriate parameter separator and value parameters
-    url += `${paramSeparator(url)}${Array.join(parameters, '&')}`;
+    url += `${paramSeparator(url)}${parameters.join('&')}`;
   }
   // append the limit if it was specified
   if (options.limit) {
