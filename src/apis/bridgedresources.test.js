@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
 import { fetchDocMarkdown } from '../test_utils/docs';
-import { bridgedResourceUrl, fetch, count } from './bridgedresources';
+import { bridgedResourceUrl, fetchBridgedResource, countBridgedResource } from './bridgedresources';
 
 // Mock out the bundle object from a dependency.
 jest.mock('../core-helpers', () => ({
@@ -118,7 +118,7 @@ describe('bridged resource api', () => {
 
       test('does not return errors', () => {
         expect.assertions(1);
-        return count(options).then(({ serverError }) => {
+        return countBridgedResource(options).then(({ serverError }) => {
           expect(serverError).toBeUndefined();
         });
       });
@@ -126,7 +126,7 @@ describe('bridged resource api', () => {
       test('returns an object with a count', () => {
         expect.assertions(1);
         // eslint-disable-next-line
-        return count(options).then(({ count }) => {
+        return countBridgedResource(options).then(({ count }) => {
           expect(count).toBe(2);
         });
       });
@@ -156,14 +156,14 @@ describe('bridged resource api', () => {
 
         test('does not return errors', () => {
           expect.assertions(1);
-          return fetch(options).then(({ serverError }) => {
+          return fetchBridgedResource(options).then(({ serverError }) => {
             expect(serverError).toBeUndefined();
           });
         });
 
         test('returns a records object', () => {
           expect.assertions(7);
-          return fetch(options).then(({ records }) => {
+          return fetchBridgedResource(options).then(({ records }) => {
             expect(records).toBeDefined();
             expect(records).toBeInstanceOf(Array);
             expect(records).toHaveLength(2);
@@ -195,14 +195,14 @@ describe('bridged resource api', () => {
 
         test('does not return errors', () => {
           expect.assertions(1);
-          return fetch(options).then(({ serverError }) => {
+          return fetchBridgedResource(options).then(({ serverError }) => {
             expect(serverError).toBeUndefined();
           });
         });
 
         test('returns a record object', () => {
           expect.assertions(3);
-          return fetch(options).then(({ record }) => {
+          return fetchBridgedResource(options).then(({ record }) => {
             expect(record).toBeDefined();
             expect(record).toHaveProperty('Field A');
             expect(record).toHaveProperty('Field B');

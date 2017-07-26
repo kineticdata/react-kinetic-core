@@ -111,7 +111,7 @@ export const arraysToObject = (keys, values) => values.map(value =>
 export const convertMultipleBridgeRecords = responseJsonRecords =>
   arraysToObject(responseJsonRecords.fields, responseJsonRecords.records);
 
-export const fetch = (options = {}) => {
+export const fetchBridgedResource = (options = {}) => {
   const {
     formSlug,
     bridgedResourceName,
@@ -142,7 +142,7 @@ export const fetch = (options = {}) => {
     .catch(handleErrors);
 };
 
-export const count = (options = {}) => {
+export const countBridgedResource = (options = {}) => {
   const {
     formSlug,
     bridgedResourceName,

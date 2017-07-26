@@ -7,6 +7,9 @@
     - [Examples](#examples)
         - [Promises](#promises)
         - [Sagas](#sagas)
+    - [Profile](#profile)
+        - [fetchProfile](#fetchprofile)
+        - [updateProfile](#updateprofile)
     - [Users](#users)
         - [fetchUsers](#fetchusers)
         - [fetchUser](#fetchuser)
@@ -42,10 +45,17 @@
         - [fetchSubmission](#fetchsubmission)
         - [createSubmission](#createsubmission)
         - [deleteSubmission](#deletesubmission)
+    - [Bridged Resources](#bridged-resources)
+        - [fetchBridgedResource](#fetchbridgedresource)
+        - [countBridgedResource](#countbridgedresource)
 
 <!-- markdown-toc end -->
 
 # API Functions
+
+All API functions are available through the `CoreAPI` export:
+
+`import { CoreAPI } from 'react-kinetic-core';`
 
 ## Error Handling
 
@@ -87,7 +97,7 @@ Instead of having to access attributes by iterating through the array you can ac
 
 The API functions will automatically convert attributes back to the Array notation when you're using the update methods.
 
-For resources with multiple types of attributes, such as `Users` which have `attributs` and `profileAttributes` the API functions will automatically convert both attribute types.
+For resources with multiple types of attributes, such as `Users` which have `attributes` and `profileAttributes` the API functions will automatically convert both attribute types.
 
 **NOTE**
 
@@ -97,12 +107,12 @@ When you include child items, for example the forms for a kapp (`include=form,fo
 
 ### Promises
 
-The API functions, with the exception of helpers such as `SubmissionsAPI.SubmissionSearch`, all return promises.
+The API functions, with the exception of helpers such as `CoreAPI.SubmissionSearch`, all return promises.
 
 Here's an example of retrieving a list of teams:
 
 ```
-TeamsAPI.fetchTeams().then(
+CoreAPI.fetchTeams().then(
   ({ serverError, teams }) => {
     serverError ?
       dispatch(actions.setErrors(serverError)) :
@@ -113,7 +123,7 @@ In the event of using `redux-promise` you can simply have an action creator and 
 
 ```
 export const actions = {
-  fetchTeams: () => ({ type: types.FETCH_TEAMS, payload: TeamsAPI.fetchTeams() }),
+  fetchTeams: () => ({ type: types.FETCH_TEAMS, payload: CoreAPI.fetchTeams() }),
 };
 ```
 
@@ -123,7 +133,7 @@ In Sagas you would use the same deconstruction style in your saga:
 
 ```
 export function* fetchTeamsSaga() {
-  const { serverError, teams } = TeamsAPI.fetchTeams();
+  const { serverError, teams } = CoreAPI.fetchTeams();
   
   if (serverError) {
     yield put(actions.setError(serverError));
@@ -134,15 +144,36 @@ export function* fetchTeamsSaga() {
 
 ```
 
-## Users
+## Profile
 
-`import { UsersAPI } from 'react-kinetic-core';`
+### fetchProfile
+
+Fetch the profile of the currently authenticated user.
+
+`CoreAPI.fetchProfile(options)`
+
+`options`:
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ profile: { /* ... */ } }`
+
+### updateProfile
+
+Updates the currently authenticated user's profile.
+
+`CoreAPI.updateProfile(options)`
+
+`options`:
+* `profile` - (required) the user object to send to the server.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+## Users
 
 ### fetchUsers
 
 Fetch all users for the current space.
  
-`UsersAPI.fetchUsers(options)`
+`CoreAPI.fetchUsers(options)`
 
 `options`:
 * `include` - API include parameters (see Kinetic CE reference documentation).
@@ -153,7 +184,7 @@ Resolves: `{ users: [ { /* ... */ } ] }`
 
 Fetch a specific user by username for the current space.
 
-`UsersAPI.fetchUser(options)`
+`CoreAPI.fetchUser(options)`
 
 `options`:
 * `username` - (required) The username of the user to retrieve.
@@ -165,7 +196,7 @@ Resolves: `{ user: { /* ... */ } }`
 
 Creates a new user in the current space.
 
-`UsersAPI.createUser(options)`
+`CoreAPI.createUser(options)`
 
 `options`:
 * `user` - (required) the user object to create/insert.
@@ -177,7 +208,7 @@ Resolves: `{ user: { /* ... */ } }`
 
 Update a user using a username and a user object.
 
-`UsersAPI.updateUser(options)`
+`CoreAPI.updateUser(options)`
 
 `options`:
 * `username` - (required) the username of the user to be updated.
@@ -189,7 +220,7 @@ Update a user using a username and a user object.
 
 Deletes the user specified by the `username` option.
 
-`UsersAPI.deleteUser(options)`
+`CoreAPI.deleteUser(options)`
 
 `options`:
 * `username` - (required) the username of the user to be deleted.
@@ -198,13 +229,11 @@ Resolves: nothing.
 
 ## Teams
 
-`import { TeamsAPI } from 'react-kinetic-core';`
-
 ### fetchTeams
 
 Fetch all teams for the current space.
  
-`TeamsAPI.fetchTeams(options)`
+`CoreAPI.fetchTeams(options)`
 
 `options`:
 * `include` - API include parameters (see Kinetic CE reference documentation).
@@ -215,7 +244,7 @@ Resolves: `{ teams: [ { /* ... */ } ] }`
 
 Fetch a specific team by slug for the current space.
 
-`TeamsAPI.fetchTeam(options)`
+`CoreAPI.fetchTeam(options)`
 
 `options`:
 * `teamSlug` - (required) The slug of the team to retrieve.
@@ -227,7 +256,7 @@ Resolves: `{ team: { /* ... */ } }`
 
 Creates a new team in the current space.
 
-`TeamsAPI.createTeam(options)`
+`CoreAPI.createTeam(options)`
 
 `options`:
 * `team` - (required) the team object to create/insert.
@@ -239,7 +268,7 @@ Resolves: `{ team: { /* ... */ } }`
 
 Update a team using a teamSlug and a team object.
 
-`TeamsAPI.updateTeam(options)`
+`CoreAPI.updateTeam(options)`
 
 `options`:
 * `teamSlug` - (required) the slug of the team to be updated.
@@ -251,7 +280,7 @@ Update a team using a teamSlug and a team object.
 
 Deletes the team specified by the `teamSlug` option.
 
-`TeamsAPI.deleteTeam(options)`
+`CoreAPI.deleteTeam(options)`
 
 `options`:
 * `teamSlug` - (required) the slug of the team to be deleted.
@@ -260,26 +289,22 @@ Resolves: nothing.
 
 ## Space
 
-`import { SpaceAPI } from 'react-kinetic-core';`
-
 ### fetchSpace
 
 Fetches the current space.
 
-`SpaceAPI.fetchSpace(options)`
+`CoreAPI.fetchSpace(options)`
 
 `options`:
 * `include` - API include parameters (see Kinetic CE reference documentation).
 
 ## Kapp
 
-`import { KappsAPI } from 'react-kinetic-core';`
-
 ### fetchKapps
 
 Fetches all Kapps for the current space.
 
-`KappsAPI.fetchKapps(options)`
+`CoreAPI.fetchKapps(options)`
  
 `options`:
 * `include` - API include parameters (see Kinetic CE reference documentation).
@@ -290,7 +315,7 @@ Resolves: `{ kapps: [{ /* ... */ }] }`
 
 Fetches a Kapp from the current using the `kappSlug` option.
 
-`KappsAPI.fetchKapp(options)`
+`CoreAPI.fetchKapp(options)`
 
 `options`:
 * `kappSlug` - the slug of the Kapp to fetch. Defaults to the bundle kapp if not specified.
@@ -300,13 +325,11 @@ Resolves: `{ kapp: { /* ... */ } }`
 
 ## Forms
 
-`import { FormsAPI } from 'react-kinetic-core';`
-
 ### fetchForms
 
 Fetches all forms for the current space and Kapp. The Kapp can be overridden using the `kappSlug` option.
 
-`FormsAPI.fetchForms(options)`
+`CoreAPI.fetchForms(options)`
  
 `options`:
 * `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
@@ -319,7 +342,7 @@ Resolves: `{ forms: [{ /* ... */ }] }`
 Fetches the form specified by the `formSlug` option in the current space and Kapp.
 The Kapp can be overridden using the `kappSlug` option.
 
-`FormsAPI.fetchForms(options)`
+`CoreAPI.fetchForms(options)`
  
 `options`:
 * `formSlug` - (required) the slug of the form to fetch.
@@ -330,13 +353,11 @@ Resolves: `{ form: { /* ... */ } }`
 
 ## Categories
 
-`import { CategoriesAPI } from 'react-kinetic-core';`
-
 ### fetchCategories
 
 Fetches all categories for the current space and Kapp. The Kapp can be overridden using the `kappSlug` option.
 
-`CategoriesAPI.fetchCategories(options)`
+`CoreAPI.fetchCategories(options)`
  
 `options`:
 * `kappSlug` - the slug of the Kapp in which to fetch categories. Defaults to the bundle kapp if not specified.
@@ -349,7 +370,7 @@ Resolves: `{ categories: [{ /* ... */ }] }`
 Fetches the category specified by the `categorySlug` option in the current space and Kapp.
 The Kapp can be overridden using the `kappSlug` option.
 
-`CategoriesAPI.fetchCategory(options)`
+`CoreAPI.fetchCategory(options)`
  
 `options`:
 * `categorySlug` - (required) the slug of the category to fetch.
@@ -360,15 +381,13 @@ Resolves: `{ category: { /* ... */ } }`
 
 ## Submissions
 
-`import { SubmissionsAPI } from 'react-kinetic-core';`
-
 ### SubmissionSearch
 
 Example usage:
 
 ```
 // Create a new search object.
-const search = new SubmissionsAPI.SubmissionSearch()
+const search = new CoreAPI.SubmissionSearch()
   .eq('values[Owner]', 'IT')
   .eq('values[Priority]', 'High')
   .or()
@@ -379,7 +398,7 @@ const search = new SubmissionsAPI.SubmissionSearch()
   .includes(['details', 'values'])
   .build();
 
-SubmissionsAPI.searchSubmissions({ search }).then(/* ... */);
+CoreAPI.searchSubmissions({ search }).then(/* ... */);
 ```
 
 The above example is the equivalent of _search for all Draft submissions owned by IT, with a Priority of High, in a status of 'Open' or 'In Progress', and include the submission details and values._
@@ -409,7 +428,7 @@ All context functions group the equality functions between it and the next `end(
 
   Example: `searcher.and().eq('values[Owner]', 'IT').eq('values[Priority]', 'High').end()`
   
-  Results in: _Owner=IT AND Priority=High
+  Results in: _Owner=IT AND Priority=High_
   
   **Note**: The example above is redundant as the implicit context is an `and` context. This is useful for grouping `and` and `or`.
   
@@ -449,16 +468,17 @@ The date functions cannot be nested inside of contexts such as `or()` and `and()
 
 ### searchSubmissions
 
-Executes the results of a built `SubmissionsAPI.SubmissionSearch` generator. See the example at the top of the [SubmissionSearch](#submissionsearch) documentation.
+Executes the results of a built `CoreAPI.SubmissionSearch` generator. See the example at the top of the [SubmissionSearch](#submissionsearch) documentation.
 
-`SubmissionsAPI.searchSubmissions(options)`
+`CoreAPI.searchSubmissions(options)`
 
 `options`:
 * `form` - the slug of the form to limit the search to.
 * `kapp` - the slug of the Kapp to limit the search to. If not provided this defaults to the bundle's current Kapp.
 * `search` - the results of `SubmissionAPI.SubmissionSearch#build`. The search criteria and metadata.
 
-Resolves: ```
+Resolves:
+```
 {
   submissions: [{ /* ... */ }],
   messages: [], // Messages denoting any warnings or errors which occurred during searching.
@@ -470,7 +490,7 @@ Resolves: ```
 
 Fetches a specific submission by ID.
 
-`SubmissionsAPI.fetchSubmission(options)`
+`CoreAPI.fetchSubmission(options)`
 
 `options`:
 * `id` - (required) the ID of the submission to fetch.
@@ -480,7 +500,7 @@ Fetches a specific submission by ID.
 
 Create a submission based on a specific form.
 
-`SubmissionsAPI.createSubmission(options)`
+`CoreAPI.createSubmission(options)`
 
 `options`:
 * `kappSlug` - the slug of the Kapp the form belongs to. If not specified this will default to the current bundle's Kapp.
@@ -495,7 +515,7 @@ Create a submission based on a specific form.
 
 Delete a submission given a specific ID.
 
-`SubmissionsAPI.deleteSubmission(options)`
+`CoreAPI.deleteSubmission(options)`
 
 `options`:
 * `id` - (required) the ID of the submission to fetch.
@@ -503,13 +523,11 @@ Delete a submission given a specific ID.
 
 ## Bridged Resources
 
-`import { BridgedResourcesAPI } from 'react-kinetic-core';`
-
-### fetch
+### fetchBridgedResource
 
 Fetches data from a bridged resource.
 
-`BridgedResourcesAPI.fetch(options)`
+`CoreAPI.fetchBridgedResource(options)`
 
 `options`:
 * `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
@@ -533,11 +551,11 @@ When multiple records are returned it resolves:
 }
 ```
 
-### count
+### countBridgedResource
 
 Fetches a count of the number of records that match a bridge query.
 
-`BridgedResourcesAPI.count(options)`
+`CoreAPI.countBridgedResource(options)`
 
 `options`:
 * `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.

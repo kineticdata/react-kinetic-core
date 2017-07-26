@@ -14,21 +14,25 @@ import * as TeamsAPI from './apis/teams';
 import * as ProfileAPI from './apis/profile';
 import * as UsersAPI from './apis/users';
 import * as BridgedResourcesAPI from './apis/bridgedresources';
+import { deserializeAttributes, serializeAttributes } from './apis/http';
+
 
 // Export helpers.
 export { K, bundle, loadable };
 
 // Export APIs.
-export {
-  CategoriesAPI,
-  FormsAPI,
-  KappsAPI,
-  SpaceAPI,
-  SubmissionsAPI,
-  TeamsAPI,
-  ProfileAPI,
-  UsersAPI,
-  BridgedResourcesAPI,
+export const CoreAPI = {
+  ...CategoriesAPI,
+  ...FormsAPI,
+  ...KappsAPI,
+  ...SpaceAPI,
+  ...SubmissionsAPI,
+  ...TeamsAPI,
+  ...ProfileAPI,
+  ...UsersAPI,
+  ...BridgedResourcesAPI,
+  deserializeAttributes,
+  serializeAttributes,
 };
 
 // Export Components.
