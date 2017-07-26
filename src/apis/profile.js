@@ -23,10 +23,14 @@ export const fetchProfile = (options = {}) => {
   return promise;
 };
 
-export const putProfile = (options = {}) => {
+export const updateProfile = (options = {}) => {
   const {
     profile,
   } = options;
+
+  if (!profile) {
+    throw new Error('updateProfile failed! The option "profile" is required.');
+  }
 
   serializeAttributes(profile, 'attributes');
   serializeAttributes(profile, 'profileAttributes');
