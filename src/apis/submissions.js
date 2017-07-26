@@ -245,8 +245,8 @@ export const searchSubmissions = (options) => {
     meta.include = search.include.join();
   }
 
+  delete meta.query;
   if (typeof search.query === 'string' && search.query.length > 0) {
-    delete meta.query;
     meta.q = search.query;
   }
 
@@ -256,7 +256,11 @@ export const searchSubmissions = (options) => {
   });
 
   // Remove the response envelop and leave us with the submissions.
-  promise = promise.then(response => ({ submissions: response.data.submissions }));
+  promise = promise.then(response => ({
+    submissions: response.data.submissions,
+    messages: response.data.messages,
+    nextPageToken: response.data.nextPageToken,
+  }));
 
   // Clean up any errors we receive. Make srue this is the last thing so that it
   // cleans up all errors.

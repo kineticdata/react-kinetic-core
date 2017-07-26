@@ -458,7 +458,13 @@ Executes the results of a built `SubmissionsAPI.SubmissionSearch` generator. See
 * `kapp` - the slug of the Kapp to limit the search to. If not provided this defaults to the bundle's current Kapp.
 * `search` - the results of `SubmissionAPI.SubmissionSearch#build`. The search criteria and metadata.
 
-Resolves: `{ submissions: [{ /* ... */ }] }`
+Resolves: ```
+{
+  submissions: [{ /* ... */ }],
+  messages: [], // Messages denoting any warnings or errors which occurred during searching.
+  nextPageToken: '',
+}
+```
 
 ### fetchSubmission
 

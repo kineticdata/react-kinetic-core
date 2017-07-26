@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-import { SubmissionSearch, fetchSubmission, deleteSubmission, createSubmission } from './submissions';
+import {
+  SubmissionSearch,
+  fetchSubmission,
+  deleteSubmission,
+  createSubmission,
+  searchSubmissions,
+} from './submissions';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
 
 // Mock out the bundle object from a dependency.
@@ -176,19 +182,53 @@ describe('SubmissionSearch', () => {
 describe('#searchSubmissions', () => {
   describe('when successful', () => {
     let response;
-    let testSubmission;
+    let search;
 
     beforeEach(() => {
       response = {
         status: 200,
         data: {
           submissions: [],
+          messages: [],
+          nextPageToken: 'page-token',
         },
       };
 
-      // testSubmission = 
-    })
-  })
+      search = new SubmissionSearch().build();
+
+      axios.get = resolvePromiseWith(response);
+    });
+
+    test('does not return errors', () => {
+      expect.assertions(1);
+      return searchSubmissions({ search }).then(({ serverError }) => {
+        expect(serverError).toBeUndefined();
+      });
+    });
+
+    test('does return messages', () => {
+      expect.assertions(2);
+      return searchSubmissions({ search }).then(({ messages }) => {
+        expect(messages).toBeDefined();
+        expect(messages).toBeInstanceOf(Array);
+      });
+    });
+
+    test('does return nextPageToken', () => {
+      expect.assertions(1);
+      return searchSubmissions({ search }).then(({ nextPageToken }) => {
+        expect(nextPageToken).toBeDefined();
+      });
+    });
+
+    test('does return submissions', () => {
+      expect.assertions(2);
+      return searchSubmissions({ search }).then(({ submissions }) => {
+        expect(submissions).toBeDefined();
+        expect(submissions).toBeInstanceOf(Array);
+      });
+    });
+  });
 });
 
 describe('#fetchSubmission', () => {
