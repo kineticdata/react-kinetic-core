@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import isPlainObject from 'lodash.isplainobject';
 import isString from 'lodash.isstring';
-import shallowEqual from 'shallowequal';
+import deepEqual from 'deepequal';
 import { bundle, K } from '../core-helpers';
 
 const formPath = (formSlug, kappSlug) =>
@@ -42,7 +42,7 @@ export class CoreForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!shallowEqual(this.props, nextProps)) {
+    if (!deepEqual(this.props, nextProps)) {
       this.closeForm();
       this.setState({ pending: true, error: null });
       this.loadForm(nextProps);
