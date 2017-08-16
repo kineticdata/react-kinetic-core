@@ -20,6 +20,6 @@ describe('<Home />', () => {
     const div = component.find('div').first();
 
     expect(div).toBeDefined();
-    expect(div.text()).toEqual(expect.stringContaining('Hello'));
+    expect(div.text()).toEqual(expect.stringContaining('React'));
   });
 });

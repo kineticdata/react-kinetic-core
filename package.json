@@ -12,7 +12,8 @@
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production webpack",
     "test": "jest",
-    "test:watch": "jest --watch --notify"
+    "test:watch": "jest --watch --notify",
+    "test:ci": "jest --ci --testResultsProcessor=./node_modules/jest-junit-reporter"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -42,6 +43,7 @@
     "history": "^4.6.1",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^20.0.0",
+    "jest-junit-reporter": "^1.1.0",
     "node-sass": "^4.5.2",
     "react-bootstrap": "^0.31.0",
     "react-codemirror": "^0.3.0",
