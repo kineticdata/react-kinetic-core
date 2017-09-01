@@ -62,6 +62,22 @@ describe('SubmissionSearch', () => {
     ).toEqual('attr IN ("val1", "val2")');
   });
 
+  test('in assumes null for empty rvalue', () => {
+    expect(
+      search
+        .in('attr', ['val1', ''])
+        .build().query,
+    ).toEqual('attr IN ("val1", null)');
+  });
+
+  test('in handles null for rvalue', () => {
+    expect(
+      search
+        .in('attr', ['val1', null])
+        .build().query,
+    ).toEqual('attr IN ("val1", null)');
+  });
+
   describe('groupings', () => {
     test('or separates equalities in its context with OR', () => {
       expect(

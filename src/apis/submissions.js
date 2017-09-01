@@ -201,7 +201,12 @@ export class SubmissionSearch {
               if (rvi > 0) {
                 query += ', ';
               }
-              query += `"${op.rvalue[rvi]}"`;
+
+              if (op.rvalue[rvi] === '' || op.rvalue[rvi] === null) {
+                query += 'null';
+              } else {
+                query += `"${op.rvalue[rvi]}"`;
+              }
             });
             query += ')';
             break;
