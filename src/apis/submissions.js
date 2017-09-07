@@ -189,7 +189,7 @@ export class SubmissionSearch {
         }
         switch (op.op) {
           case 'eq':
-            if (typeof op.rvalue === 'string' && op.rvalue === '') {
+            if (op.rvalue === null || op.rvalue === '') {
               query += `${op.lvalue} = null`;
             } else {
               query += `${op.lvalue} = "${op.rvalue}"`;
