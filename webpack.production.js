@@ -13,7 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/static/',
     library: 'react-kinetic-core',
-    libraryTarget: 'amd'
+    libraryTarget: 'umd'
   },
   plugins: []
 };
