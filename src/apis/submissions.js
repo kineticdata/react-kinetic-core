@@ -314,6 +314,23 @@ export const createSubmission = (options) => {
     .catch(handleErrors);
 };
 
+export const updateSubmission = (options) => {
+  const {
+    id,
+    values,
+  } = options;
+
+  const path = `${bundle.apiLocation()}/submissions/${id}`;
+  const params = { ...paramBuilder(options) };
+
+  return axios.put(path, { values }, { params })
+  // Remove the response envelop and leave us with the submission one.
+    .then(response => ({ submission: response.data.submission }))
+  // Clean up any errors we receive. Make sure this the last thing so that it
+  // cleans up any errors.
+    .catch(handleErrors);
+};
+
 export const deleteSubmission = (options) => {
   const { id } = options;
 
