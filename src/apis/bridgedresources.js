@@ -26,7 +26,7 @@ const paramSeparator = url => url.indexOf('?') > -1 ? '&' : '?';
  * @param {object=} options.values - hash of value names to values
  * @returns {string}
  */
-export const bridgedResourceUrl = (options) => {
+export const bridgedResourceUrl = (options, counting = false) => {
   if (!options.formSlug) { throw new Error('Property "formSlug" is required.'); }
   if (!options.bridgedResourceName) { throw new Error('Property "bridgedResourceName" is required.'); }
   const kappSlug = options.kappSlug || bundle.kappSlug();
@@ -34,6 +34,9 @@ export const bridgedResourceUrl = (options) => {
   // build the url
   let url = `${bundle.spaceLocation()}/${kappSlug}/${options.formSlug}/bridgedResources/${bridgedResourceName}`;
   // append any attributes if they were specified
+  if (counting) {
+    url += '/count';
+  }
   if (options.attributes) {
     if (!Array.isArray(options.attributes)) {
       throw new Error('Property "attributes" expected as array of strings.');
@@ -45,7 +48,7 @@ export const bridgedResourceUrl = (options) => {
   // append any parameter values if they were specified
   if (options.values && Object.keys(options.values).length > 0) {
     const parameters = Object.keys(options.values).map(key => (
-      `values[${encodeURIComponent(key)}]=${encodeURIComponent(options.values[key])}`
+      `${encodeURIComponent('values[' + key + ']')}=${encodeURIComponent(options.values[key])}`
     ));
     // Add the appropriate parameter separator and value parameters
     url += `${paramSeparator(url)}${parameters.join('&')}`;
@@ -151,8 +154,10 @@ export const countBridgedResource = (options = {}) => {
   if (!formSlug) { throw new Error('Property "formSlug" is required.'); }
   if (!bridgedResourceName) { throw new Error('Property "bridgedResourceName" is required.'); }
 
+  const counting = true;
+
   return axios
-    .get(`${bridgedResourceUrl(options)}/count`)
+    .get(`${bridgedResourceUrl(options, counting)}`)
     .then(({ data }) => ({ count: data.count }))
     .catch(handleErrors);
 };

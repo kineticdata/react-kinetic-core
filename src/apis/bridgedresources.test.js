@@ -78,14 +78,14 @@ describe('bridged resource api', () => {
     describe('values option', () => {
       test('with one value', () => {
         options.values = { a: 'b' };
-        expect(bridgedResourceUrl(options)).toMatch(/values\[a\]=b/);
+        expect(bridgedResourceUrl(options)).toMatch(/values%5Ba%5D=b/);
       });
 
       test('with multiple values', () => {
         options.values = { a: 'b', c: 'd' };
         const url = bridgedResourceUrl(options);
-        expect(url).toMatch(/values\[a\]=b/);
-        expect(url).toMatch(/values\[c\]=d/);
+        expect(url).toMatch(/values%5Ba%5D=b/);
+        expect(url).toMatch(/values%5Bc%5D=d/);
       });
     });
 
