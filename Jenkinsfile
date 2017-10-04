@@ -3,7 +3,6 @@ pipeline {
   stages {
     stage('Prepare Environment') {
       steps {
-        checkout scm
         sh 'npm install'
       }
     }
@@ -14,7 +13,8 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh 'npm run test'
+        sh 'npm run test:ci'
+        junit(testResults: 'test-report.xml', healthScaleFactor: 1)
       }
     }
   }
