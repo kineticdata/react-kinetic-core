@@ -8,6 +8,7 @@ pipeline {
   stages {
     stage('Prepare Environment') {
       steps {
+        checkout scm
         sh 'npm install'
       }
     }
