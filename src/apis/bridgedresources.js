@@ -48,7 +48,7 @@ export const bridgedResourceUrl = (options, counting = false) => {
   // append any parameter values if they were specified
   if (options.values && Object.keys(options.values).length > 0) {
     const parameters = Object.keys(options.values).map(key => (
-      `${encodeURIComponent('values[' + key + ']')}=${encodeURIComponent(options.values[key])}`
+      `${encodeURIComponent(`values[${key}]`)}=${encodeURIComponent(options.values[key])}`
     ));
     // Add the appropriate parameter separator and value parameters
     url += `${paramSeparator(url)}${parameters.join('&')}`;
