@@ -1,6 +1,6 @@
 {
   "name": "react-kinetic-core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Utilities and components for development with React and Kinetic Core",
   "author": "Kinetic Data, Inc",
   "license": "MIT",
@@ -68,10 +68,12 @@
     "deepequal": "^0.0.1",
     "lodash.isplainobject": "^4.0.6",
     "lodash.isstring": "^4.0.1",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0"
+  },
+  "peerDepdendencies": {
+    "react": ">= 15.5.4",
+    "react-dom": ">= 15.5.4"
   },
   "jest": {
     "moduleNameMapper": {
