@@ -89,6 +89,20 @@ describe('bridged resource api', () => {
       });
     });
 
+    describe('metadata option', () => {
+      test('with one value', () => {
+        options.metadata = { a: 'b' };
+        expect(bridgedResourceUrl(options)).toMatch(/metadata%5Ba%5D=b/);
+      });
+
+      test('with multiple values', () => {
+        options.metadata = { a: 'b', c: 'd' };
+        const url = bridgedResourceUrl(options);
+        expect(url).toMatch(/metadata%5Ba%5D=b/);
+        expect(url).toMatch(/metadata%5Bc%5D=d/);
+      });
+    });
+
     describe('attributes option', () => {
       test('with one attribute', () => {
         options.attributes = ['a'];

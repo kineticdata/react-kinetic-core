@@ -24,6 +24,7 @@ const paramSeparator = url => url.indexOf('?') > -1 ? '&' : '?';
  * @param {number=} options.limit - maximum number of records to retrieve
  * @param {number=} options.offset - offset to retrieve as first record
  * @param {object=} options.values - hash of value names to values
+ * @param {object=} options.metadata - hash of metadata names to values
  * @returns {string}
  */
 export const bridgedResourceUrl = (options, counting = false) => {
@@ -49,6 +50,14 @@ export const bridgedResourceUrl = (options, counting = false) => {
   if (options.values && Object.keys(options.values).length > 0) {
     const parameters = Object.keys(options.values).map(key => (
       `${encodeURIComponent(`values[${key}]`)}=${encodeURIComponent(options.values[key])}`
+    ));
+    // Add the appropriate parameter separator and value parameters
+    url += `${paramSeparator(url)}${parameters.join('&')}`;
+  }
+  // append any metadata if it was specified
+  if (options.metadata && Object.keys(options.metadata).length > 0) {
+    const parameters = Object.keys(options.metadata).map(key => (
+      `${encodeURIComponent(`metadata[${key}]`)}=${encodeURIComponent(options.metadata[key])}`
     ));
     // Add the appropriate parameter separator and value parameters
     url += `${paramSeparator(url)}${parameters.join('&')}`;
