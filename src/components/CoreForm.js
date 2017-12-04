@@ -101,6 +101,8 @@ export class CoreForm extends Component {
             created: props.onCreated || props.created,
             updated: props.onUpdated || props.updated,
             completed: props.onCompleted || props.completed,
+            originId: props.originId,
+            parentId: props.parentId,
           });
         });
       },
