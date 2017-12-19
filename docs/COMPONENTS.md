@@ -167,6 +167,10 @@ const MyFormModal = ({ toggle, visible, kappSlug, formSlug, handleLoaded }) => (
 
 ## loadable
 
+```
+Note: The "loadable" HOC has been deprecated and will be removed in 1.0
+```
+
 A higher-order-component for routed components that will execute a function when mount and when the match URL changes (but does not cause the component to remount) as well as executing another action when the component unmounts.
 
 ```

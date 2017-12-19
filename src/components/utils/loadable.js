@@ -47,6 +47,7 @@ export const loadable = ({ onMount, onUnmount }) => WrappedComponent =>
     }
 
     componentWillMount() {
+      console.warn('The "loadable" HOC has been deprecated and will be removed in 1.0.');
       this.mountComponent(this.props);
     }
 
