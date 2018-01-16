@@ -67,5 +67,9 @@ export const paramBuilder = (options) => {
     params.include = options.include;
   }
 
+  if (options.limit) {
+    params.limit = options.limit;
+  }
+
   return params;
 };
