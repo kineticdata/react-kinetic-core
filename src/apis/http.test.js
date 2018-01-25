@@ -1,14 +1,20 @@
-import { deserializeAttributes, serializeAttributes } from './http';
+import { deserializeAttributes, serializeAttributes, corePath } from './http';
+
+jest.mock('../core-helpers', () => ({
+  bundle: {
+    spaceLocation: () => '/kinetic/acme',
+    kappSlug: () => 'catalog',
+  },
+}));
 
 describe('http module', () => {
   describe('#handleErrors', () => {
     // What scenarios do we handle?
   });
 
-
   describe('#serializeAttributes', () => {
     describe('when translatable contains an attribute object', () => {
-      const xlatable = { attributes: { First: [1], Second: [2] } }
+      const xlatable = { attributes: { First: [1], Second: [2] } };
       const result = serializeAttributes(xlatable, 'attributes');
 
       test('returns an array', () => {
@@ -62,9 +68,7 @@ describe('http module', () => {
     // when the attribute key is not present
     test('when there is no envelop', () => {
       const src = {
-        attributes: [
-          { name: 'A', values: ['B'] },
-        ],
+        attributes: [{ name: 'A', values: ['B'] }],
       };
       const dest = deserializeAttributes('attributes')(src);
 
@@ -75,9 +79,7 @@ describe('http module', () => {
     test('when there is an envelop', () => {
       const src = {
         thing: {
-          attributes: [
-            { name: 'A', values: ['B'] },
-          ],
+          attributes: [{ name: 'A', values: ['B'] }],
         },
       };
       const dest = deserializeAttributes('attributes', 'thing')(src);
@@ -92,9 +94,7 @@ describe('http module', () => {
           {
             name: 'Thing',
             slug: 'thing',
-            attributes: [
-              { name: 'A', values: ['B'] },
-            ],
+            attributes: [{ name: 'A', values: ['B'] }],
           },
         ],
       };
@@ -110,6 +110,42 @@ describe('http module', () => {
 
       const dest = deserializeAttributes('attributes', 'thing')(src);
       expect(src).toEqual(src);
+    });
+  });
+
+  describe('corePath', () => {
+    describe('kapp forms and submissions', () => {
+      test('builds url with default kapp', () => {
+        expect(corePath({ form: 'ipad-request' })).toBe(
+          '/kinetic/acme/catalog/ipad-request',
+        );
+      });
+
+      test('builds url with specified kapp', () => {
+        expect(corePath({ form: 'ipad-request', kapp: 'services' })).toBe(
+          '/kinetic/acme/services/ipad-request',
+        );
+      });
+
+      test('builds url with the submission id', () => {
+        expect(corePath({ submission: 'abc123' })).toBe(
+          '/kinetic/acme/submissions/abc123',
+        );
+      });
+    });
+
+    describe('datastore forms and submissions', () => {
+      test('builds url to form', () => {
+        expect(corePath({ form: 'cars', datastore: true })).toBe(
+          '/kinetic/acme/app/datastore/forms/cars',
+        );
+      });
+
+      test('builds url with the submission id', () => {
+        expect(corePath({ submission: 'abc123', datastore: true })).toBe(
+          '/kinetic/acme/app/datastore/submissions/abc123',
+        );
+      });
     });
   });
 });

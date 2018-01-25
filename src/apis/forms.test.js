@@ -9,19 +9,18 @@ import { fetchDocMarkdown } from '../test_utils/docs';
 jest.mock('../core-helpers', () => ({
   bundle: {
     apiLocation: () => 'form/app/api/v1',
+    spaceLocation: () => '/kinetic/acme',
     kappSlug: () => 'mock-kapp',
   },
 }));
 
 describe('forms api', () => {
   test('documentation', () => {
-    const methods = [
-      'fetchForms', 'fetchForm',
-    ];
+    const methods = ['fetchForms', 'fetchForm'];
 
     expect.assertions(methods.length);
-    return fetchDocMarkdown('API.md').then((result) => {
-      methods.forEach((method) => {
+    return fetchDocMarkdown('API.md').then(result => {
+      methods.forEach(method => {
         const matches = result.filter(line => line.endsWith(method));
         expect(matches).toHaveLength(1);
       });
@@ -39,7 +38,10 @@ describe('forms api', () => {
             forms: [],
           },
         };
-        testForm = new FormBuilder().stub().withAttribute('Attribute', 'value').build();
+        testForm = new FormBuilder()
+          .stub()
+          .withAttribute('Attribute', 'value')
+          .build();
         response.data.forms.push(testForm);
         axios.get = resolvePromiseWith(response);
       });
@@ -85,7 +87,10 @@ describe('forms api', () => {
             form: {},
           },
         };
-        testForm = new FormBuilder().stub().withAttribute('Attribute', 'value').build();
+        testForm = new FormBuilder()
+          .stub()
+          .withAttribute('Attribute', 'value')
+          .build();
         formSlug = testForm.slug;
         response.data.form = testForm;
         axios.get = resolvePromiseWith(response);
@@ -128,14 +133,18 @@ describe('forms api', () => {
       });
 
       test('throws an exception when no form slug is provided', () => {
-        expect(() => { fetchForm({}); }).toThrow();
+        expect(() => {
+          fetchForm({});
+        }).toThrow();
       });
 
       test('does return errors', () => {
         expect.assertions(1);
-        return fetchForm({ formSlug: 'fake', xlatAttributes: true }).then(({ serverError }) => {
-          expect(serverError).toBeDefined();
-        });
+        return fetchForm({ formSlug: 'fake', xlatAttributes: true }).then(
+          ({ serverError }) => {
+            expect(serverError).toBeDefined();
+          },
+        );
       });
     });
   });

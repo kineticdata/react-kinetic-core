@@ -1,4 +1,6 @@
-export const deserializeAttributes = (attributeKey, envelop) => (result) => {
+import { bundle } from '../core-helpers';
+
+export const deserializeAttributes = (attributeKey, envelop) => result => {
   const xlatable = envelop ? result[envelop] : result;
 
   if (xlatable instanceof Array) {
@@ -27,7 +29,10 @@ export const serializeAttributes = (xlatable, attributeKey) => {
   // If the attribute key is missing or is already in a list format then
   // skip serialization.
   // eslint-disable-next-line
-  if (!xlatable.hasOwnProperty(attributeKey) || xlatable[attributeKey] instanceof Array) {
+  if (
+    !xlatable.hasOwnProperty(attributeKey) ||
+    xlatable[attributeKey] instanceof Array
+  ) {
     return xlatable;
   }
 
@@ -35,14 +40,15 @@ export const serializeAttributes = (xlatable, attributeKey) => {
 
   // Serialize the Object form into a List form.
   // eslint-disable-next-line no-param-reassign
-  xlatable[attributeKey] = Object.keys(attributes)
-    .map(key => ({ name: key, values: attributes[key] }), []);
+  xlatable[attributeKey] = Object.keys(attributes).map(
+    key => ({ name: key, values: attributes[key] }),
+    [],
+  );
 
   return xlatable;
 };
 
-
-export const handleErrors = (error) => {
+export const handleErrors = error => {
   if (error instanceof Error) {
     // When the error is an Error object an exception was thrown in the process.
     // so we'll just 'convert' it to a 400 error to be handled downstream.
@@ -60,7 +66,7 @@ export const handleErrors = (error) => {
   return { serverError: { status, statusText } };
 };
 
-export const paramBuilder = (options) => {
+export const paramBuilder = options => {
   const params = {};
 
   if (options.include) {
@@ -69,3 +75,26 @@ export const paramBuilder = (options) => {
 
   return params;
 };
+
+export const formPath = ({ form, kapp, datastore }) =>
+  datastore
+    ? form
+      ? `${bundle.spaceLocation()}/app/datastore/forms/${form}`
+      : `${bundle.spaceLocation()}/app/datastore/forms`
+    : form
+      ? `${bundle.spaceLocation()}/${kapp || bundle.kappSlug()}/${form}`
+      : `${bundle.spaceLocation()}/${kapp || bundle.kappSlug()}`;
+
+export const submissionPath = ({ submission, datastore }) =>
+  datastore
+    ? submission
+      ? `${bundle.spaceLocation()}/app/datastore/submissions/${submission}`
+      : `${bundle.spaceLocation()}/app/datastore/submissions`
+    : submission
+      ? `${bundle.spaceLocation()}/submissions/${submission}`
+      : `${bundle.spaceLocation()}/submissions`;
+
+export const corePath = ({ submission, kapp, form, datastore = false }) =>
+  submission
+    ? submissionPath({ submission, datastore })
+    : formPath({ form, kapp, datastore });
