@@ -29,62 +29,151 @@ describe('SubmissionSearch', () => {
     expect(search.build().query).toEqual('');
   });
 
-  test('eq adds an equality comparison', () => {
-    expect(
-      search
-        .eq('attr', 'val')
-        .build().query,
-    ).toEqual('attr = "val"');
+  describe('#eq', () => {
+    test('eq adds an equality comparison', () => {
+      expect(search.eq('attr', 'val').build().query).toEqual('attr = "val"');
+    });
+
+    test('eq assumes null for empty rvalue', () => {
+      expect(search.eq('attr', '').build().query).toEqual('attr = null');
+    });
+
+    test('multiple eq implies an and', () => {
+      expect(
+        search
+          .eq('val1', '1')
+          .eq('val2', '2')
+          .build().query,
+      ).toEqual('val1 = "1" AND val2 = "2"');
+    });
   });
 
-  test('eq assumes null for empty rvalue', () => {
-    expect(
-      search
-        .eq('attr', '')
-        .build().query,
-    ).toEqual('attr = null');
+  describe('#gt', () => {
+    beforeEach(() => {
+      search.setDatastore(true);
+    });
+
+    test('cannot be used with kapps', () => {
+      search.setDatastore(false);
+
+      expect(() => {
+        search.gt('foo', 'bar');
+      }).toThrow();
+    });
+
+    test('adds a greater-than comparison', () => {
+      expect(search.gt('attr', 'val').build().query).toEqual('attr > "val"');
+    });
   });
 
-  test('multiple eq implies an and', () => {
-    expect(
-      search
-        .eq('val1', '1')
-        .eq('val2', '2')
-        .build().query,
-    ).toEqual('val1 = "1" AND val2 = "2"');
+  describe('#lt', () => {
+    beforeEach(() => {
+      search.setDatastore(true);
+    });
+
+    test('cannot be used with kapps', () => {
+      search.setDatastore(false);
+
+      expect(() => {
+        search.lt('foo', 'bar');
+      }).toThrow();
+    });
+
+    test('adds a less-than comparison', () => {
+      expect(search.lt('attr', 'val').build().query).toEqual('attr < "val"');
+    });
   });
 
-  test('in generates an in-list', () => {
-    expect(
-      search
-        .in('attr', ['val1', 'val2'])
-        .build().query,
-    ).toEqual('attr IN ("val1", "val2")');
+  describe('#gteq', () => {
+    beforeEach(() => {
+      search.setDatastore(true);
+    });
+
+    test('cannot be used with kapps', () => {
+      search.setDatastore(false);
+
+      expect(() => {
+        search.gteq('foo', 'bar');
+      }).toThrow();
+    });
+
+    test('adds a greater-than-or-equal comparison', () => {
+      expect(search.gteq('attr', 'val').build().query).toEqual('attr >= "val"');
+    });
   });
 
-  test('in assumes null for empty rvalue', () => {
-    expect(
-      search
-        .in('attr', ['val1', ''])
-        .build().query,
-    ).toEqual('attr IN ("val1", null)');
+  describe('#lteq', () => {
+    beforeEach(() => {
+      search.setDatastore(true);
+    });
+
+    test('cannot be used with kapps', () => {
+      search.setDatastore(false);
+
+      expect(() => {
+        search.lteq('foo', 'bar');
+      }).toThrow();
+    });
+
+    test('adds a less-than-or-equal comparison', () => {
+      expect(search.lteq('attr', 'val').build().query).toEqual('attr =< "val"');
+    });
   });
 
-  test('in handles null for rvalue', () => {
-    expect(
-      search
-        .in('attr', ['val1', null])
-        .build().query,
-    ).toEqual('attr IN ("val1", null)');
+  describe('#between', () => {
+    beforeEach(() => {
+      search.setDatastore(true);
+    });
+
+    test('cannot be used with kapps', () => {
+      search.setDatastore(false);
+
+      expect(() => {
+        search.between('foo', 'bar');
+      }).toThrow();
+    });
+
+    test('adds a between comparison', () => {
+      expect(search.between('attr', 'val1', 'val2').build().query).toEqual(
+        'attr BETWEEN ("val1", "val2")',
+      );
+    });
+  });
+
+  describe('#in', () => {
+    test('in generates an in-list', () => {
+      expect(search.in('attr', ['val1', 'val2']).build().query).toEqual(
+        'attr IN ("val1", "val2")',
+      );
+    });
+
+    test('in assumes null for empty rvalue', () => {
+      expect(search.in('attr', ['val1', '']).build().query).toEqual(
+        'attr IN ("val1", null)',
+      );
+    });
+
+    test('in handles null for rvalue', () => {
+      expect(search.in('attr', ['val1', null]).build().query).toEqual(
+        'attr IN ("val1", null)',
+      );
+    });
   });
 
   describe('groupings', () => {
+    test('#or cannot be used with datastore', () => {
+      search.setDatastore(true);
+      expect(() => {
+        search.or();
+      }).toThrow();
+    });
+
     test('or separates equalities in its context with OR', () => {
       expect(
         search
           .or()
-            .eq('a', '1')
-            .eq('b', '2')
+          .eq('a', '1')
+          .eq('b', '2')
           .end()
           .build().query,
       ).toEqual('( a = "1" OR b = "2")');
@@ -95,8 +184,8 @@ describe('SubmissionSearch', () => {
         search
           .eq('out', 'outer')
           .or()
-            .eq('a', '1')
-            .eq('b', '2')
+          .eq('a', '1')
+          .eq('b', '2')
           .end()
           .build().query,
       ).toEqual('out = "outer" AND ( a = "1" OR b = "2")');
@@ -107,20 +196,32 @@ describe('SubmissionSearch', () => {
         search
           .eq('always', 'needed')
           .or()
-            .eq('a', 'toBeA')
-            .and()
-              .eq('b', 'toBeB')
-              .eq('c', 'toBeC')
-            .end()
+          .eq('a', 'toBeA')
+          .and()
+          .eq('b', 'toBeB')
+          .eq('c', 'toBeC')
+          .end()
           .end()
           .build().query,
-      ).toEqual('always = "needed" AND ( a = "toBeA" OR ( b = "toBeB" AND c = "toBeC"))');
+      ).toEqual(
+        'always = "needed" AND ( a = "toBeA" OR ( b = "toBeB" AND c = "toBeC"))',
+      );
     });
   });
 
   describe('search metadata', () => {
-    test('sets the type', () => {
-      expect(search.type('foo').build().type).toBe('foo');
+    describe('#type', () => {
+      test('sets the type', () => {
+        expect(search.type('foo').build().type).toBe('foo');
+      });
+
+      test('cannot be used with datastore', () => {
+        search.setDatastore(true);
+
+        expect(() => {
+          search.type('foo');
+        }).toThrow();
+      });
     });
 
     describe('#coreState', () => {
@@ -133,9 +234,23 @@ describe('SubmissionSearch', () => {
           search.coreState('InvalidCoreState');
         }).toThrow();
       });
+
+      test('datastore cannot be closed', () => {
+        search.setDatastore(true);
+        expect(() => {
+          search.coreState('Closed');
+        }).toThrow();
+      });
     });
 
     describe('#startDate', () => {
+      test('cannot be used with datastore', () => {
+        search.setDatastore(true);
+        expect(() => {
+          search.startDate(new Date());
+        }).toThrow();
+      });
+
       test('throws an error if it is not a valid date', () => {
         expect(() => {
           search.startDate(1);
@@ -143,12 +258,7 @@ describe('SubmissionSearch', () => {
       });
 
       test('sets the date as an ISO string', () => {
-        expect(
-          search
-            .startDate(new Date())
-            .build()
-            .start,
-        ).toEqual(
+        expect(search.startDate(new Date()).build().start).toEqual(
           expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/),
         );
       });
@@ -161,6 +271,13 @@ describe('SubmissionSearch', () => {
     });
 
     describe('#endDate', () => {
+      test('cannot be used with datastore', () => {
+        search.setDatastore(true);
+        expect(() => {
+          search.endDate(new Date());
+        }).toThrow();
+      });
+
       test('throws an error if it is not a valid date', () => {
         expect(() => {
           search.endDate(1);
@@ -168,12 +285,7 @@ describe('SubmissionSearch', () => {
       });
 
       test('sets the date as an ISO string', () => {
-        expect(
-          search
-            .startDate(new Date())
-            .build()
-            .start,
-        ).toEqual(
+        expect(search.startDate(new Date()).build().start).toEqual(
           expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/),
         );
       });
@@ -186,11 +298,8 @@ describe('SubmissionSearch', () => {
     });
 
     describe('build-time validations', () => {
-      test('defaults end date to now if start is set and end is omitted', () => {
-
-      });
-      test('validates start date is before end', () => {
-      });
+      test('defaults end date to now if start is set and end is omitted', () => {});
+      test('validates start date is before end', () => {});
     });
   });
 });
@@ -280,7 +389,9 @@ describe('#fetchSubmission', () => {
     });
 
     test('throws an exception when no submission id is provided', () => {
-      expect(() => { fetchSubmission({}); }).toThrow();
+      expect(() => {
+        fetchSubmission({});
+      }).toThrow();
     });
 
     test('does return errors', () => {
@@ -308,16 +419,20 @@ describe('#createSubmission', () => {
 
     test('does not return errors', () => {
       expect.assertions(1);
-      return createSubmission({ kappSlug, formSlug, values }).then(({ errors }) => {
-        expect(errors).toBeUndefined();
-      });
+      return createSubmission({ kappSlug, formSlug, values }).then(
+        ({ errors }) => {
+          expect(errors).toBeUndefined();
+        },
+      );
     });
 
     test('returns a submission', () => {
       expect.assertions(1);
-      return createSubmission({ kappSlug, formSlug, values }).then(({ submission }) => {
-        expect(submission).toMatchObject({ id, values });
-      });
+      return createSubmission({ kappSlug, formSlug, values }).then(
+        ({ submission }) => {
+          expect(submission).toMatchObject({ id, values });
+        },
+      );
     });
 
     test('test defaults (kapp = bundle.kappSlug(), complete = true)', () => {
@@ -333,7 +448,12 @@ describe('#createSubmission', () => {
 
     test('test draft submission', () => {
       expect.assertions(1);
-      return createSubmission({ kappSlug, formSlug, values, completed: false }).then(() => {
+      return createSubmission({
+        kappSlug,
+        formSlug,
+        values,
+        completed: false,
+      }).then(() => {
         expect(axios.post).toHaveBeenCalledWith(
           'mock-space/app/api/v1/kapps/catalog/forms/ipad-request/submissions',
           { values },
@@ -402,7 +522,9 @@ describe('#deleteSubmission', () => {
     });
 
     test('throws an exception when no submission id is provided', () => {
-      expect(() => { deleteSubmission({}); }).toThrow();
+      expect(() => {
+        deleteSubmission({});
+      }).toThrow();
     });
 
     test('does return errors', () => {

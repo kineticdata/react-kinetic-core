@@ -2,12 +2,20 @@ import axios from 'axios';
 import { bundle } from '../core-helpers';
 import { handleErrors, paramBuilder } from './http';
 
-
 const VALID_TIMELINES = ['closedAt', 'createdAt', 'submittedAt', 'updatedAt'];
-const VALID_CORE_STATES = ['Draft', 'Submitted', 'Closed'];
+const VALID_KAPP_CORE_STATES = ['Draft', 'Submitted', 'Closed'];
+const VALID_DS_CORE_STATES = ['Draft', 'Submitted'];
+
+const getValidCoreStates = (datastore = false) =>
+  datastore ? VALID_DS_CORE_STATES : VALID_KAPP_CORE_STATES;
+
+const nullFix = (val, nullable = true) =>
+  nullable
+    ? val === '' || val === null ? 'null' : `"${val}"`
+    : val === null ? '""' : `"${val}"`;
 
 export class SubmissionSearch {
-  constructor() {
+  constructor(datastore = false) {
     this.searchMeta = {
       include: [],
     };
@@ -15,6 +23,8 @@ export class SubmissionSearch {
     this.query = [];
     this.queryContext = [];
     this.queryContext.push(this.query);
+
+    this.isDatastore = datastore;
   }
 
   /*
@@ -38,7 +48,9 @@ export class SubmissionSearch {
 
   build() {
     // Validate our attempt to search:
-    this.validateOuter('Attempted to execute query before ending all groupings.');
+    this.validateOuter(
+      'Attempted to execute query before ending all groupings.',
+    );
     // * if core state it set to something other than draft we must have an
     //   beginning and ending date.
     // * ...?
@@ -61,6 +73,36 @@ export class SubmissionSearch {
     return this;
   }
 
+  gt(lvalue, rvalue) {
+    this.validateDatastore();
+    this.currentContext().push({ op: 'gt', lvalue, rvalue });
+    return this;
+  }
+
+  lt(lvalue, rvalue) {
+    this.validateDatastore();
+    this.currentContext().push({ op: 'lt', lvalue, rvalue });
+    return this;
+  }
+
+  gteq(lvalue, rvalue) {
+    this.validateDatastore();
+    this.currentContext().push({ op: 'gteq', lvalue, rvalue });
+    return this;
+  }
+
+  lteq(lvalue, rvalue) {
+    this.validateDatastore();
+    this.currentContext().push({ op: 'lteq', lvalue, rvalue });
+    return this;
+  }
+
+  between(lvalue, rvalue1, rvalue2) {
+    this.validateDatastore();
+    this.currentContext().push({ op: 'between', lvalue, rvalue1, rvalue2 });
+    return this;
+  }
+
   in(lvalue, rvalue) {
     this.currentContext().push({ op: 'in', lvalue, rvalue });
     return this;
@@ -70,6 +112,7 @@ export class SubmissionSearch {
    * Grouping Methods
    */
   or() {
+    this.validateDatastore(false);
     const op = { op: 'or', context: [] };
     this.currentContext().push(op);
     this.addContext(op.context);
@@ -93,6 +136,7 @@ export class SubmissionSearch {
    */
 
   sortBy(timeline) {
+    this.validateDatastore(false);
     this.validateOuter('Sorting cannot be nested.');
     // Check to see that timeline is in valid timelines.
     if (VALID_TIMELINES.includes(timeline)) {
@@ -113,6 +157,7 @@ export class SubmissionSearch {
   }
 
   type(type) {
+    this.validateDatastore(false);
     this.validateOuter('Type qualification cannot be nested');
     this.searchMeta.type = type;
     return this;
@@ -120,14 +165,19 @@ export class SubmissionSearch {
 
   coreState(coreState) {
     this.validateOuter('Core State cannot be nested');
-    if (!VALID_CORE_STATES.includes(coreState)) {
-      throw new Error(`Invalid Core State "${coreState}". Expected: ${VALID_CORE_STATES.join()}`);
+    const validCoreStates = getValidCoreStates(this.isDatastore);
+
+    if (!validCoreStates.includes(coreState)) {
+      throw new Error(
+        `Invalid Core State "${coreState}". Expected: ${validCoreStates.join()}`,
+      );
     }
     this.searchMeta.coreState = coreState;
     return this;
   }
 
   startDate(startDate) {
+    this.validateDatastore(false);
     this.validateOuter('Start Date cannot be nested.');
     if (!(startDate instanceof Date)) {
       throw new Error('Start Date must be a Date object.');
@@ -137,6 +187,7 @@ export class SubmissionSearch {
   }
 
   endDate(endDate) {
+    this.validateDatastore(false);
     this.validateOuter('End Date cannot be nested.');
     if (!(endDate instanceof Date)) {
       throw new Error('End Date must be a Date object.');
@@ -165,7 +216,13 @@ export class SubmissionSearch {
   includes(includes) {
     const newIncludes = [...new Set([...this.searchMeta.include, ...includes])];
     this.searchMeta.include = newIncludes;
-      // _.uniq(_.concat(this.searchMeta.include, includes));
+    // _.uniq(_.concat(this.searchMeta.include, includes));
+    return this;
+  }
+
+  index(index) {
+    this.validateDatastore();
+    this.searchMeta.index = index;
     return this;
   }
 
@@ -179,21 +236,51 @@ export class SubmissionSearch {
     }
   }
 
+  validateDatastore(datastore = true) {
+    if (datastore === false && this.isDatastore) {
+      throw new Error('This cannot be used with datastore searches.');
+    } else if (datastore && !this.isDatastore) {
+      throw new Error('This can only be used with datastore searches.');
+    }
+  }
+
+  setDatastore(datastore) {
+    this.isDatastore = datastore;
+  }
+
   compileQueryString() {
     function doCompileQueryString(queryContext, queryString, and = true) {
       let query = `${queryString}`;
 
       queryContext.forEach((op, i) => {
         if (i > 0) {
-          query += (and ? ' AND ' : ' OR ');
+          query += and ? ' AND ' : ' OR ';
         }
         switch (op.op) {
           case 'eq':
-            if (op.rvalue === null || op.rvalue === '') {
-              query += `${op.lvalue} = null`;
-            } else {
-              query += `${op.lvalue} = "${op.rvalue}"`;
-            }
+            query += `${op.lvalue} = ${nullFix(op.rvalue)}`;
+            break;
+
+          case 'gt':
+            query += `${op.lvalue} > ${nullFix(op.rvalue, false)}`;
+            break;
+
+          case 'lt':
+            query += `${op.lvalue} < ${nullFix(op.rvalue, false)}`;
+            break;
+
+          case 'gteq':
+            query += `${op.lvalue} >= ${nullFix(op.rvalue, false)}`;
+            break;
+          case 'lteq':
+            query += `${op.lvalue} =< ${nullFix(op.rvalue, false)}`;
+            break;
+
+          case 'between':
+            query += `${op.lvalue} BETWEEN (${nullFix(
+              op.rvalue1,
+              false,
+            )}, ${nullFix(op.rvalue2, false)})`;
             break;
           case 'in':
             query += `${op.lvalue} IN (`;
@@ -202,22 +289,23 @@ export class SubmissionSearch {
                 query += ', ';
               }
 
-              if (op.rvalue[rvi] === '' || op.rvalue[rvi] === null) {
-                query += 'null';
-              } else {
-                query += `"${op.rvalue[rvi]}"`;
-              }
+              query += `${nullFix(op.rvalue[rvi])}`;
             });
             query += ')';
             break;
+
           case 'or':
           case 'and':
             query += '( ';
-            query += doCompileQueryString(op.context, '', (op.op === 'and'));
+            query += doCompileQueryString(op.context, '', op.op === 'and');
             query += ')';
             break;
           default:
-            throw new Error(`Unexpected operator type "${op.op}" encountered. Expected: eq, in, or, and.`);
+            throw new Error(
+              `Unexpected operator type "${
+                op.op
+              }" encountered. Expected: eq, in, or, and.`,
+            );
         }
       });
 
@@ -228,21 +316,20 @@ export class SubmissionSearch {
   }
 }
 
-export const searchSubmissions = (options) => {
-  const {
-    kapp,
-    form,
-    search,
-  } = options;
+export const searchSubmissions = options => {
+  const { kapp, form, search, datastore = false } = options;
 
-  let path = '';
-  if (typeof form !== 'undefined') {
-    // Form scoped.
-    path = `${bundle.apiLocation()}/kapps/${kapp || bundle.kappSlug()}/forms/${form}/submissions`;
-  } else {
-    // Kapp scoped.
-    path = `${bundle.apiLocation()}/kapps/${kapp || bundle.kappSlug()}/submissions`;
+  if (datastore && !form) {
+    throw new Error('Datastore searches must be scoped to a form.');
   }
+
+  const kappSlug = kapp || bundle.kappSlug();
+
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/forms/${form}/submissions`
+    : form
+      ? `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${form}/submissions`
+      : `${bundle.apiLocation()}/kapps/${kappSlug}/submissions`;
 
   const meta = { ...search };
   // Format includes.
@@ -274,74 +361,105 @@ export const searchSubmissions = (options) => {
   return promise;
 };
 
-export const fetchSubmission = (options) => {
-  const { id } = options;
+export const fetchSubmission = options => {
+  const { id, datastore } = options;
 
   if (!id) {
     throw new Error('fetchSubmission failed! The option "id" is required.');
   }
 
-  return axios.get(`${bundle.apiLocation()}/submissions/${id}`, { params: paramBuilder(options) })
-    // Remove the response envelop and leave us with the submission one.
-    .then(response => ({ submission: response.data.submission }))
-    // Clean up any errors we receive. Make sure this the last thing so that it
-    // cleans up any errors.
-    .catch(handleErrors);
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/submissions/${id}`
+    : `${bundle.apiLocation()}/submissions/${id}`;
+
+  return (
+    axios
+      .get(path, {
+        params: paramBuilder(options),
+      })
+      // Remove the response envelop and leave us with the submission one.
+      .then(response => ({ submission: response.data.submission }))
+      // Clean up any errors we receive. Make sure this the last thing so that it
+      // cleans up any errors.
+      .catch(handleErrors)
+  );
 };
 
-export const createSubmission = (options) => {
+export const createSubmission = options => {
   const {
     kappSlug = bundle.kappSlug(),
     formSlug,
     values,
+    datastore = false,
     completed = true,
   } = options;
 
   if (!formSlug) {
-    throw new Error('createSubmission failed! The option "formSlug" is required.');
+    throw new Error(
+      'createSubmission failed! The option "formSlug" is required.',
+    );
   } else if (!values) {
-    throw new Error('createSubmission failed! The option "values" is required.');
+    throw new Error(
+      'createSubmission failed! The option "values" is required.',
+    );
   }
 
-  const path = `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}/submissions`;
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/forms/${formSlug}/submissions`
+    : `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}/submissions`;
+
   const params = { ...paramBuilder(options), completed };
 
-  return axios.post(path, { values }, { params })
-    // Remove the response envelop and leave us with the submission one.
-    .then(response => ({ submission: response.data.submission }))
-    // Clean up any errors we receive. Make sure this the last thing so that it
-    // cleans up any errors.
-    .catch(handleErrors);
+  return (
+    axios
+      .post(path, { values }, { params })
+      // Remove the response envelop and leave us with the submission one.
+      .then(response => ({ submission: response.data.submission }))
+      // Clean up any errors we receive. Make sure this the last thing so that it
+      // cleans up any errors.
+      .catch(handleErrors)
+  );
 };
 
-export const updateSubmission = (options) => {
-  const {
-    id,
-    values,
-  } = options;
+export const updateSubmission = options => {
+  const { id, values, datastore = false } = options;
 
-  const path = `${bundle.apiLocation()}/submissions/${id}`;
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/submissions/${id}`
+    : `${bundle.apiLocation()}/submissions/${id}`;
   const params = { ...paramBuilder(options) };
 
-  return axios.put(path, { values }, { params })
-  // Remove the response envelop and leave us with the submission one.
-    .then(response => ({ submission: response.data.submission }))
-  // Clean up any errors we receive. Make sure this the last thing so that it
-  // cleans up any errors.
-    .catch(handleErrors);
+  return (
+    axios
+      .put(path, { values }, { params })
+      // Remove the response envelop and leave us with the submission one.
+      .then(response => ({ submission: response.data.submission }))
+      // Clean up any errors we receive. Make sure this the last thing so that it
+      // cleans up any errors.
+      .catch(handleErrors)
+  );
 };
 
-export const deleteSubmission = (options) => {
-  const { id } = options;
+export const deleteSubmission = options => {
+  const { id, datastore = false } = options;
 
   if (!id) {
     throw new Error('deleteSubmission failed! The option "id" is required.');
   }
 
-  return axios.delete(`${bundle.apiLocation()}/submissions/${id}`, { params: paramBuilder(options) })
-    // Remove the response envelop and leave us with the submission one.
-    .then(response => ({ submission: response.data.submission }))
-    // Clean up any errors we receive. Make sure this the last thing so that it
-    // cleans up any errors.
-    .catch(handleErrors);
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/submissions/${id}`
+    : `${bundle.apiLocation()}/submissions/${id}`;
+
+  return (
+    axios
+      .delete(path, {
+        params: paramBuilder(options),
+      })
+      // Remove the response envelop and leave us with the submission one.
+      .then(response => ({ submission: response.data.submission }))
+      // Clean up any errors we receive. Make sure this the last thing so that it
+      // cleans up any errors.
+      .catch(handleErrors)
+  );
 };
