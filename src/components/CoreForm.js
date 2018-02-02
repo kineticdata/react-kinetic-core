@@ -70,7 +70,7 @@ export class CoreForm extends Component {
     this.form = new Promise(resolve => {
       this.getGlobalsPromise().then(() => {
         K.load({
-          path: `${path(props)}?${queryString(props)}`,
+          path: `${corePath(props)}?${queryString(props)}`,
           container: this.container,
           loaded: form => {
             resolve(form);
