@@ -1,14 +1,21 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { deserializeAttributes, handleErrors, paramBuilder } from './http';
+import {
+  deserializeAttributes,
+  handleErrors,
+  paramBuilder,
+  formPath,
+} from './http';
 
 export const fetchForms = (options = {}) => {
-  const {
-    kappSlug = bundle.kappSlug(),
-  } = options;
+  const { kappSlug = bundle.kappSlug(), datastore } = options;
+
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/forms`
+    : `${bundle.apiLocation()}/kapps/${kappSlug}/forms`;
 
   // Build URL and fetch the space.
-  let promise = axios.get(`${bundle.apiLocation()}/kapps/${kappSlug}/forms`, {
+  let promise = axios.get(path, {
     params: paramBuilder(options),
   });
   // Remove the response envelop and leave us with the forms one.
@@ -22,17 +29,18 @@ export const fetchForms = (options = {}) => {
 };
 
 export const fetchForm = (options = {}) => {
-  const {
-    kappSlug = bundle.kappSlug(),
-    formSlug,
-  } = options;
+  const { kappSlug = bundle.kappSlug(), formSlug, datastore } = options;
 
   if (!formSlug) {
     throw new Error('fetchForm failed! The option "formSlug" is required.');
   }
 
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/forms/${formSlug}`
+    : `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}`;
+
   // Build URL and fetch the space.
-  let promise = axios.get(`${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}`, {
+  let promise = axios.get(path, {
     params: paramBuilder(options),
   });
   // Remove the response envelop and leave us with the form one.
