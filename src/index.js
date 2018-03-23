@@ -14,6 +14,7 @@ import * as TeamsAPI from './apis/teams';
 import * as ProfileAPI from './apis/profile';
 import * as UsersAPI from './apis/users';
 import * as BridgedResourcesAPI from './apis/bridgedresources';
+import * as VersionAPI from './apis/version';
 import { deserializeAttributes, serializeAttributes } from './apis/http';
 
 
@@ -31,6 +32,7 @@ export const CoreAPI = {
   ...ProfileAPI,
   ...UsersAPI,
   ...BridgedResourcesAPI,
+  ...VersionAPI,
   deserializeAttributes,
   serializeAttributes,
 };

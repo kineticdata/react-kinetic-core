@@ -4,7 +4,6 @@ import {
   deserializeAttributes,
   handleErrors,
   paramBuilder,
-  formPath,
 } from './http';
 
 export const fetchForms = (options = {}) => {

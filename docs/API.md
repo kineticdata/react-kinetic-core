@@ -48,6 +48,7 @@
     - [Bridged Resources](#bridged-resources)
         - [fetchBridgedResource](#fetchbridgedresource)
         - [countBridgedResource](#countbridgedresource)
+    - [Version](#fetchVersion)
 
 <!-- markdown-toc end -->
 
@@ -134,7 +135,7 @@ In Sagas you would use the same deconstruction style in your saga:
 ```
 export function* fetchTeamsSaga() {
   const { serverError, teams } = CoreAPI.fetchTeams();
-  
+
   if (serverError) {
     yield put(actions.setError(serverError));
   } else {
@@ -172,7 +173,7 @@ Updates the currently authenticated user's profile.
 ### fetchUsers
 
 Fetch all users for the current space.
- 
+
 `CoreAPI.fetchUsers(options)`
 
 `options`:
@@ -232,7 +233,7 @@ Resolves: nothing.
 ### fetchTeams
 
 Fetch all teams for the current space.
- 
+
 `CoreAPI.fetchTeams(options)`
 
 `options`:
@@ -305,10 +306,11 @@ Fetches the current space.
 Fetches all Kapps for the current space.
 
 `CoreAPI.fetchKapps(options)`
- 
+
 `options`:
 * `include` - API include parameters (see Kinetic CE reference documentation).
- 
+* `manage` - only return kapps the user can manage if set to true (optional - defaults to false).
+
 Resolves: `{ kapps: [{ /* ... */ }] }`
 
 ### fetchKapp
@@ -330,11 +332,12 @@ Resolves: `{ kapp: { /* ... */ } }`
 Fetches all forms for the current space and Kapp. The Kapp can be overridden using the `kappSlug` option.
 
 `CoreAPI.fetchForms(options)`
- 
+
 `options`:
 * `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
 * `include` - API include parameters (see Kinetic CE reference documentation).
- 
+* `manage` - only return forms the user can manage if set to true (optional - defaults to false).
+
 Resolves: `{ forms: [{ /* ... */ }] }`
 
 ### fetchForm
@@ -342,13 +345,13 @@ Resolves: `{ forms: [{ /* ... */ }] }`
 Fetches the form specified by the `formSlug` option in the current space and Kapp.
 The Kapp can be overridden using the `kappSlug` option.
 
-`CoreAPI.fetchForms(options)`
- 
+`CoreAPI.fetchForm(options)`
+
 `options`:
 * `formSlug` - (required) the slug of the form to fetch.
 * `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
 * `include` - API include parameters (see Kinetic CE reference documentation).
- 
+
 Resolves: `{ form: { /* ... */ } }`
 
 ## Categories
@@ -358,11 +361,11 @@ Resolves: `{ form: { /* ... */ } }`
 Fetches all categories for the current space and Kapp. The Kapp can be overridden using the `kappSlug` option.
 
 `CoreAPI.fetchCategories(options)`
- 
+
 `options`:
 * `kappSlug` - the slug of the Kapp in which to fetch categories. Defaults to the bundle kapp if not specified.
 * `include` - API include parameters (see Kinetic CE reference documentation).
- 
+
 Resolves: `{ categories: [{ /* ... */ }] }`
 
 ### fetchCategory
@@ -371,12 +374,12 @@ Fetches the category specified by the `categorySlug` option in the current space
 The Kapp can be overridden using the `kappSlug` option.
 
 `CoreAPI.fetchCategory(options)`
- 
+
 `options`:
 * `categorySlug` - (required) the slug of the category to fetch.
 * `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
 * `include` - API include parameters (see Kinetic CE reference documentation).
- 
+
 Resolves: `{ category: { /* ... */ } }`
 
 ## Submissions
@@ -408,10 +411,10 @@ Note that the first two `eq` calls in the example were implicitly `and()` in con
 #### Equality Functions
 
 * `eq(element, value)` - add an equality criteria. The element is in the format of `'values[Value Name]'`.
-  
+
   Example: `search.eq('values[Status]', 'Open')`
 * `in(element, values)` - add a list of equalities on a given element. The element is in the format of `'values[Value Name]'` and the values are an array, such as `['Value1', 'Value2']`.
-  
+
   Example: `search.in('values[Status]', ['Open', 'In Progress'])`
 
 #### Context Functions
@@ -421,21 +424,21 @@ All context functions group the equality functions between it and the next `end(
 * `or()` - starts a group of "or" equality statements.
 
   Example: `search.or().eq('values[Status]', 'Open').eq('values[Status]', 'In Progress').end()`
-  
+
   Results in: _Status=Open OR Status=In Progress_
 
 * `and()` - starts a group of "and" equality statements.
 
   Example: `searcher.and().eq('values[Owner]', 'IT').eq('values[Priority]', 'High').end()`
-  
+
   Results in: _Owner=IT AND Priority=High_
-  
+
   **Note**: The example above is redundant as the implicit context is an `and` context. This is useful for grouping `and` and `or`.
-  
+
 * `end()` - concludes the most recently started context.
 
   **Note**: Failure to "close" an `and` or `or` context with `end()` will result in an error beign thrown.
-  
+
 #### Sorting Functions
 
 Sorting functions cannot be nested inside of contexts such as `or()` and `and()`, they can only be issued on the outermost, implicit context. If used multiple times the last call is what is used.
@@ -569,3 +572,23 @@ Fetches a count of the number of records that match a bridge query.
 Resolves:
 
 `{ count: 2 }`
+
+
+## Version
+
+Retrieves the application version information.
+
+`CoreAPI.fetchVersion()`
+
+Resolves:
+
+```
+{ version:
+  {
+    "buildDate": "2016-01-07 10:55:20 -0600",
+    "buildNumber": "cd531fa",
+    "timestamp": "1452185720601",
+    "version": "1.0.0"
+  }
+}
+```
