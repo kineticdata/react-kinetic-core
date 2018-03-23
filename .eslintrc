@@ -10,7 +10,7 @@
   },
   "parser": "babel-eslint",
   "extends": [
-    "airbnb",
+    "react-app",
     "plugin:jest/recommended"
   ],
   "rules": {

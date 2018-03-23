@@ -53,7 +53,7 @@ export class CoreModal extends Component {
     }
   }
 
-  keyupHandler() {
+  keyupHandler(event) {
     // Call dismiss if the escape key was pressed.
     if (event.keyCode === 27) {
       this.dismiss();
