@@ -1,6 +1,6 @@
 import { bundle } from '../core-helpers';
 
-export const deserializeAttributes = (attributeKey, envelop) => result => {
+export const deserializeAttributes = (attributeKey, envelop) => (result) => {
   const xlatable = envelop ? result[envelop] : result;
 
   if (xlatable instanceof Array) {
@@ -66,7 +66,7 @@ export const handleErrors = error => {
   return { serverError: { status, statusText } };
 };
 
-export const paramBuilder = options => {
+export const paramBuilder = (options) => {
   const params = {};
 
   if (options.include) {
@@ -75,6 +75,10 @@ export const paramBuilder = options => {
 
   if (options.limit) {
     params.limit = options.limit;
+  }
+
+  if (options.manage) {
+    params.manage = options.manage;
   }
 
   return params;
