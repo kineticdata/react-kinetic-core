@@ -73,6 +73,12 @@ export class SubmissionSearch {
     return this;
   }
 
+  sw(lvalue, rvalue) {
+    this.validateDatastore(true);
+    this.currentContext().push({ op: 'sw', lvalue, rvalue });
+    return this;
+  }
+
   gt(lvalue, rvalue) {
     this.validateDatastore();
     this.currentContext().push({ op: 'gt', lvalue, rvalue });
@@ -259,6 +265,10 @@ export class SubmissionSearch {
         switch (op.op) {
           case 'eq':
             query += `${op.lvalue} = ${nullFix(op.rvalue)}`;
+            break;
+
+          case 'sw':
+            query += `${op.lvalue} =* ${nullFix(op.rvalue)}`;
             break;
 
           case 'gt':
