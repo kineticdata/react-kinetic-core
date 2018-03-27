@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { deserializeAttributes, handleErrors, paramBuilder } from './http';
+import {
+  deserializeAttributes,
+  handleErrors,
+  paramBuilder,
+  serializeAttributes,
+} from './http';
 
 export const fetchKapps = (options = {}) => {
   // Build URL and fetch the space.
@@ -18,9 +23,7 @@ export const fetchKapps = (options = {}) => {
 };
 
 export const fetchKapp = (options = {}) => {
-  const {
-    kappSlug = bundle.kappSlug(),
-  } = options;
+  const { kappSlug = bundle.kappSlug() } = options;
 
   // Build URL and fetch the space.
   let promise = axios.get(`${bundle.apiLocation()}/kapps/${kappSlug}`, {
@@ -34,4 +37,24 @@ export const fetchKapp = (options = {}) => {
   promise = promise.catch(handleErrors);
 
   return promise;
+};
+
+export const updateKapp = (options = {}) => {
+  const { kappSlug = bundle.kappSlug(), kapp } = options;
+  if (!kappSlug) {
+    throw new Error('updateKapp failed! The option "kappSlug" is required.');
+  }
+  if (!kapp) {
+    throw new Error('updateKapp failed! The option "kapp" is required.');
+  }
+
+  return axios
+    .put(
+      `${bundle.apiLocation()}/kapps/${kappSlug}`,
+      serializeAttributes(kapp, 'attributes'),
+      { params: paramBuilder(options) },
+    )
+    .then(response => ({ kapp: response.data.kapp }))
+    .then(deserializeAttributes('attributes', 'kapp'))
+    .catch(handleErrors);
 };
