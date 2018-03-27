@@ -81,7 +81,7 @@ describe('bridgeModels api', () => {
       expect(() => {
         fetchBridgeModel({ include: 'attributes' });
       }).toThrowError(
-        'fetchBridgeModel failed! The option "modelName" is required.',
+        'fetchBridgeModel failed! The following required options are missing: modelName',
       );
     });
 
