@@ -31,3 +31,25 @@ export const fetchBridgeModel = (options = {}) => {
     .then(response => ({ bridgeModel: response.data.model }))
     .catch(handleErrors);
 };
+
+export const createBridgeModel = (options = {}) => {
+  validateOptions('createBridgeModel', ['bridgeModel'], options);
+  return axios
+    .post(`${bundle.apiLocation()}/models`, options.bridgeModel, {
+      params: paramBuilder(options),
+    })
+    .then(response => ({ bridgeModel: response.data.model }))
+    .catch(handleErrors);
+};
+
+export const updateBridgeModel = (options = {}) => {
+  validateOptions('updateBridgeModel', ['modelName', 'bridgeModel'], options);
+  return axios
+    .put(
+      `${bundle.apiLocation()}/models/${options.modelName}`,
+      options.bridgeModel,
+      { params: paramBuilder(options) },
+    )
+    .then(response => ({ bridgeModel: response.data.model }))
+    .catch(handleErrors);
+};

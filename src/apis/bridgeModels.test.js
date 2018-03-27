@@ -1,6 +1,11 @@
 import axios from 'axios';
 import createError from 'axios/lib/core/createError';
-import { fetchBridgeModels, fetchBridgeModel } from './bridgeModels';
+import {
+  fetchBridgeModels,
+  fetchBridgeModel,
+  createBridgeModel,
+  updateBridgeModel,
+} from './bridgeModels';
 
 jest.mock('axios');
 
@@ -108,6 +113,154 @@ describe('bridgeModels api', () => {
     });
   });
 
-  describe('createBridgeModel', () => {});
-  describe('updateBridgeModel', () => {});
+  describe('createBridgeModel', () => {
+    beforeEach(() => {
+      axios.post.mockReset();
+    });
+
+    test('success', async () => {
+      axios.post.mockResolvedValue({
+        status: 200,
+        data: {
+          model: { name: 'Person' },
+        },
+      });
+      const result = await createBridgeModel({
+        bridgeModel: { name: 'Person', status: 'Active' },
+        include: 'attributes',
+      });
+      expect(axios.post.mock.calls).toEqual([
+        [
+          'space/app/api/v1/models',
+          { name: 'Person', status: 'Active' },
+          { params: { include: 'attributes' } },
+        ],
+      ]);
+      expect(result).toEqual({
+        bridgeModel: { name: 'Person' },
+      });
+    });
+
+    test('missing bridgeModel', () => {
+      expect(() => {
+        createBridgeModel({ include: 'attributes' });
+      }).toThrowError(
+        'createBridgeModel failed! The following required options are missing: bridgeModel',
+      );
+    });
+
+    test('bad request', async () => {
+      axios.post.mockRejectedValue(
+        createError('Request failed with status code 400', null, 400, null, {
+          status: 400,
+          statusText: 'Bad Request',
+          data: { error: 'Invalid Bridge Model' },
+        }),
+      );
+      const result = await createBridgeModel({
+        bridgeModel: { name: '', status: 'Active' },
+        include: 'attributes',
+      });
+      expect(result).toEqual({
+        error: 'Invalid Bridge Model',
+      });
+    });
+
+    test('forbidden', async () => {
+      axios.post.mockRejectedValue(
+        createError('Request failed with status code 403', null, 403, null, {
+          status: 403,
+          statusText: 'Forbidden',
+        }),
+      );
+      const result = await createBridgeModel({
+        bridgeModel: { name: '', status: 'Active' },
+        include: 'attributes',
+      });
+      expect(result).toEqual({
+        serverError: { status: 403, statusText: 'Forbidden' },
+      });
+    });
+  });
+
+  describe('updateBridgeModel', () => {
+    beforeEach(() => {
+      axios.put.mockReset();
+    });
+
+    test('success', async () => {
+      axios.put.mockResolvedValue({
+        status: 200,
+        data: {
+          model: { name: 'Person New' },
+        },
+      });
+      const result = await updateBridgeModel({
+        modelName: 'Person',
+        bridgeModel: { name: 'Person New', status: 'Active' },
+        include: 'attributes',
+      });
+      expect(axios.put.mock.calls).toEqual([
+        [
+          'space/app/api/v1/models/Person',
+          { name: 'Person New', status: 'Active' },
+          { params: { include: 'attributes' } },
+        ],
+      ]);
+      expect(result).toEqual({
+        bridgeModel: { name: 'Person New' },
+      });
+    });
+
+    test('missing modelName', () => {
+      expect(() => {
+        updateBridgeModel({ bridgeModel: {}, include: 'attributes' });
+      }).toThrowError(
+        'updateBridgeModel failed! The following required options are missing: modelName',
+      );
+    });
+
+    test('missing bridgeModel', () => {
+      expect(() => {
+        updateBridgeModel({ modelName: 'Foo', include: 'attributes' });
+      }).toThrowError(
+        'updateBridgeModel failed! The following required options are missing: bridgeModel',
+      );
+    });
+
+    test('bad request', async () => {
+      axios.put.mockRejectedValue(
+        createError('Request failed with status code 400', null, 400, null, {
+          status: 400,
+          statusText: 'Bad Request',
+          data: { error: 'Invalid Bridge Model' },
+        }),
+      );
+      const result = await updateBridgeModel({
+        modelName: 'Person',
+        bridgeModel: { name: '', status: 'Active' },
+        include: 'attributes',
+      });
+      expect(result).toEqual({
+        error: 'Invalid Bridge Model',
+      });
+    });
+
+    test('forbidden', async () => {
+      axios.put.mockRejectedValue(
+        createError('Request failed with status code 403', null, 403, null, {
+          status: 403,
+          statusText: 'Forbidden',
+        }),
+      );
+      const result = await updateBridgeModel({
+        modelName: 'Person',
+        bridgeModel: { name: '', status: 'Active' },
+        include: 'attributes',
+      });
+      expect(result).toEqual({
+        serverError: { status: 403, statusText: 'Forbidden' },
+      });
+    });
+  });
 });
