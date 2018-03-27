@@ -191,6 +191,44 @@ describe('forms api', () => {
       expect(serverError).toBeUndefined();
     });
 
+    test('datastore form', async () => {
+      axios.put.mockResolvedValue({
+        status: 200,
+        data: {
+          form: {
+            name: 'Test Datastore Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+        },
+      });
+      const { form, error, errors, serverError } = await updateForm({
+        formSlug: 'test-form',
+        datastore: true,
+        form: {
+          name: 'Test Datastore Form',
+          attributes: { Icon: ['fa-gear'] },
+        },
+        include: 'attributes,pages',
+      });
+      expect(axios.put.mock.calls).toEqual([
+        [
+          'form/app/api/v1/datastore/forms/test-form',
+          {
+            name: 'Test Datastore Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+          { params: { include: 'attributes,pages' } },
+        ],
+      ]);
+      expect(form).toEqual({
+        name: 'Test Datastore Form',
+        attributes: { Icon: ['fa-gear'] },
+      });
+      expect(error).toBeUndefined();
+      expect(errors).toBeUndefined();
+      expect(serverError).toBeUndefined();
+    });
+
     test('defaults to bundle.kappSlug() when no kappSlug provided', async () => {
       axios.put.mockResolvedValue({ status: 200, data: {} });
       await updateForm({ form: { name: 'Test' }, formSlug: 'test' });
@@ -215,6 +253,18 @@ describe('forms api', () => {
       expect(() => {
         updateForm({ formSlug: 'test', form: {}, kappSlug: null });
       }).toThrow('updateForm failed! The option "kappSlug" is required.');
+    });
+
+    test('missing kappSlug allowed when datastore is true', () => {
+      axios.put.mockResolvedValue({ status: 200, data: {} });
+      expect(() => {
+        updateForm({
+          formSlug: 'test',
+          form: {},
+          kappSlug: null,
+          datastore: true,
+        });
+      }).not.toThrowError();
     });
 
     test('missing formSlug', () => {

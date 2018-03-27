@@ -54,8 +54,8 @@ export const fetchForm = (options = {}) => {
 };
 
 export const updateForm = (options = {}) => {
-  const { kappSlug = bundle.kappSlug(), formSlug, form } = options;
-  if (!kappSlug) {
+  const { kappSlug = bundle.kappSlug(), formSlug, form, datastore } = options;
+  if (!kappSlug && !datastore) {
     throw new Error('updateForm failed! The option "kappSlug" is required.');
   }
   if (!formSlug) {
@@ -65,12 +65,14 @@ export const updateForm = (options = {}) => {
     throw new Error('updateForm failed! The option "form" is required.');
   }
 
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/forms/${formSlug}`
+    : `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}`;
+
   return axios
-    .put(
-      `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}`,
-      serializeAttributes(form, 'attributes'),
-      { params: paramBuilder(options) },
-    )
+    .put(path, serializeAttributes(form, 'attributes'), {
+      params: paramBuilder(options),
+    })
     .then(response => ({ form: response.data.form }))
     .then(deserializeAttributes('attributes', 'form'))
     .catch(handleErrors);
