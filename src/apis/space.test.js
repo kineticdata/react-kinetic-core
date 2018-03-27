@@ -110,13 +110,16 @@ describe('space api', () => {
         },
       });
       const { space, error, errors, serverError } = await updateSpace({
-        space: { name: 'Foo' },
+        space: { name: 'Foo', attributes: { 'Company Name': ['Foo Bar'] } },
         include: 'attributes',
       });
       expect(axios.put.mock.calls).toEqual([
         [
           'space/app/api/v1/space',
-          { name: 'Foo' },
+          {
+            name: 'Foo',
+            attributes: [{ name: 'Company Name', values: ['Foo Bar'] }],
+          },
           { params: { include: 'attributes' } },
         ],
       ]);
