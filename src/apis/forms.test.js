@@ -1,9 +1,11 @@
 import axios from 'axios';
-
-import { fetchForm, fetchForms } from './forms';
+import createError from 'axios/lib/core/createError';
+import { fetchForm, fetchForms, updateForm } from './forms';
 import { FormBuilder } from '../test_utils/form_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
 import { fetchDocMarkdown } from '../test_utils/docs';
+
+jest.mock('axios');
 
 // Mock out the bundle object from a dependency.
 jest.mock('../core-helpers', () => ({
@@ -146,6 +148,114 @@ describe('forms api', () => {
           },
         );
       });
+    });
+  });
+
+  describe('updateForm', () => {
+    beforeEach(() => {
+      axios.put.mockReset();
+    });
+
+    test('success', async () => {
+      axios.put.mockResolvedValue({
+        status: 200,
+        data: {
+          form: {
+            name: 'Test Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+        },
+      });
+      const { form, error, errors, serverError } = await updateForm({
+        kappSlug: 'catalog',
+        formSlug: 'test-form',
+        form: { name: 'Test Form', attributes: { Icon: ['fa-gear'] } },
+        include: 'attributes,pages',
+      });
+      expect(axios.put.mock.calls).toEqual([
+        [
+          'form/app/api/v1/kapps/catalog/forms/test-form',
+          {
+            name: 'Test Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+          { params: { include: 'attributes,pages' } },
+        ],
+      ]);
+      expect(form).toEqual({
+        name: 'Test Form',
+        attributes: { Icon: ['fa-gear'] },
+      });
+      expect(error).toBeUndefined();
+      expect(errors).toBeUndefined();
+      expect(serverError).toBeUndefined();
+    });
+
+    test('defaults to bundle.kappSlug() when no kappSlug provided', async () => {
+      axios.put.mockResolvedValue({ status: 200, data: {} });
+      await updateForm({ form: { name: 'Test' }, formSlug: 'test' });
+      expect(axios.put.mock.calls).toEqual([
+        [
+          'form/app/api/v1/kapps/mock-kapp/forms/test',
+          { name: 'Test' },
+          { params: {} },
+        ],
+      ]);
+    });
+
+    test('missing form', () => {
+      expect(() => {
+        updateForm({ formSlug: 'test' });
+      }).toThrow('updateForm failed! The option "form" is required.');
+    });
+
+    test('missing kappSlug', () => {
+      // Note that we need to set it to null becuse by default if kappSlug is
+      // not passed (undefined) it checks the 'bundle' helper.
+      expect(() => {
+        updateForm({ formSlug: 'test', form: {}, kappSlug: null });
+      }).toThrow('updateForm failed! The option "kappSlug" is required.');
+    });
+
+    test('missing formSlug', () => {
+      expect(() => {
+        updateForm({ form: {} });
+      }).toThrow('updateForm failed! The option "formSlug" is required.');
+    });
+
+    test('bad request', async () => {
+      axios.put.mockRejectedValue(
+        createError('Request failed with status code 400', null, 400, null, {
+          status: 400,
+          statusText: 'Bad Request',
+          data: { error: 'Invalid form' },
+        }),
+      );
+      const { form, error, errors, serverError } = await updateForm({
+        formSlug: 'test',
+        form: { name: null },
+      });
+      expect(form).toBeUndefined();
+      expect(error).toBe('Invalid form');
+      expect(errors).toBeUndefined();
+      expect(serverError).toBeUndefined();
+    });
+
+    test('serverError', async () => {
+      axios.put.mockRejectedValue(
+        createError('Request failed with status code 403', null, 403, null, {
+          status: 403,
+          statusText: 'Forbidden',
+        }),
+      );
+      const { form, error, errors, serverError } = await updateForm({
+        formSlug: 'test',
+        form: { name: 'Test' },
+      });
+      expect(form).toBeUndefined();
+      expect(error).toBeUndefined();
+      expect(errors).toBeUndefined();
+      expect(serverError).toEqual({ status: 403, statusText: 'Forbidden' });
     });
   });
 });

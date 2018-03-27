@@ -4,6 +4,7 @@ import {
   deserializeAttributes,
   handleErrors,
   paramBuilder,
+  serializeAttributes,
 } from './http';
 
 export const fetchForms = (options = {}) => {
@@ -50,4 +51,27 @@ export const fetchForm = (options = {}) => {
   promise = promise.catch(handleErrors);
 
   return promise;
+};
+
+export const updateForm = (options = {}) => {
+  const { kappSlug = bundle.kappSlug(), formSlug, form } = options;
+  if (!kappSlug) {
+    throw new Error('updateForm failed! The option "kappSlug" is required.');
+  }
+  if (!formSlug) {
+    throw new Error('updateForm failed! The option "formSlug" is required.');
+  }
+  if (!form) {
+    throw new Error('updateForm failed! The option "form" is required.');
+  }
+
+  return axios
+    .put(
+      `${bundle.apiLocation()}/kapps/${kappSlug}/forms/${formSlug}`,
+      serializeAttributes(form, 'attributes'),
+      { params: paramBuilder(options) },
+    )
+    .then(response => ({ form: response.data.form }))
+    .then(deserializeAttributes('attributes', 'form'))
+    .catch(handleErrors);
 };
