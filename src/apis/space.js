@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { deserializeAttributes, handleErrors, paramBuilder } from './http';
+import {
+  deserializeAttributes,
+  handleErrors,
+  paramBuilder,
+  serializeAttributes,
+} from './http';
 
 export const fetchSpace = (options = {}) => {
   // Build URL and fetch the space.
@@ -15,4 +20,21 @@ export const fetchSpace = (options = {}) => {
   promise = promise.catch(handleErrors);
 
   return promise;
+};
+
+export const updateSpace = (options = {}) => {
+  const { space } = options;
+  if (!space) {
+    throw new Error('updateSpace failed! The option "space" is required.');
+  }
+
+  return axios
+    .put(
+      `${bundle.apiLocation()}/space`,
+      serializeAttributes(space, 'attributes'),
+      { params: paramBuilder(options) },
+    )
+    .then(response => ({ space: response.data.space }))
+    .then(deserializeAttributes('attributes', 'space'))
+    .catch(handleErrors);
 };
