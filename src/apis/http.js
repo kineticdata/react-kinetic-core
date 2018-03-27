@@ -1,6 +1,6 @@
 import { bundle } from '../core-helpers';
 
-export const deserializeAttributes = (attributeKey, envelop) => (result) => {
+export const deserializeAttributes = (attributeKey, envelop) => result => {
   const xlatable = envelop ? result[envelop] : result;
 
   if (xlatable instanceof Array) {
@@ -49,7 +49,7 @@ export const serializeAttributes = (xlatable, attributeKey) => {
 };
 
 export const handleErrors = error => {
-  if (error instanceof Error) {
+  if (error instanceof Error && !error.response) {
     // When the error is an Error object an exception was thrown in the process.
     // so we'll just 'convert' it to a 400 error to be handled downstream.
     return { serverError: { status: 400, statusText: error.message } };
@@ -66,7 +66,7 @@ export const handleErrors = error => {
   return { serverError: { status, statusText } };
 };
 
-export const paramBuilder = (options) => {
+export const paramBuilder = options => {
   const params = {};
 
   if (options.include) {
