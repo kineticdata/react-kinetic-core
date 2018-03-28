@@ -653,7 +653,7 @@ Resolves:
 
 `{ count: 2 }`
 
-## Bridged Models
+## Bridge Models
 
 ### fetchBridgeModels
 
