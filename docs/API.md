@@ -25,12 +25,15 @@
     * [deleteTeam](#deleteteam)
   * [Space](#space)
     * [fetchSpace](#fetchspace)
+    * [updateSpace](#updatespace)
   * [Kapp](#kapp)
     * [fetchKapps](#fetchkapps)
     * [fetchKapp](#fetchkapp)
+    * [updateKapp](#updatekapp)
   * [Forms](#forms)
     * [fetchForms](#fetchforms)
     * [fetchForm](#fetchform)
+    * [updateForm](#updateform)
   * [Categories](#categories)
     * [fetchCategories](#fetchcategories)
     * [fetchCategory](#fetchcategory)
@@ -49,6 +52,11 @@
   * [Bridged Resources](#bridged-resources)
     * [fetchBridgedResource](#fetchbridgedresource)
     * [countBridgedResource](#countbridgedresource)
+  * [Bridge Models](#bridge-models)
+    * [fetchBridgeModels](#fetchbridgemodels)
+    * [fetchBridgeModel](#fetchbridgemodel)
+    * [createBridgeModel](#createbridgemodel)
+    * [updateBridgeModel](#updatebridgemodel)
   * [Version](#fetchVersion)
 
 <!-- markdown-toc end -->
@@ -310,6 +318,21 @@ Fetches the current space.
 
 * `include` - API include parameters (see Kinetic CE reference documentation).
 
+Resolves: `{ space: { /* ... */ } }`
+
+### updateSpace
+
+Updates the current space using the `space` option.
+
+`CoreAPI.updateSpace(options)`
+
+`options`:
+
+* `space` - the space definition used to update the current space.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ space: { /* ... */ } }`
+
 ## Kapp
 
 ### fetchKapps
@@ -334,6 +357,20 @@ Fetches a Kapp from the current using the `kappSlug` option.
 `options`:
 
 * `kappSlug` - the slug of the Kapp to fetch. Defaults to the bundle kapp if not specified.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ kapp: { /* ... */ } }`
+
+### updateKapp
+
+Updates a Kapp using the `kappSlug` and `kapp` options.
+
+`CoreAPI.updateKapp(options)`
+
+`options`:
+
+* `kappSlug` - the slug of the Kapp to update. Defaults to the bundle kapp if not specified.
+* `kapp` - the kapp definition used to update the specified kapp.
 * `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ kapp: { /* ... */ } }`
@@ -365,6 +402,23 @@ The Kapp can be overridden using the `kappSlug` option.
 
 * `formSlug` - (required) the slug of the form to fetch.
 * `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ form: { /* ... */ } }`
+
+### updateForm
+
+Updates the form specified by the `formSlug` option in the current space and Kapp.
+The Kapp can be overridden using the `kappSlug` option.
+
+`CoreAPI.updateForm(options)`
+
+`options`:
+
+* `formSlug` - (required) the slug of the form to fetch.
+* `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+* `form` - the form definition used to update the specified form.
+* `datastore` - set this to `true` if the form to be updated is a datastore form.
 * `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ form: { /* ... */ } }`
@@ -598,6 +652,60 @@ Fetches a count of the number of records that match a bridge query.
 Resolves:
 
 `{ count: 2 }`
+
+## Bridged Resources
+
+### fetchBridgeModels
+
+Fetches all bridge models for the current space.
+
+`CoreAPI.fetchBridgeModels(options)`
+
+`options`:
+
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ bridgeModels: [{ /* ... */ }] }`
+
+### fetchBridgeModel
+
+Fetches bridge model specified by the `modelName` option.
+
+`CoreAPI.fetchBridgeModel(options)`
+
+`options`:
+
+* `modelName` - (required) the name of the bridge model to retrieve.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ bridgeModel: { /* ... */ } }`
+
+### createBridgeModel
+
+Creates a bridge model using the `bridgeModel` option.
+
+`CoreAPI.createBridgeModel(options)`
+
+`options`:
+
+* `bridgeModel` - (required) the definition of the bridge model to create.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ bridgeModel: { /* ... */ } }`
+
+### updateBridgeModel
+
+Updates a bridge model using the `modelName` and `bridgeModel` options.
+
+`CoreAPI.updateBridgeModel(options)`
+
+`options`:
+
+* `modelName` - (required) the name of the bridge model to update.
+* `bridgeModel` - (required) the definition of the bridge model to update.
+* `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ bridgeModel: { /* ... */ } }`
 
 ## Version
 
