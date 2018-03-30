@@ -30,18 +30,17 @@ export const applyGuard = (func, context, args) =>
 export class CoreForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { pending: true, error: null };
+    this.state = { pending: true, error: false, errorType: null };
   }
 
   componentDidMount() {
     this.loadForm(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!deepEqual(this.props, nextProps)) {
+  componentDidUpdate(prevProps) {
+    if (!deepEqual(this.props, prevProps)) {
       this.closeForm();
-      this.setState({ pending: true, error: null });
-      this.loadForm(nextProps);
+      this.loadForm(this.props);
     }
   }
 
@@ -67,6 +66,7 @@ export class CoreForm extends Component {
   }
 
   loadForm(props) {
+    this.setState({ pending: true, error: false, errorType: null });
     this.form = new Promise(resolve => {
       this.getGlobalsPromise().then(() => {
         K.load({
@@ -74,11 +74,11 @@ export class CoreForm extends Component {
           container: this.container,
           loaded: form => {
             resolve(form);
-            this.setState({ pending: false });
+            this.setState({ pending: false, error: false, errorType: null });
             applyGuard(props.onLoaded || props.loaded, undefined, [form]);
           },
           unauthorized: (...args) => {
-            this.setState({ error: 'unauthorized' });
+            this.setState({ errorType: 'unauthorized' });
             applyGuard(
               props.onUnauthorized || props.unauthorized,
               undefined,
@@ -86,15 +86,15 @@ export class CoreForm extends Component {
             );
           },
           forbidden: (...args) => {
-            this.setState({ error: 'forbidden' });
+            this.setState({ errorType: 'forbidden' });
             applyGuard(props.onForbidden || props.forbidden, undefined, args);
           },
           notFound: (...args) => {
-            this.setState({ error: 'notFound' });
+            this.setState({ errorType: 'notFound' });
             applyGuard(props.onNotFound || props.notFound, undefined, args);
           },
           error: (...args) => {
-            this.setState({ pending: false });
+            this.setState({ pending: false, error: true });
             applyGuard(props.onError || props.error, undefined, args);
           },
           created: props.onCreated || props.created,
@@ -120,14 +120,19 @@ export class CoreForm extends Component {
         />
         {this.state.pending &&
           this.props.pendingComponent && <this.props.pendingComponent />}
-        {this.state.error === 'unauthorized' &&
+        {this.state.errorType === 'unauthorized' &&
           this.props.unauthorizedComponent && (
             <this.props.unauthorizedComponent />
           )}
-        {this.state.error === 'forbidden' &&
+        {this.state.errorType === 'forbidden' &&
           this.props.forbiddenComponent && <this.props.forbiddenComponent />}
-        {this.state.error === 'notFound' &&
+        {this.state.errorType === 'notFound' &&
           this.props.notFoundComponent && <this.props.notFoundComponent />}
+        {this.state.error &&
+          !this.state.errorType &&
+          this.props.unexpectedErrorComponent && (
+            <this.props.unexpectedErrorComponent />
+          )}
       </div>
     );
   }
