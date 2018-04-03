@@ -1,5 +1,7 @@
 pipeline {
-  agent any
+  agent {
+    label 'base-template'
+  }
   stages {
     stage('Prepare Environment') {
       steps {
