@@ -53,6 +53,28 @@ export const fetchForm = (options = {}) => {
   return promise;
 };
 
+export const createForm = (options = {}) => {
+  const { kappSlug = bundle.kappSlug(), form, datastore } = options;
+  if (!kappSlug && !datastore) {
+    throw new Error('createForm failed! The option "kappSlug" is required.');
+  }
+  if (!form) {
+    throw new Error('createForm failed! The option "form" is required.');
+  }
+
+  const path = datastore
+    ? `${bundle.apiLocation()}/datastore/forms`
+    : `${bundle.apiLocation()}/kapps/${kappSlug}/forms`;
+
+  return axios
+    .post(path, serializeAttributes(form, 'attributes'), {
+      params: paramBuilder(options),
+    })
+    .then(response => ({ form: response.data.form }))
+    .then(deserializeAttributes('attributes', 'form'))
+    .catch(handleErrors);
+};
+
 export const updateForm = (options = {}) => {
   const { kappSlug = bundle.kappSlug(), formSlug, form, datastore } = options;
   if (!kappSlug && !datastore) {

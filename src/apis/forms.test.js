@@ -1,6 +1,6 @@
 import axios from 'axios';
 import createError from 'axios/lib/core/createError';
-import { fetchForm, fetchForms, updateForm } from './forms';
+import { createForm, fetchForm, fetchForms, updateForm } from './forms';
 import { FormBuilder } from '../test_utils/form_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
 import { fetchDocMarkdown } from '../test_utils/docs';
@@ -148,6 +148,153 @@ describe('forms api', () => {
           },
         );
       });
+    });
+  });
+
+  describe('createForm', () => {
+    beforeEach(() => {
+      axios.post.mockReset();
+    });
+
+    test('success', async () => {
+      axios.post.mockResolvedValue({
+        status: 200,
+        data: {
+          form: {
+            name: 'Test Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+        },
+      });
+      const { form, error, errors, serverError } = await createForm({
+        kappSlug: 'catalog',
+        form: { name: 'Test Form', attributes: { Icon: ['fa-gear'] } },
+        include: 'attributes,pages',
+      });
+      expect(axios.post.mock.calls).toEqual([
+        [
+          'form/app/api/v1/kapps/catalog/forms',
+          {
+            name: 'Test Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+          { params: { include: 'attributes,pages' } },
+        ],
+      ]);
+      expect(form).toEqual({
+        name: 'Test Form',
+        attributes: { Icon: ['fa-gear'] },
+      });
+      expect(error).toBeUndefined();
+      expect(errors).toBeUndefined();
+      expect(serverError).toBeUndefined();
+    });
+
+    test('datastore form', async () => {
+      axios.post.mockResolvedValue({
+        status: 200,
+        data: {
+          form: {
+            name: 'Test Datastore Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+        },
+      });
+      const { form, error, errors, serverError } = await createForm({
+        datastore: true,
+        form: {
+          name: 'Test Datastore Form',
+          attributes: { Icon: ['fa-gear'] },
+        },
+        include: 'attributes,pages',
+      });
+      expect(axios.post.mock.calls).toEqual([
+        [
+          'form/app/api/v1/datastore/forms',
+          {
+            name: 'Test Datastore Form',
+            attributes: [{ name: 'Icon', values: ['fa-gear'] }],
+          },
+          { params: { include: 'attributes,pages' } },
+        ],
+      ]);
+      expect(form).toEqual({
+        name: 'Test Datastore Form',
+        attributes: { Icon: ['fa-gear'] },
+      });
+      expect(error).toBeUndefined();
+      expect(errors).toBeUndefined();
+      expect(serverError).toBeUndefined();
+    });
+
+    test('defaults to bundle.kappSlug() when no kappSlug provided', async () => {
+      axios.post.mockResolvedValue({ status: 200, data: {} });
+      await createForm({ form: { name: 'Test' } });
+      expect(axios.post.mock.calls).toEqual([
+        [
+          'form/app/api/v1/kapps/mock-kapp/forms',
+          { name: 'Test' },
+          { params: {} },
+        ],
+      ]);
+    });
+
+    test('missing form', () => {
+      expect(() => {
+        createForm({});
+      }).toThrow('createForm failed! The option "form" is required.');
+    });
+
+    test('missing kappSlug', () => {
+      // Note that we need to set it to null becuse by default if kappSlug is
+      // not passed (undefined) it checks the 'bundle' helper.
+      expect(() => {
+        createForm({ form: {}, kappSlug: null });
+      }).toThrow('createForm failed! The option "kappSlug" is required.');
+    });
+
+    test('missing kappSlug allowed when datastore is true', () => {
+      axios.post.mockResolvedValue({ status: 200, data: {} });
+      expect(() => {
+        createForm({
+          form: {},
+          kappSlug: null,
+          datastore: true,
+        });
+      }).not.toThrowError();
+    });
+
+    test('bad request', async () => {
+      axios.post.mockRejectedValue(
+        createError('Request failed with status code 400', null, 400, null, {
+          status: 400,
+          statusText: 'Bad Request',
+          data: { error: 'Invalid form' },
+        }),
+      );
+      const { form, error, errors, serverError } = await createForm({
+        form: { name: null },
+      });
+      expect(form).toBeUndefined();
+      expect(error).toBe('Invalid form');
+      expect(errors).toBeUndefined();
+      expect(serverError).toBeUndefined();
+    });
+
+    test('serverError', async () => {
+      axios.post.mockRejectedValue(
+        createError('Request failed with status code 403', null, 403, null, {
+          status: 403,
+          statusText: 'Forbidden',
+        }),
+      );
+      const { form, error, errors, serverError } = await createForm({
+        form: { name: 'Test' },
+      });
+      expect(form).toBeUndefined();
+      expect(error).toBeUndefined();
+      expect(errors).toBeUndefined();
+      expect(serverError).toEqual({ status: 403, statusText: 'Forbidden' });
     });
   });
 
