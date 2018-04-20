@@ -17,9 +17,17 @@ import * as UsersAPI from './apis/users';
 import * as BridgedResourcesAPI from './apis/bridgedresources';
 import * as VersionAPI from './apis/version';
 import { deserializeAttributes, serializeAttributes } from './apis/http';
+import axios from 'axios';
 
 // Export helpers.
 export { K, bundle, loadable };
+
+const addRequestInterceptor = (fulfilled, rejected) => {
+  axios.interceptors.request.use(fulfilled, rejected);
+};
+const addResponseInterceptor = (fulfilled, rejected) => {
+  axios.interceptors.response.use(fulfilled, rejected);
+};
 
 // Export APIs.
 export const CoreAPI = {
@@ -36,6 +44,8 @@ export const CoreAPI = {
   ...VersionAPI,
   deserializeAttributes,
   serializeAttributes,
+  addRequestInterceptor,
+  addResponseInterceptor,
 };
 
 // Export Components.
