@@ -63,7 +63,7 @@ export const handleErrors = error => {
   }
 
   // For all other server-side errors.
-  return { serverError: { status, statusText } };
+  return { serverError: { status, statusText, error: data && data.error } };
 };
 
 export const paramBuilder = options => {
