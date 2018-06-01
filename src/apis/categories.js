@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { deserializeAttributes, handleErrors, paramBuilder } from './http';
+import { deserializeAttributes, handleErrors, headerBuilder, paramBuilder } from './http';
 
 export const fetchCategories = (options = {}) => {
   const {
@@ -10,6 +10,7 @@ export const fetchCategories = (options = {}) => {
   // Build URL and fetch the categories.
   let promise = axios.get(`${bundle.apiLocation()}/kapps/${kappSlug}/categories`, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
   // Remove the response envelop and leave us with the categories one.
   promise = promise.then(response => ({ categories: response.data.categories }));
@@ -34,6 +35,7 @@ export const fetchCategory = (options = {}) => {
   // Build URL and fetch the category.
   let promise = axios.get(`${bundle.apiLocation()}/kapps/${kappSlug}/categories/${categorySlug}`, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
   // Remove the response envelop and leave us with the category one.
   promise = promise.then(response => ({ category: response.data.category }));

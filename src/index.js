@@ -16,7 +16,11 @@ import * as ProfileAPI from './apis/profile';
 import * as UsersAPI from './apis/users';
 import * as BridgedResourcesAPI from './apis/bridgedresources';
 import * as VersionAPI from './apis/version';
-import { deserializeAttributes, serializeAttributes } from './apis/http';
+import {
+  deserializeAttributes,
+  serializeAttributes,
+  setDefaultAuthAssumed
+} from './apis/http';
 import axios from 'axios';
 
 // Export helpers.
@@ -46,6 +50,7 @@ export const CoreAPI = {
   serializeAttributes,
   addRequestInterceptor,
   addResponseInterceptor,
+  setDefaultAuthAssumed,
 };
 
 // Export Components.

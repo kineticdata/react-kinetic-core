@@ -1,5 +1,16 @@
 import { bundle } from '../core-helpers';
 
+// The `X-Kinetic-AuthAssumed` header was added in version 2.2 of Kinetic Core.
+// You can add this if you are expecting to be authenticated for a request to
+// get a 401 instead of a partial list of the data if you are not authenticated.
+// Since many bundles (like request-ce-bundle-kinetic) will want it to always
+// behave this way we let you tell CoreAPI to always add this header to the api
+// calls instead of manually adding it to all usages of CoreAPI functions.
+export let defaultAuthAssumed = false;
+export const setDefaultAuthAssumed = boolean => {
+  defaultAuthAssumed = boolean;
+};
+
 export const deserializeAttributes = (attributeKey, envelop) => result => {
   const xlatable = envelop ? result[envelop] : result;
 
@@ -82,6 +93,22 @@ export const paramBuilder = options => {
   }
 
   return params;
+};
+
+export const headerBuilder = options => {
+  const headers = {};
+  // CAREFUL to not override falsey values explicitly passed in options, hence
+  // the nested if statement.
+  if (options.hasOwnProperty('authAssumed')) {
+    if (options.authAssumed) {
+      headers['X-Kinetic-AuthAssumed'] = 'true'
+    }
+  } else {
+    if (defaultAuthAssumed) {
+      headers['X-Kinetic-AuthAssumed'] = 'true';
+    }
+  }
+  return headers;
 };
 
 export const formPath = ({ form, kapp, datastore }) =>

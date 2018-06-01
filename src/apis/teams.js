@@ -5,12 +5,14 @@ import {
   serializeAttributes,
   handleErrors,
   paramBuilder,
+  headerBuilder,
 } from './http';
 
 export const fetchTeams = (options = {}) => {
   // Build URL and fetch the space.
   let promise = axios.get(`${bundle.apiLocation()}/teams`, {
     params: { ...paramBuilder(options), archived: options.archived },
+    headers: headerBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ teams: response.data.teams }));
@@ -34,6 +36,7 @@ export const fetchTeam = (options = {}) => {
   // Build URL and fetch the space.
   let promise = axios.get(`${bundle.apiLocation()}/teams/${teamSlug}`, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ team: response.data.team }));
@@ -64,6 +67,7 @@ export const updateTeam = (options = {}) => {
   // Build URL and fetch the space.
   let promise = axios.put(`${bundle.apiLocation()}/teams/${teamSlug}`, team, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ team: response.data.team }));
@@ -89,6 +93,7 @@ export const createTeam = (options = {}) => {
   // Build URL and fetch the space.
   let promise = axios.post(`${bundle.apiLocation()}/teams`, team, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.
   promise = promise.then(response => ({ team: response.data.team }));
@@ -112,6 +117,7 @@ export const deleteTeam = (options = {}) => {
   // Build URL and fetch the space.
   let promise = axios.delete(`${bundle.apiLocation()}/teams/${teamSlug}`, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
   // Remove the response envelop and leave us with the space one.
   // promise = promise.then(response => ({ team: response.data.team }));

@@ -120,7 +120,7 @@ describe('space api', () => {
             name: 'Foo',
             attributes: [{ name: 'Company Name', values: ['Foo Bar'] }],
           },
-          { params: { include: 'attributes' } },
+          { params: { include: 'attributes' }, headers: {} },
         ],
       ]);
       expect(space).toEqual({

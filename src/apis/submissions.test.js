@@ -441,7 +441,7 @@ describe('#createSubmission', () => {
         expect(axios.post).toHaveBeenCalledWith(
           'mock-space/app/api/v1/kapps/mock-kapp/forms/ipad-request/submissions',
           { values },
-          { params: { completed: true } },
+          { params: { completed: true }, headers: {} },
         );
       });
     });
@@ -457,7 +457,7 @@ describe('#createSubmission', () => {
         expect(axios.post).toHaveBeenCalledWith(
           'mock-space/app/api/v1/kapps/catalog/forms/ipad-request/submissions',
           { values },
-          { params: { completed: false } },
+          { params: { completed: false }, headers: {} },
         );
       });
     });

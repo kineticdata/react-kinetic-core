@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { bundle } from '../core-helpers';
-import { deserializeAttributes, serializeAttributes, handleErrors, paramBuilder } from './http';
+import { deserializeAttributes, serializeAttributes, handleErrors, paramBuilder, headerBuilder } from './http';
 
 const PROFILE_ENDPOINT = `${bundle.apiLocation()}/me`;
 
@@ -10,6 +10,7 @@ export const fetchProfile = (options = {}) => {
   // Build URL and fetch the space.
   let promise = axios.get(PROFILE_ENDPOINT, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
 
   // Remove the response envelop and leave us with the space one.
@@ -38,6 +39,7 @@ export const updateProfile = (options = {}) => {
   // Build URL and fetch the space.
   let promise = axios.put(PROFILE_ENDPOINT, profile, {
     params: paramBuilder(options),
+    headers: headerBuilder(options),
   });
 
   // Remove the response envelop and leave us with the space one.
