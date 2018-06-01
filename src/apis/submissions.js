@@ -283,7 +283,7 @@ export class SubmissionSearch {
             query += `${op.lvalue} >= ${nullFix(op.rvalue, false)}`;
             break;
           case 'lteq':
-            query += `${op.lvalue} =< ${nullFix(op.rvalue, false)}`;
+            query += `${op.lvalue} <= ${nullFix(op.rvalue, false)}`;
             break;
 
           case 'between':
