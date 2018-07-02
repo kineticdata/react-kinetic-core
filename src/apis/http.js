@@ -70,7 +70,13 @@ export const handleErrors = error => {
   const { data, status, statusText } = error.response;
   if (status === 400 && typeof data === 'object') {
     // If the errors returned are from server-side validations or constraints.
-    return data.errors ? { errors: data.errors } : data;
+    if (data.errors) {
+      return { errors: data.errors };
+    } else if (data.error) {
+      return { errors: [data.error], error: data.error };
+    } else {
+      return data;
+    }
   }
 
   // For all other server-side errors.
