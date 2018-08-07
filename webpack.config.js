@@ -11,6 +11,7 @@ module.exports = {
   plugins: webpackEnvConfig.plugins,
   devServer: webpackEnvConfig.devServer,
   output: webpackEnvConfig.output,
+  externals: webpackEnvConfig.externals,
   module: {
     rules: [
       {
