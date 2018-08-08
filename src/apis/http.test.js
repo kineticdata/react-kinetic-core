@@ -3,7 +3,8 @@ import {
   headerBuilder,
   serializeAttributes,
   setDefaultAuthAssumed,
-  corePath
+  corePath,
+  handleErrors,
 } from './http';
 
 jest.mock('../core-helpers', () => ({
@@ -16,6 +17,40 @@ jest.mock('../core-helpers', () => ({
 describe('http module', () => {
   describe('#handleErrors', () => {
     // What scenarios do we handle?
+    describe('when there is a 500 with an error object', () => {
+      test('returns an object with "error"', () => {
+        const errorResponse = {
+          response: {
+            status: 500,
+            statusText: 'Internal server error',
+            data: {
+              error: 'There were no attributes, QQ',
+            },
+          },
+        };
+
+        const errorObject = handleErrors(errorResponse);
+        expect(errorObject.serverError.error).toBeDefined();
+        expect(errorObject.serverError.error).toBe(
+          errorResponse.response.data.error,
+        );
+      });
+    });
+    // What scenarios do we handle?
+    describe('when there is a 500 without an error object', () => {
+      test('returns an object without "error"', () => {
+        const errorResponse = {
+          response: {
+            status: 500,
+            statusText: 'Internal server error',
+            data: {},
+          },
+        };
+
+        const errorObject = handleErrors(errorResponse);
+        expect(errorObject.serverError.error).toBeUndefined();
+      });
+    });
   });
 
   describe('#serializeAttributes', () => {
