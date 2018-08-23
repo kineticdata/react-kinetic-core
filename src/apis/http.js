@@ -73,7 +73,7 @@ export const handleErrors = error => {
     if (data.errors) {
       return { errors: data.errors };
     } else if (data.error) {
-      return { errors: [data.error], error: data.error };
+      return { errors: [data.error], ...data };
     } else {
       return data;
     }
@@ -107,7 +107,7 @@ export const headerBuilder = options => {
   // the nested if statement.
   if (options.hasOwnProperty('authAssumed')) {
     if (options.authAssumed) {
-      headers['X-Kinetic-AuthAssumed'] = 'true'
+      headers['X-Kinetic-AuthAssumed'] = 'true';
     }
   } else {
     if (defaultAuthAssumed) {
