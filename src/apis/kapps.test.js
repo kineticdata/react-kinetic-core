@@ -185,7 +185,11 @@ describe('kapps api', () => {
       axios.put.mockResolvedValue({ status: 200, data: {} });
       await updateKapp({ kapp: { name: 'Test' } });
       expect(axios.put.mock.calls).toEqual([
-        ['kapp/app/api/v1/kapps/mock-kapp', { name: 'Test' }, { params: {}, headers: {} }],
+        [
+          'kapp/app/api/v1/kapps/mock-kapp',
+          { name: 'Test' },
+          { params: {}, headers: {} },
+        ],
       ]);
     });
 
@@ -216,7 +220,7 @@ describe('kapps api', () => {
       });
       expect(kapp).toBeUndefined();
       expect(error).toBe('Invalid kapp');
-      expect(errors).toBeUndefined();
+      expect(errors).toEqual(['Invalid kapp']);
       expect(serverError).toBeUndefined();
     });
 

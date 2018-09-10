@@ -151,7 +151,7 @@ describe('space api', () => {
       });
       expect(space).toBeUndefined();
       expect(error).toBe('Invalid space');
-      expect(errors).toBeUndefined();
+      expect(errors).toEqual(['Invalid space']);
       expect(serverError).toBeUndefined();
     });
 

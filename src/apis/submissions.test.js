@@ -116,7 +116,7 @@ describe('SubmissionSearch', () => {
     });
 
     test('adds a less-than-or-equal comparison', () => {
-      expect(search.lteq('attr', 'val').build().query).toEqual('attr =< "val"');
+      expect(search.lteq('attr', 'val').build().query).toEqual('attr <= "val"');
     });
   });
 

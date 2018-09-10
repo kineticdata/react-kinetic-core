@@ -277,7 +277,7 @@ describe('forms api', () => {
       });
       expect(form).toBeUndefined();
       expect(error).toBe('Invalid form');
-      expect(errors).toBeUndefined();
+      expect(errors).toEqual(['Invalid form']);
       expect(serverError).toBeUndefined();
     });
 
@@ -434,7 +434,7 @@ describe('forms api', () => {
       });
       expect(form).toBeUndefined();
       expect(error).toBe('Invalid form');
-      expect(errors).toBeUndefined();
+      expect(errors).toEqual(['Invalid form']);
       expect(serverError).toBeUndefined();
     });
 

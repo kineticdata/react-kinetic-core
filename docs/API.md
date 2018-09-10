@@ -2,62 +2,67 @@
 
 **Table of Contents**
 
-* [API Functions](#api-functions)
-  * [Error Handling](#error-handling)
-  * [Attribute Translation](#attribute-translation)
-  * [Examples](#examples)
-    * [Promises](#promises)
-    * [Sagas](#sagas)
-  * [Profile](#profile)
-    * [fetchProfile](#fetchprofile)
-    * [updateProfile](#updateprofile)
-  * [Users](#users)
-    * [fetchUsers](#fetchusers)
-    * [fetchUser](#fetchuser)
-    * [createUser](#createuser)
-    * [updateUser](#updateuser)
-    * [deleteUser](#deleteuser)
-  * [Teams](#teams)
-    * [fetchTeams](#fetchteams)
-    * [fetchTeam](#fetchteam)
-    * [createTeam](#createteam)
-    * [updateTeam](#updateteam)
-    * [deleteTeam](#deleteteam)
-  * [Space](#space)
-    * [fetchSpace](#fetchspace)
-    * [updateSpace](#updatespace)
-  * [Kapp](#kapp)
-    * [fetchKapps](#fetchkapps)
-    * [fetchKapp](#fetchkapp)
-    * [updateKapp](#updatekapp)
-  * [Forms](#forms)
-    * [fetchForms](#fetchforms)
-    * [fetchForm](#fetchform)
-    * [updateForm](#updateform)
-  * [Categories](#categories)
-    * [fetchCategories](#fetchcategories)
-    * [fetchCategory](#fetchcategory)
-  * [Submissions](#submissions)
-    * [SubmissionSearch](#submissionsearch)
-      * [Equality Functions](#equality-functions)
-      * [Context Functions](#context-functions)
-      * [Sorting Functions](#sorting-functions)
-      * [Metadata Functions](#metadata-functions)
-      * [Date Functions](#date-functions)
-      * [Execution Functions](#execution-functions)
-    * [searchSubmissions](#searchsubmissions)
-    * [fetchSubmission](#fetchsubmission)
-    * [createSubmission](#createsubmission)
-    * [deleteSubmission](#deletesubmission)
-  * [Bridged Resources](#bridged-resources)
-    * [fetchBridgedResource](#fetchbridgedresource)
-    * [countBridgedResource](#countbridgedresource)
-  * [Bridge Models](#bridge-models)
-    * [fetchBridgeModels](#fetchbridgemodels)
-    * [fetchBridgeModel](#fetchbridgemodel)
-    * [createBridgeModel](#createbridgemodel)
-    * [updateBridgeModel](#updatebridgemodel)
-  * [Version](#fetchVersion)
+- [API Functions](#api-functions)
+  - [Error Handling](#error-handling)
+  - [Attribute Translation](#attribute-translation)
+  - [Examples](#examples)
+    - [Promises](#promises)
+    - [Sagas](#sagas)
+  - [Profile](#profile)
+    - [fetchProfile](#fetchprofile)
+    - [updateProfile](#updateprofile)
+  - [Users](#users)
+    - [fetchUsers](#fetchusers)
+    - [fetchUser](#fetchuser)
+    - [createUser](#createuser)
+    - [updateUser](#updateuser)
+    - [deleteUser](#deleteuser)
+  - [Teams](#teams)
+    - [fetchTeams](#fetchteams)
+    - [fetchTeam](#fetchteam)
+    - [createTeam](#createteam)
+    - [updateTeam](#updateteam)
+    - [deleteTeam](#deleteteam)
+  - [Space](#space)
+    - [fetchSpace](#fetchspace)
+    - [updateSpace](#updatespace)
+  - [Kapp](#kapp)
+    - [fetchKapps](#fetchkapps)
+    - [fetchKapp](#fetchkapp)
+    - [updateKapp](#updatekapp)
+  - [Forms](#forms)
+    - [fetchForms](#fetchforms)
+    - [fetchForm](#fetchform)
+    - [updateForm](#updateform)
+  - [Categories](#categories)
+    - [fetchCategories](#fetchcategories)
+    - [fetchCategory](#fetchcategory)
+  - [Submissions](#submissions)
+    - [SubmissionSearch](#submissionsearch)
+      - [Equality Functions](#equality-functions)
+      - [Context Functions](#context-functions)
+      - [Sorting Functions](#sorting-functions)
+      - [Metadata Functions](#metadata-functions)
+      - [Date Functions](#date-functions)
+      - [Execution Functions](#execution-functions)
+    - [searchSubmissions](#searchsubmissions)
+    - [fetchSubmission](#fetchsubmission)
+    - [createSubmission](#createsubmission)
+    - [deleteSubmission](#deletesubmission)
+  - [Bridged Resources](#bridged-resources)
+    - [fetchBridgedResource](#fetchbridgedresource)
+    - [countBridgedResource](#countbridgedresource)
+  - [Bridge Models](#bridge-models)
+    - [fetchBridgeModels](#fetchbridgemodels)
+    - [fetchBridgeModel](#fetchbridgemodel)
+    - [createBridgeModel](#createbridgemodel)
+    - [updateBridgeModel](#updatebridgemodel)
+  - [Attribute Definitions](#attribute-definitions)
+    - [fetchAttributeDefinitions](#fetchAttributeDefinitions)
+    - [fetchAttributeDefinition](#fetchAttributeDefinition)
+    - [createAttributeDefinition](#createAttributeDefinition)
+    - [updateAttributeDefinition](#updateAttributeDefinition)
+  - [Version](#fetchVersion)
 
 <!-- markdown-toc end -->
 
@@ -163,7 +168,7 @@ Fetch the profile of the currently authenticated user.
 
 `options`:
 
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ profile: { /* ... */ } }`
 
@@ -175,8 +180,8 @@ Updates the currently authenticated user's profile.
 
 `options`:
 
-* `profile` - (required) the user object to send to the server.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `profile` - (required) the user object to send to the server.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 ## Users
 
@@ -188,7 +193,7 @@ Fetch all users for the current space.
 
 `options`:
 
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ users: [ { /* ... */ } ] }`
 
@@ -200,8 +205,8 @@ Fetch a specific user by username for the current space.
 
 `options`:
 
-* `username` - (required) The username of the user to retrieve.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `username` - (required) The username of the user to retrieve.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ user: { /* ... */ } }`
 
@@ -213,8 +218,8 @@ Creates a new user in the current space.
 
 `options`:
 
-* `user` - (required) the user object to create/insert.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `user` - (required) the user object to create/insert.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ user: { /* ... */ } }`
 
@@ -226,9 +231,9 @@ Update a user using a username and a user object.
 
 `options`:
 
-* `username` - (required) the username of the user to be updated.
-* `user` - (required) the user object to send to the server.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `username` - (required) the username of the user to be updated.
+- `user` - (required) the user object to send to the server.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 ### deleteUser
 
@@ -238,7 +243,7 @@ Deletes the user specified by the `username` option.
 
 `options`:
 
-* `username` - (required) the username of the user to be deleted.
+- `username` - (required) the username of the user to be deleted.
 
 Resolves: nothing.
 
@@ -252,7 +257,7 @@ Fetch all teams for the current space.
 
 `options`:
 
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ teams: [ { /* ... */ } ] }`
 
@@ -264,8 +269,8 @@ Fetch a specific team by slug for the current space.
 
 `options`:
 
-* `teamSlug` - (required) The slug of the team to retrieve.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `teamSlug` - (required) The slug of the team to retrieve.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ team: { /* ... */ } }`
 
@@ -277,8 +282,8 @@ Creates a new team in the current space.
 
 `options`:
 
-* `team` - (required) the team object to create/insert.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `team` - (required) the team object to create/insert.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ team: { /* ... */ } }`
 
@@ -290,9 +295,9 @@ Update a team using a teamSlug and a team object.
 
 `options`:
 
-* `teamSlug` - (required) the slug of the team to be updated.
-* `team` - (required) the team object to send to the server.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `teamSlug` - (required) the slug of the team to be updated.
+- `team` - (required) the team object to send to the server.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 ### deleteTeam
 
@@ -302,7 +307,7 @@ Deletes the team specified by the `teamSlug` option.
 
 `options`:
 
-* `teamSlug` - (required) the slug of the team to be deleted.
+- `teamSlug` - (required) the slug of the team to be deleted.
 
 Resolves: nothing.
 
@@ -316,7 +321,7 @@ Fetches the current space.
 
 `options`:
 
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ space: { /* ... */ } }`
 
@@ -328,8 +333,8 @@ Updates the current space using the `space` option.
 
 `options`:
 
-* `space` - the space definition used to update the current space.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `space` - the space definition used to update the current space.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ space: { /* ... */ } }`
 
@@ -343,8 +348,8 @@ Fetches all Kapps for the current space.
 
 `options`:
 
-* `include` - API include parameters (see Kinetic CE reference documentation).
-* `manage` - only return kapps the user can manage if set to true (optional - defaults to false).
+- `include` - API include parameters (see Kinetic CE reference documentation).
+- `manage` - only return kapps the user can manage if set to true (optional - defaults to false).
 
 Resolves: `{ kapps: [{ /* ... */ }] }`
 
@@ -356,8 +361,8 @@ Fetches a Kapp from the current using the `kappSlug` option.
 
 `options`:
 
-* `kappSlug` - the slug of the Kapp to fetch. Defaults to the bundle kapp if not specified.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `kappSlug` - the slug of the Kapp to fetch. Defaults to the bundle kapp if not specified.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ kapp: { /* ... */ } }`
 
@@ -369,9 +374,9 @@ Updates a Kapp using the `kappSlug` and `kapp` options.
 
 `options`:
 
-* `kappSlug` - the slug of the Kapp to update. Defaults to the bundle kapp if not specified.
-* `kapp` - the kapp definition used to update the specified kapp.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `kappSlug` - the slug of the Kapp to update. Defaults to the bundle kapp if not specified.
+- `kapp` - the kapp definition used to update the specified kapp.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ kapp: { /* ... */ } }`
 
@@ -385,9 +390,9 @@ Fetches all forms for the current space and Kapp. The Kapp can be overridden usi
 
 `options`:
 
-* `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
-* `include` - API include parameters (see Kinetic CE reference documentation).
-* `manage` - only return forms the user can manage if set to true (optional - defaults to false).
+- `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+- `include` - API include parameters (see Kinetic CE reference documentation).
+- `manage` - only return forms the user can manage if set to true (optional - defaults to false).
 
 Resolves: `{ forms: [{ /* ... */ }] }`
 
@@ -400,9 +405,9 @@ The Kapp can be overridden using the `kappSlug` option.
 
 `options`:
 
-* `formSlug` - (required) the slug of the form to fetch.
-* `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `formSlug` - (required) the slug of the form to fetch.
+- `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ form: { /* ... */ } }`
 
@@ -415,11 +420,11 @@ The Kapp can be overridden using the `kappSlug` option.
 
 `options`:
 
-* `formSlug` - (required) the slug of the form to fetch.
-* `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
-* `form` - the form definition used to update the specified form.
-* `datastore` - set this to `true` if the form to be updated is a datastore form.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `formSlug` - (required) the slug of the form to fetch.
+- `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+- `form` - the form definition used to update the specified form.
+- `datastore` - set this to `true` if the form to be updated is a datastore form.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ form: { /* ... */ } }`
 
@@ -433,8 +438,8 @@ Fetches all categories for the current space and Kapp. The Kapp can be overridde
 
 `options`:
 
-* `kappSlug` - the slug of the Kapp in which to fetch categories. Defaults to the bundle kapp if not specified.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `kappSlug` - the slug of the Kapp in which to fetch categories. Defaults to the bundle kapp if not specified.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ categories: [{ /* ... */ }] }`
 
@@ -447,9 +452,9 @@ The Kapp can be overridden using the `kappSlug` option.
 
 `options`:
 
-* `categorySlug` - (required) the slug of the category to fetch.
-* `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `categorySlug` - (required) the slug of the category to fetch.
+- `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ category: { /* ... */ } }`
 
@@ -481,11 +486,11 @@ Note that the first two `eq` calls in the example were implicitly `and()` in con
 
 #### Equality Functions
 
-* `eq(element, value)` - add an equality criteria. The element is in the format of `'values[Value Name]'`.
+- `eq(element, value)` - add an equality criteria. The element is in the format of `'values[Value Name]'`.
 
   Example: `search.eq('values[Status]', 'Open')`
 
-* `in(element, values)` - add a list of equalities on a given element. The element is in the format of `'values[Value Name]'` and the values are an array, such as `['Value1', 'Value2']`.
+- `in(element, values)` - add a list of equalities on a given element. The element is in the format of `'values[Value Name]'` and the values are an array, such as `['Value1', 'Value2']`.
 
   Example: `search.in('values[Status]', ['Open', 'In Progress'])`
 
@@ -493,13 +498,13 @@ Note that the first two `eq` calls in the example were implicitly `and()` in con
 
 All context functions group the equality functions between it and the next `end()`. For each context function there must be one `end()` function to close the group.
 
-* `or()` - starts a group of "or" equality statements.
+- `or()` - starts a group of "or" equality statements.
 
   Example: `search.or().eq('values[Status]', 'Open').eq('values[Status]', 'In Progress').end()`
 
   Results in: _Status=Open OR Status=In Progress_
 
-* `and()` - starts a group of "and" equality statements.
+- `and()` - starts a group of "and" equality statements.
 
   Example: `searcher.and().eq('values[Owner]', 'IT').eq('values[Priority]', 'High').end()`
 
@@ -507,7 +512,7 @@ All context functions group the equality functions between it and the next `end(
 
   **Note**: The example above is redundant as the implicit context is an `and` context. This is useful for grouping `and` and `or`.
 
-* `end()` - concludes the most recently started context.
+- `end()` - concludes the most recently started context.
 
   **Note**: Failure to "close" an `and` or `or` context with `end()` will result in an error beign thrown.
 
@@ -515,31 +520,31 @@ All context functions group the equality functions between it and the next `end(
 
 Sorting functions cannot be nested inside of contexts such as `or()` and `and()`, they can only be issued on the outermost, implicit context. If used multiple times the last call is what is used.
 
-* `sortBy(timeline)` - sort by a valid timeline: `closedAt`, `createdAt`, `submittedAt`, `updatedAt`
-* `sortDirection(direction)` - set sort direction to a valid direction: `ASC` or `DESC`.
+- `sortBy(timeline)` - sort by a valid timeline: `closedAt`, `createdAt`, `submittedAt`, `updatedAt`
+- `sortDirection(direction)` - set sort direction to a valid direction: `ASC` or `DESC`.
 
 #### Metadata Functions
 
 Metadata functions cannot be nested inside of contexts such as `or()` and `and()`, they can only be issued on the outermost, implicit context. If used multiple times the last call is what is used.
 
-* `type(type)` - filter submissions by _form type_. Valid form types are defined in the Kapp.. Valid form types are defined in the Kapp. This can only be used if the `searchSubmissions()` call is provided a `kappSlug` option.
-* `coreState(state)` - filter submissions by a valid core state: `'Draft'`, `'Submitted'`, `'Closed'`. If you set a core state other than `'Draft'` you **must** also set a `startDate()` and `endDate()`.
-* `limit(num)` - limit the number of submissions returned. The default limit is 25, as determined by the Kinetic CE server. The maximum, also determined by the server, is 1000.
-* `pageToken(toke)` - when `limit()` is used the resulting request will contain a `nextPageToken` key. Provide that value to the `pageToken()` function to get additional results.
-* `include(key)` - include additional data in the return, e.g. `'form'` to get the form object that this submission is based on. This may be called multiple times to accumulate many includes.
-* `includes(keys)` - include addition data in the return. This variant takes an array instead: `search.includes(['form', 'form.attributes'])`
+- `type(type)` - filter submissions by _form type_. Valid form types are defined in the Kapp.. Valid form types are defined in the Kapp. This can only be used if the `searchSubmissions()` call is provided a `kappSlug` option.
+- `coreState(state)` - filter submissions by a valid core state: `'Draft'`, `'Submitted'`, `'Closed'`. If you set a core state other than `'Draft'` you **must** also set a `startDate()` and `endDate()`.
+- `limit(num)` - limit the number of submissions returned. The default limit is 25, as determined by the Kinetic CE server. The maximum, also determined by the server, is 1000.
+- `pageToken(toke)` - when `limit()` is used the resulting request will contain a `nextPageToken` key. Provide that value to the `pageToken()` function to get additional results.
+- `include(key)` - include additional data in the return, e.g. `'form'` to get the form object that this submission is based on. This may be called multiple times to accumulate many includes.
+- `includes(keys)` - include addition data in the return. This variant takes an array instead: `search.includes(['form', 'form.attributes'])`
 
 #### Date Functions
 
 The date functions cannot be nested inside of contexts such as `or()` and `and()`. The date functions will limit the results based on the currently sorted timeline. This can be changed with the `sortBy()` function. The default timeline is `'createdAt'`. The `date` must be a valid JavaScript `Date` object. The order in which you call these functions does not matter.
 
-* `startDate(date)` - set the start date on the current timeline. The start date must be before the `endDate()`.
-* `endDate(date)` - set the end date on the current timeline. The end date must be before the `startDate()`.
+- `startDate(date)` - set the start date on the current timeline. The start date must be before the `endDate()`.
+- `endDate(date)` - set the end date on the current timeline. The end date must be before the `startDate()`.
 
 #### Execution Functions
 
-* `build()` - takes all of the search criteria and metadata and builders the search request params.
-* `raw()` - provides access to the raw query data, for troubleshooting purposes.
+- `build()` - takes all of the search criteria and metadata and builders the search request params.
+- `raw()` - provides access to the raw query data, for troubleshooting purposes.
 
 ### searchSubmissions
 
@@ -549,9 +554,9 @@ Executes the results of a built `CoreAPI.SubmissionSearch` generator. See the ex
 
 `options`:
 
-* `form` - the slug of the form to limit the search to.
-* `kapp` - the slug of the Kapp to limit the search to. If not provided this defaults to the bundle's current Kapp.
-* `search` - the results of `SubmissionAPI.SubmissionSearch#build`. The search criteria and metadata.
+- `form` - the slug of the form to limit the search to.
+- `kapp` - the slug of the Kapp to limit the search to. If not provided this defaults to the bundle's current Kapp.
+- `search` - the results of `SubmissionAPI.SubmissionSearch#build`. The search criteria and metadata.
 
 Resolves:
 
@@ -571,8 +576,8 @@ Fetches a specific submission by ID.
 
 `options`:
 
-* `id` - (required) the ID of the submission to fetch.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `id` - (required) the ID of the submission to fetch.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 ### createSubmission
 
@@ -582,14 +587,14 @@ Create a submission based on a specific form.
 
 `options`:
 
-* `kappSlug` - the slug of the Kapp the form belongs to. If not specified this will default to the current bundle's Kapp.
-* `formSlug` - (required) the slug of the form this submission is based upon.
-* `values` - (required) the values to submit.
+- `kappSlug` - the slug of the Kapp the form belongs to. If not specified this will default to the current bundle's Kapp.
+- `formSlug` - (required) the slug of the form this submission is based upon.
+- `values` - (required) the values to submit.
 
   Example: `const values = { 'Field A': 'Value A', 'Field B': 'Value B' }`
 
-* `completed` - true/false flag whether submission as complete or not. Default is true.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `completed` - true/false flag whether submission as complete or not. Default is true.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 ### deleteSubmission
 
@@ -599,8 +604,8 @@ Delete a submission given a specific ID.
 
 `options`:
 
-* `id` - (required) the ID of the submission to fetch.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `id` - (required) the ID of the submission to fetch.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 ## Bridged Resources
 
@@ -612,13 +617,13 @@ Fetches data from a bridged resource.
 
 `options`:
 
-* `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
-* `formSlug` - (required) the slug of the form on which the resource is defined.
-* `bridgedResourceName` - (required) the name of the bridged resource.
-* `limit` - the maximum number of records to retrieve.
-* `offset` - the offset of the first record to retrieve.
-* `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
-* `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
+- `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
+- `formSlug` - (required) the slug of the form on which the resource is defined.
+- `bridgedResourceName` - (required) the name of the bridged resource.
+- `limit` - the maximum number of records to retrieve.
+- `offset` - the offset of the first record to retrieve.
+- `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
+- `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
 
 When a single record is returned it resolves:
 
@@ -641,13 +646,13 @@ Fetches a count of the number of records that match a bridge query.
 
 `options`:
 
-* `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
-* `formSlug` - (required) the slug of the form on which the resource is defined.
-* `bridgedResourceName` - (required) the name of the bridged resource.
-* `limit` - the maximum number of records to retrieve.
-* `offset` - the offset of the first record to retrieve.
-* `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
-* `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
+- `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
+- `formSlug` - (required) the slug of the form on which the resource is defined.
+- `bridgedResourceName` - (required) the name of the bridged resource.
+- `limit` - the maximum number of records to retrieve.
+- `offset` - the offset of the first record to retrieve.
+- `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
+- `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
 
 Resolves:
 
@@ -663,7 +668,7 @@ Fetches all bridge models for the current space.
 
 `options`:
 
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ bridgeModels: [{ /* ... */ }] }`
 
@@ -675,8 +680,8 @@ Fetches bridge model specified by the `modelName` option.
 
 `options`:
 
-* `modelName` - (required) the name of the bridge model to retrieve.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `modelName` - (required) the name of the bridge model to retrieve.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ bridgeModel: { /* ... */ } }`
 
@@ -688,8 +693,8 @@ Creates a bridge model using the `bridgeModel` option.
 
 `options`:
 
-* `bridgeModel` - (required) the definition of the bridge model to create.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `bridgeModel` - (required) the definition of the bridge model to create.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ bridgeModel: { /* ... */ } }`
 
@@ -701,11 +706,104 @@ Updates a bridge model using the `modelName` and `bridgeModel` options.
 
 `options`:
 
-* `modelName` - (required) the name of the bridge model to update.
-* `bridgeModel` - (required) the definition of the bridge model to update.
-* `include` - API include parameters (see Kinetic CE reference documentation).
+- `modelName` - (required) the name of the bridge model to update.
+- `bridgeModel` - (required) the definition of the bridge model to update.
+- `include` - API include parameters (see Kinetic CE reference documentation).
 
 Resolves: `{ bridgeModel: { /* ... */ } }`
+
+## Attribute Definitions
+
+### fetchAttributeDefinitions
+
+Fetches all attribute definitions for a provided attributeType.
+
+`CoreAPI.fetchAttributeDefinitions(options)`
+
+`options`:
+
+- `include` - API include parameters (see Kinetic CE reference documentation).
+- `attributeType` - (Required) - the type of attribute definition to retrieve. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+
+Resolves: `{ attributeDefinitions: [{ /* ... */ }] }`
+
+### fetchAttributeDefinition
+
+Fetches an attribute definition by the `name` option for a given attribute type.
+
+`CoreAPI.fetchAttributeDefinition(options)`
+
+`options`:
+
+- `attributeType` - (Required) - the type of attribute definition to retrieve. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+- `name` - (Required) - the name of the attribute to retrieve
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ attributeDefinition: { /* ... */ } }`
+
+### createAttributeDefinition
+
+Creates an attribute definition for a given attribute type.
+
+`CoreAPI.createAttributeDefinition(options)`
+
+`options`:
+
+- `name` - (required) the name of the attribute to create.
+- `attributeType` - (Required) - the type of attribute definition to create. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+- `description` - the description of the attribute to create
+- `allowsMultiple` - if the attribute definition allows multiple values
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ attributeDefinition: { /* ... */ } }`
+
+### updateAttributeDefinition
+
+Updates an attribute definition by the `name` option for a given attribute type.
+
+`CoreAPI.updateAttributeDefinition(options)`
+
+`options`:
+
+- `name` - (required) the name of the attribute to update.
+- `attributeType` - (Required) - the type of attribute definition to update. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+- `description` - the description of the attribute to update
+- `allowsMultiple` - if the attribute definition allows multiple values
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ attributeDefinition: { /* ... */ } }`
 
 ## Version
 

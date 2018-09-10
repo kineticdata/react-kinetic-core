@@ -5,6 +5,7 @@ import { K, bundle } from './core-helpers';
 import { loadable } from './components/utils/loadable';
 
 // APIs
+import * as AttributeDefinitionsAPI from './apis/attributeDefinitions';
 import * as BridgeModelsAPI from './apis/bridgeModels';
 import * as CategoriesAPI from './apis/categories';
 import * as FormsAPI from './apis/forms';
@@ -19,7 +20,7 @@ import * as VersionAPI from './apis/version';
 import {
   deserializeAttributes,
   serializeAttributes,
-  setDefaultAuthAssumed
+  setDefaultAuthAssumed,
 } from './apis/http';
 import axios from 'axios';
 
@@ -35,6 +36,7 @@ const addResponseInterceptor = (fulfilled, rejected) => {
 
 // Export APIs.
 export const CoreAPI = {
+  ...AttributeDefinitionsAPI,
   ...BridgeModelsAPI,
   ...CategoriesAPI,
   ...FormsAPI,

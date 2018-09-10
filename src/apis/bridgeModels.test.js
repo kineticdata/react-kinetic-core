@@ -31,7 +31,10 @@ describe('bridgeModels api', () => {
       });
       const result = await fetchBridgeModels({ include: 'attributes' });
       expect(axios.get.mock.calls).toEqual([
-        ['space/app/api/v1/models', { params: { include: 'attributes' }, headers: {} }],
+        [
+          'space/app/api/v1/models',
+          { params: { include: 'attributes' }, headers: {} },
+        ],
       ]);
       expect(result).toEqual({
         bridgeModels: [{ name: 'Person' }, { name: 'Building' }],
@@ -47,7 +50,10 @@ describe('bridgeModels api', () => {
       );
       const result = await fetchBridgeModels({ include: 'attributes' });
       expect(axios.get.mock.calls).toEqual([
-        ['space/app/api/v1/models', { params: { include: 'attributes' }, headers: {} }],
+        [
+          'space/app/api/v1/models',
+          { params: { include: 'attributes' }, headers: {} },
+        ],
       ]);
       expect(result).toEqual({
         serverError: { status: 403, statusText: 'Forbidden' },
@@ -163,6 +169,7 @@ describe('bridgeModels api', () => {
       });
       expect(result).toEqual({
         error: 'Invalid Bridge Model',
+        errors: ['Invalid Bridge Model'],
       });
     });
 
@@ -243,6 +250,7 @@ describe('bridgeModels api', () => {
       });
       expect(result).toEqual({
         error: 'Invalid Bridge Model',
+        errors: ['Invalid Bridge Model'],
       });
     });
 
