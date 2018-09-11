@@ -8,35 +8,43 @@
   - [Examples](#examples)
     - [Promises](#promises)
     - [Sagas](#sagas)
-  - [Profile](#profile)
-    - [fetchProfile](#fetchprofile)
-    - [updateProfile](#updateprofile)
-  - [Users](#users)
-    - [fetchUsers](#fetchusers)
-    - [fetchUser](#fetchuser)
-    - [createUser](#createuser)
-    - [updateUser](#updateuser)
-    - [deleteUser](#deleteuser)
-  - [Teams](#teams)
-    - [fetchTeams](#fetchteams)
-    - [fetchTeam](#fetchteam)
-    - [createTeam](#createteam)
-    - [updateTeam](#updateteam)
-    - [deleteTeam](#deleteteam)
-  - [Space](#space)
-    - [fetchSpace](#fetchspace)
-    - [updateSpace](#updatespace)
-  - [Kapp](#kapp)
-    - [fetchKapps](#fetchkapps)
-    - [fetchKapp](#fetchkapp)
-    - [updateKapp](#updatekapp)
+  - [Attribute Definitions](#attribute-definitions)
+    - [fetchAttributeDefinitions](#fetchAttributeDefinitions)
+    - [fetchAttributeDefinition](#fetchAttributeDefinition)
+    - [createAttributeDefinition](#createAttributeDefinition)
+    - [updateAttributeDefinition](#updateAttributeDefinition)
+  - [Bridge Models](#bridge-models)
+    - [fetchBridgeModels](#fetchbridgemodels)
+    - [fetchBridgeModel](#fetchbridgemodel)
+    - [createBridgeModel](#createbridgemodel)
+    - [updateBridgeModel](#updatebridgemodel)
+  - [Bridged Resources](#bridged-resources)
+    - [fetchBridgedResource](#fetchbridgedresource)
+    - [countBridgedResource](#countbridgedresource)
+  - [Categories](#categories)
+    - [fetchCategories](#fetchcategories)
+    - [fetchCategory](#fetchcategory)
+    - [createCategory](#createcategory)
+    - [updateCategory](#updatecategory)
   - [Forms](#forms)
     - [fetchForms](#fetchforms)
     - [fetchForm](#fetchform)
     - [updateForm](#updateform)
-  - [Categories](#categories)
-    - [fetchCategories](#fetchcategories)
-    - [fetchCategory](#fetchcategory)
+  - [Kapp](#kapp)
+    - [fetchKapps](#fetchkapps)
+    - [fetchKapp](#fetchkapp)
+    - [updateKapp](#updatekapp)
+  - [Profile](#profile)
+    - [fetchProfile](#fetchprofile)
+    - [updateProfile](#updateprofile)
+  - [Security Policy Definitions](#security-policy-definitions)
+    - [fetchSecurityPolicyDefinitions](#fetchSecurityPolicyDefinitions)
+    - [fetchSecurityPolicyDefinition](#fetchSecurityPolicyDefinition)
+    - [createSecurityPolicyDefinition](#createSecurityPolicyDefinition)
+    - [updateSecurityPolicyDefinition](#updateSecurityPolicyDefinition)
+  - [Space](#space)
+    - [fetchSpace](#fetchspace)
+    - [updateSpace](#updatespace)
   - [Submissions](#submissions)
     - [SubmissionSearch](#submissionsearch)
       - [Equality Functions](#equality-functions)
@@ -49,20 +57,24 @@
     - [fetchSubmission](#fetchsubmission)
     - [createSubmission](#createsubmission)
     - [deleteSubmission](#deletesubmission)
-  - [Bridged Resources](#bridged-resources)
-    - [fetchBridgedResource](#fetchbridgedresource)
-    - [countBridgedResource](#countbridgedresource)
-  - [Bridge Models](#bridge-models)
-    - [fetchBridgeModels](#fetchbridgemodels)
-    - [fetchBridgeModel](#fetchbridgemodel)
-    - [createBridgeModel](#createbridgemodel)
-    - [updateBridgeModel](#updatebridgemodel)
-  - [Attribute Definitions](#attribute-definitions)
-    - [fetchAttributeDefinitions](#fetchAttributeDefinitions)
-    - [fetchAttributeDefinition](#fetchAttributeDefinition)
-    - [createAttributeDefinition](#createAttributeDefinition)
-    - [updateAttributeDefinition](#updateAttributeDefinition)
+  - [Teams](#teams)
+    - [fetchTeams](#fetchteams)
+    - [fetchTeam](#fetchteam)
+    - [createTeam](#createteam)
+    - [updateTeam](#updateteam)
+    - [deleteTeam](#deleteteam)
+  - [Users](#users)
+    - [fetchUsers](#fetchusers)
+    - [fetchUser](#fetchuser)
+    - [createUser](#createuser)
+    - [updateUser](#updateuser)
+    - [deleteUser](#deleteuser)
   - [Version](#fetchVersion)
+  - [Webhooks](#webhooks)
+    - [fetchWebhooks](#fetchWebhooks)
+    - [fetchWebhook](#fetchWebhook)
+    - [createWebhook](#createWebhook)
+    - [updateWebhook](#updateWebhook)
 
 <!-- markdown-toc end -->
 
@@ -158,227 +170,262 @@ export function* fetchTeamsSaga() {
 }
 ```
 
-## Profile
+## Attribute Definitions
 
-### fetchProfile
+### fetchAttributeDefinitions
 
-Fetch the profile of the currently authenticated user.
+Fetches all attribute definitions for a provided attributeType.
 
-`CoreAPI.fetchProfile(options)`
+`CoreAPI.fetchAttributeDefinitions(options)`
+
+`options`:
+
+- `include` - API include parameters (see Kinetic CE reference documentation).
+- `attributeType` - (Required) - the type of attribute definition to retrieve. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+
+Resolves: `{ attributeDefinitions: [{ /* ... */ }] }`
+
+### fetchAttributeDefinition
+
+Fetches an attribute definition by the `attributeName` option for a given attribute type.
+
+`CoreAPI.fetchAttributeDefinition(options)`
+
+`options`:
+
+- `attributeType` - (required) - the type of attribute definition to retrieve. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+- `attributeName` - (required) - the name of the attribute to retrieve
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ attributeDefinition: { /* ... */ } }`
+
+### createAttributeDefinition
+
+Creates an attribute definition for a given attribute type.
+
+`CoreAPI.createAttributeDefinition(options)`
+
+`options`:
+
+- `attributeName` - (required) the name of the attribute to create.
+- `attributeType` - (required) - the type of attribute definition to create. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+- `attributeDefinition` - (required) the body of the attribute definition (see Kinetic CE reference documentation)
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ attributeDefinition: { /* ... */ } }`
+
+### updateAttributeDefinition
+
+Updates an attribute definition by the `attributeName` option for a given attribute type.
+
+`CoreAPI.updateAttributeDefinition(options)`
+
+`options`:
+
+- `attributeName` - (required) the name of the attribute to update.
+- `attributeType` - (fequired) - the type of attribute definition to update. Valid Types are
+  - spaceAttributeDefinitions
+  - userAttributeDefinitions
+  - userProfileAttributeDefinitions
+  - teamAttributeDefinitions
+  - categoryAttributeDefinitions
+  - formAttributeDefinitions
+  - kappAttributeDefinitions
+  - datastoreFormAttributeDefinitions
+- `attributeDefinition` - the body of the attribute definition (see Kinetic CE reference documentation)
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ attributeDefinition: { /* ... */ } }`
+
+## Bridge Models
+
+### fetchBridgeModels
+
+Fetches all bridge models for the current space.
+
+`CoreAPI.fetchBridgeModels(options)`
 
 `options`:
 
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ profile: { /* ... */ } }`
+Resolves: `{ bridgeModels: [{ /* ... */ }] }`
 
-### updateProfile
+### fetchBridgeModel
 
-Updates the currently authenticated user's profile.
+Fetches bridge model specified by the `modelName` option.
 
-`CoreAPI.updateProfile(options)`
+`CoreAPI.fetchBridgeModel(options)`
 
 `options`:
 
-- `profile` - (required) the user object to send to the server.
+- `modelName` - (required) the name of the bridge model to retrieve.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-## Users
+Resolves: `{ bridgeModel: { /* ... */ } }`
 
-### fetchUsers
+### createBridgeModel
 
-Fetch all users for the current space.
+Creates a bridge model using the `bridgeModel` option.
 
-`CoreAPI.fetchUsers(options)`
+`CoreAPI.createBridgeModel(options)`
 
 `options`:
 
+- `bridgeModel` - (required) the definition of the bridge model to create.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ users: [ { /* ... */ } ] }`
+Resolves: `{ bridgeModel: { /* ... */ } }`
 
-### fetchUser
+### updateBridgeModel
 
-Fetch a specific user by username for the current space.
+Updates a bridge model using the `modelName` and `bridgeModel` options.
 
-`CoreAPI.fetchUser(options)`
+`CoreAPI.updateBridgeModel(options)`
 
 `options`:
 
-- `username` - (required) The username of the user to retrieve.
+- `modelName` - (required) the name of the bridge model to update.
+- `bridgeModel` - (required) the definition of the bridge model to update.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ user: { /* ... */ } }`
+Resolves: `{ bridgeModel: { /* ... */ } }`
 
-### createUser
+## Bridged Resources
 
-Creates a new user in the current space.
+### fetchBridgedResource
 
-`CoreAPI.createUser(options)`
+Fetches data from a bridged resource.
+
+`CoreAPI.fetchBridgedResource(options)`
 
 `options`:
 
-- `user` - (required) the user object to create/insert.
+- `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
+- `formSlug` - (required) the slug of the form on which the resource is defined.
+- `bridgedResourceName` - (required) the name of the bridged resource.
+- `limit` - the maximum number of records to retrieve.
+- `offset` - the offset of the first record to retrieve.
+- `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
+- `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
+
+When a single record is returned it resolves:
+
+`{ record: { 'Field A': 'Value A'} }`
+
+When multiple records are returned it resolves:
+
+```
+{
+  records: [{ 'Field A', 'Value A' }, { /* ... */ }],
+  metadata: { count: 2, nextPageToken: '...' }
+}
+```
+
+### countBridgedResource
+
+Fetches a count of the number of records that match a bridge query.
+
+`CoreAPI.countBridgedResource(options)`
+
+`options`:
+
+- `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
+- `formSlug` - (required) the slug of the form on which the resource is defined.
+- `bridgedResourceName` - (required) the name of the bridged resource.
+- `limit` - the maximum number of records to retrieve.
+- `offset` - the offset of the first record to retrieve.
+- `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
+- `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
+
+Resolves:
+
+`{ count: 2 }`
+
+## Categories
+
+### fetchCategories
+
+Fetches all categories for the current space and Kapp. The Kapp can be overridden using the `kappSlug` option.
+
+`CoreAPI.fetchCategories(options)`
+
+`options`:
+
+- `kappSlug` - the slug of the Kapp in which to fetch categories. Defaults to the bundle kapp if not specified.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ user: { /* ... */ } }`
+Resolves: `{ categories: [{ /* ... */ }] }`
 
-### updateUser
+### fetchCategory
 
-Update a user using a username and a user object.
+Fetches the category specified by the `categorySlug` option in the current space and Kapp.
+The Kapp can be overridden using the `kappSlug` option.
 
-`CoreAPI.updateUser(options)`
+`CoreAPI.fetchCategory(options)`
 
 `options`:
 
-- `username` - (required) the username of the user to be updated.
-- `user` - (required) the user object to send to the server.
+- `categorySlug` - (required) the slug of the category to fetch.
+- `kappSlug` - the slug of the Kapp in which to fetch the category. Defaults to the bundle kapp if not specified.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-### deleteUser
+Resolves: `{ category: { /* ... */ } }`
 
-Deletes the user specified by the `username` option.
+### createCategory
 
-`CoreAPI.deleteUser(options)`
+Creates a category specified by the `category` option in the current space and Kapp.
+The Kapp can be overridden using the `kappSlug` option.
 
-`options`:
-
-- `username` - (required) the username of the user to be deleted.
-
-Resolves: nothing.
-
-## Teams
-
-### fetchTeams
-
-Fetch all teams for the current space.
-
-`CoreAPI.fetchTeams(options)`
+`CoreAPI.createCategory(options)`
 
 `options`:
 
+- `category` - (required) body of the category to create (see Kinetic CE reference documentation).
+- `kappSlug` - the slug of the Kapp in which to create the category. Defaults to the bundle kapp if not specified.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ teams: [ { /* ... */ } ] }`
+Resolves: `{ category: { /* ... */ } }`
 
-### fetchTeam
+### updateCategory
 
-Fetch a specific team by slug for the current space.
+Updates the category specified by the `categorySlug` option in the current space and Kapp.
+The Kapp can be overridden using the `kappSlug` option.
 
-`CoreAPI.fetchTeam(options)`
+`CoreAPI.createCategory(options)`
 
 `options`:
 
-- `teamSlug` - (required) The slug of the team to retrieve.
+- `categorySlug` - (required) the slug of the category to update.
+- `category` - (required) body of the category to create (see Kinetic CE reference documentation).
+- `kappSlug` - the slug of the Kapp in which to create the category. Defaults to the bundle kapp if not specified.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ team: { /* ... */ } }`
-
-### createTeam
-
-Creates a new team in the current space.
-
-`CoreAPI.createTeam(options)`
-
-`options`:
-
-- `team` - (required) the team object to create/insert.
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-Resolves: `{ team: { /* ... */ } }`
-
-### updateTeam
-
-Update a team using a teamSlug and a team object.
-
-`CoreAPI.updateTeam(options)`
-
-`options`:
-
-- `teamSlug` - (required) the slug of the team to be updated.
-- `team` - (required) the team object to send to the server.
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-### deleteTeam
-
-Deletes the team specified by the `teamSlug` option.
-
-`CoreAPI.deleteTeam(options)`
-
-`options`:
-
-- `teamSlug` - (required) the slug of the team to be deleted.
-
-Resolves: nothing.
-
-## Space
-
-### fetchSpace
-
-Fetches the current space.
-
-`CoreAPI.fetchSpace(options)`
-
-`options`:
-
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-Resolves: `{ space: { /* ... */ } }`
-
-### updateSpace
-
-Updates the current space using the `space` option.
-
-`CoreAPI.updateSpace(options)`
-
-`options`:
-
-- `space` - the space definition used to update the current space.
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-Resolves: `{ space: { /* ... */ } }`
-
-## Kapp
-
-### fetchKapps
-
-Fetches all Kapps for the current space.
-
-`CoreAPI.fetchKapps(options)`
-
-`options`:
-
-- `include` - API include parameters (see Kinetic CE reference documentation).
-- `manage` - only return kapps the user can manage if set to true (optional - defaults to false).
-
-Resolves: `{ kapps: [{ /* ... */ }] }`
-
-### fetchKapp
-
-Fetches a Kapp from the current using the `kappSlug` option.
-
-`CoreAPI.fetchKapp(options)`
-
-`options`:
-
-- `kappSlug` - the slug of the Kapp to fetch. Defaults to the bundle kapp if not specified.
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-Resolves: `{ kapp: { /* ... */ } }`
-
-### updateKapp
-
-Updates a Kapp using the `kappSlug` and `kapp` options.
-
-`CoreAPI.updateKapp(options)`
-
-`options`:
-
-- `kappSlug` - the slug of the Kapp to update. Defaults to the bundle kapp if not specified.
-- `kapp` - the kapp definition used to update the specified kapp.
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-Resolves: `{ kapp: { /* ... */ } }`
+Resolves: `{ category: { /* ... */ } }`
 
 ## Forms
 
@@ -428,35 +475,154 @@ The Kapp can be overridden using the `kappSlug` option.
 
 Resolves: `{ form: { /* ... */ } }`
 
-## Categories
+## Kapp
 
-### fetchCategories
+### fetchKapps
 
-Fetches all categories for the current space and Kapp. The Kapp can be overridden using the `kappSlug` option.
+Fetches all Kapps for the current space.
 
-`CoreAPI.fetchCategories(options)`
-
-`options`:
-
-- `kappSlug` - the slug of the Kapp in which to fetch categories. Defaults to the bundle kapp if not specified.
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-Resolves: `{ categories: [{ /* ... */ }] }`
-
-### fetchCategory
-
-Fetches the category specified by the `categorySlug` option in the current space and Kapp.
-The Kapp can be overridden using the `kappSlug` option.
-
-`CoreAPI.fetchCategory(options)`
+`CoreAPI.fetchKapps(options)`
 
 `options`:
 
-- `categorySlug` - (required) the slug of the category to fetch.
-- `kappSlug` - the slug of the Kapp in which to fetch forms. Defaults to the bundle kapp if not specified.
+- `include` - API include parameters (see Kinetic CE reference documentation).
+- `manage` - only return kapps the user can manage if set to true (optional - defaults to false).
+
+Resolves: `{ kapps: [{ /* ... */ }] }`
+
+### fetchKapp
+
+Fetches a Kapp from the current using the `kappSlug` option.
+
+`CoreAPI.fetchKapp(options)`
+
+`options`:
+
+- `kappSlug` - the slug of the Kapp to fetch. Defaults to the bundle kapp if not specified.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ category: { /* ... */ } }`
+Resolves: `{ kapp: { /* ... */ } }`
+
+### updateKapp
+
+Updates a Kapp using the `kappSlug` and `kapp` options.
+
+`CoreAPI.updateKapp(options)`
+
+`options`:
+
+- `kappSlug` - the slug of the Kapp to update. Defaults to the bundle kapp if not specified.
+- `kapp` - the kapp definition used to update the specified kapp.
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ kapp: { /* ... */ } }`
+
+## Profile
+
+### fetchProfile
+
+Fetch the profile of the currently authenticated user.
+
+`CoreAPI.fetchProfile(options)`
+
+`options`:
+
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ profile: { /* ... */ } }`
+
+### updateProfile
+
+Updates the currently authenticated user's profile.
+
+`CoreAPI.updateProfile(options)`
+
+`options`:
+
+- `profile` - (required) the user object to send to the server.
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+## Security Policy Definitions
+
+### fetchSecurityPolicyDefinitions
+
+Fetches all security policy definitions for the space, or kapp if kappSlug is provided.
+
+`CoreAPI.fetchAttributeDefinitions(options)`
+
+`options`:
+
+- `kappSlug` - The slug of the kapp to find security policy definitions in (if searching for kapp security policies).
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ securityPolicyDefinitions: [{ /* ... */ }] }`
+
+### fetchSecurityPolicyDefinition
+
+Fetches a security policy definition by the `securityPolicyName` option.
+
+`CoreAPI.fetchAttributeDefinition(options)`
+
+`options`:
+
+- `securityPolicyName` - (required) The name of the security policy definition to fetch.
+- `kappSlug` - The slug of the kapp this security policy is located in (if a kapp security policy).
+
+Resolves: `{ securityPolicyDefinition: { /* ... */ } }`
+
+### createSecurityPolicyDefinition
+
+Creates a security policy definition.
+
+`CoreAPI.createSecurityPolicyDefinition(options)`
+
+`options`:
+
+- `kappSlug` - (required sometimes) The slug of the kapp this security policy should be upated in (if a kapp security policy).
+- `securityPolicyDefinition` - (required) The security policy definition body (see Kinetic CE reference documentation)
+
+Resolves: `{ securityPolicyDefinition: { /* ... */ } }`
+
+### updateSecurityPolicyDefinition
+
+Updates a security policy definition by the `securityPolicyName` option.
+
+`CoreAPI.updateSecurityPolicyDefinition(options)`
+
+`options`:
+
+- `kappSlug` - (required sometimes) The slug of the kapp this security policy should be upated in (if a kapp security policy).
+- `securityPolicyName` - (required) The name of the security policy definition to update
+- `securityPolicyDefinition` - (required) The security policy definition body (see Kinetic CE reference documentation)
+
+Resolves: `{ securityPolicyDefinition: { /* ... */ } }`
+
+## Space
+
+### fetchSpace
+
+Fetches the current space.
+
+`CoreAPI.fetchSpace(options)`
+
+`options`:
+
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ space: { /* ... */ } }`
+
+### updateSpace
+
+Updates the current space using the `space` option.
+
+`CoreAPI.updateSpace(options)`
+
+`options`:
+
+- `space` - the space definition used to update the current space.
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ space: { /* ... */ } }`
 
 ## Submissions
 
@@ -607,203 +773,133 @@ Delete a submission given a specific ID.
 - `id` - (required) the ID of the submission to fetch.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-## Bridged Resources
+## Teams
 
-### fetchBridgedResource
+### fetchTeams
 
-Fetches data from a bridged resource.
+Fetch all teams for the current space.
 
-`CoreAPI.fetchBridgedResource(options)`
-
-`options`:
-
-- `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
-- `formSlug` - (required) the slug of the form on which the resource is defined.
-- `bridgedResourceName` - (required) the name of the bridged resource.
-- `limit` - the maximum number of records to retrieve.
-- `offset` - the offset of the first record to retrieve.
-- `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
-- `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
-
-When a single record is returned it resolves:
-
-`{ record: { 'Field A': 'Value A'} }`
-
-When multiple records are returned it resolves:
-
-```
-{
-  records: [{ 'Field A', 'Value A' }, { /* ... */ }],
-  metadata: { count: 2, nextPageToken: '...' }
-}
-```
-
-### countBridgedResource
-
-Fetches a count of the number of records that match a bridge query.
-
-`CoreAPI.countBridgedResource(options)`
-
-`options`:
-
-- `kappSlug` - the slug of the Kapp the form on which the resource is defined. If not specified this will default to the current bundle's Kapp.
-- `formSlug` - (required) the slug of the form on which the resource is defined.
-- `bridgedResourceName` - (required) the name of the bridged resource.
-- `limit` - the maximum number of records to retrieve.
-- `offset` - the offset of the first record to retrieve.
-- `values` - a map of values for parameters. Example: `{ 'Last Name': 'Doe' }`
-- `attributes` - an array of attributes (fields) to return. Example: `[ 'First Name', 'Last Name']`
-
-Resolves:
-
-`{ count: 2 }`
-
-## Bridge Models
-
-### fetchBridgeModels
-
-Fetches all bridge models for the current space.
-
-`CoreAPI.fetchBridgeModels(options)`
+`CoreAPI.fetchTeams(options)`
 
 `options`:
 
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ bridgeModels: [{ /* ... */ }] }`
+Resolves: `{ teams: [ { /* ... */ } ] }`
 
-### fetchBridgeModel
+### fetchTeam
 
-Fetches bridge model specified by the `modelName` option.
+Fetch a specific team by slug for the current space.
 
-`CoreAPI.fetchBridgeModel(options)`
-
-`options`:
-
-- `modelName` - (required) the name of the bridge model to retrieve.
-- `include` - API include parameters (see Kinetic CE reference documentation).
-
-Resolves: `{ bridgeModel: { /* ... */ } }`
-
-### createBridgeModel
-
-Creates a bridge model using the `bridgeModel` option.
-
-`CoreAPI.createBridgeModel(options)`
+`CoreAPI.fetchTeam(options)`
 
 `options`:
 
-- `bridgeModel` - (required) the definition of the bridge model to create.
+- `teamSlug` - (required) The slug of the team to retrieve.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ bridgeModel: { /* ... */ } }`
+Resolves: `{ team: { /* ... */ } }`
 
-### updateBridgeModel
+### createTeam
 
-Updates a bridge model using the `modelName` and `bridgeModel` options.
+Creates a new team in the current space.
 
-`CoreAPI.updateBridgeModel(options)`
+`CoreAPI.createTeam(options)`
 
 `options`:
 
-- `modelName` - (required) the name of the bridge model to update.
-- `bridgeModel` - (required) the definition of the bridge model to update.
+- `team` - (required) the team object to create/insert.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ bridgeModel: { /* ... */ } }`
+Resolves: `{ team: { /* ... */ } }`
 
-## Attribute Definitions
+### updateTeam
 
-### fetchAttributeDefinitions
+Update a team using a teamSlug and a team object.
 
-Fetches all attribute definitions for a provided attributeType.
+`CoreAPI.updateTeam(options)`
 
-`CoreAPI.fetchAttributeDefinitions(options)`
+`options`:
+
+- `teamSlug` - (required) the slug of the team to be updated.
+- `team` - (required) the team object to send to the server.
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+### deleteTeam
+
+Deletes the team specified by the `teamSlug` option.
+
+`CoreAPI.deleteTeam(options)`
+
+`options`:
+
+- `teamSlug` - (required) the slug of the team to be deleted.
+
+Resolves: nothing.
+
+## Users
+
+### fetchUsers
+
+Fetch all users for the current space.
+
+`CoreAPI.fetchUsers(options)`
 
 `options`:
 
 - `include` - API include parameters (see Kinetic CE reference documentation).
-- `attributeType` - (Required) - the type of attribute definition to retrieve. Valid Types are
-  - spaceAttributeDefinitions
-  - userAttributeDefinitions
-  - userProfileAttributeDefinitions
-  - teamAttributeDefinitions
-  - categoryAttributeDefinitions
-  - formAttributeDefinitions
-  - kappAttributeDefinitions
-  - datastoreFormAttributeDefinitions
 
-Resolves: `{ attributeDefinitions: [{ /* ... */ }] }`
+Resolves: `{ users: [ { /* ... */ } ] }`
 
-### fetchAttributeDefinition
+### fetchUser
 
-Fetches an attribute definition by the `name` option for a given attribute type.
+Fetch a specific user by username for the current space.
 
-`CoreAPI.fetchAttributeDefinition(options)`
+`CoreAPI.fetchUser(options)`
 
 `options`:
 
-- `attributeType` - (Required) - the type of attribute definition to retrieve. Valid Types are
-  - spaceAttributeDefinitions
-  - userAttributeDefinitions
-  - userProfileAttributeDefinitions
-  - teamAttributeDefinitions
-  - categoryAttributeDefinitions
-  - formAttributeDefinitions
-  - kappAttributeDefinitions
-  - datastoreFormAttributeDefinitions
-- `name` - (Required) - the name of the attribute to retrieve
+- `username` - (required) The username of the user to retrieve.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ attributeDefinition: { /* ... */ } }`
+Resolves: `{ user: { /* ... */ } }`
 
-### createAttributeDefinition
+### createUser
 
-Creates an attribute definition for a given attribute type.
+Creates a new user in the current space.
 
-`CoreAPI.createAttributeDefinition(options)`
+`CoreAPI.createUser(options)`
 
 `options`:
 
-- `name` - (required) the name of the attribute to create.
-- `attributeType` - (Required) - the type of attribute definition to create. Valid Types are
-  - spaceAttributeDefinitions
-  - userAttributeDefinitions
-  - userProfileAttributeDefinitions
-  - teamAttributeDefinitions
-  - categoryAttributeDefinitions
-  - formAttributeDefinitions
-  - kappAttributeDefinitions
-  - datastoreFormAttributeDefinitions
-- `description` - the description of the attribute to create
-- `allowsMultiple` - if the attribute definition allows multiple values
+- `user` - (required) the user object to create/insert.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ attributeDefinition: { /* ... */ } }`
+Resolves: `{ user: { /* ... */ } }`
 
-### updateAttributeDefinition
+### updateUser
 
-Updates an attribute definition by the `name` option for a given attribute type.
+Update a user using a username and a user object.
 
-`CoreAPI.updateAttributeDefinition(options)`
+`CoreAPI.updateUser(options)`
 
 `options`:
 
-- `name` - (required) the name of the attribute to update.
-- `attributeType` - (Required) - the type of attribute definition to update. Valid Types are
-  - spaceAttributeDefinitions
-  - userAttributeDefinitions
-  - userProfileAttributeDefinitions
-  - teamAttributeDefinitions
-  - categoryAttributeDefinitions
-  - formAttributeDefinitions
-  - kappAttributeDefinitions
-  - datastoreFormAttributeDefinitions
-- `description` - the description of the attribute to update
-- `allowsMultiple` - if the attribute definition allows multiple values
+- `username` - (required) the username of the user to be updated.
+- `user` - (required) the user object to send to the server.
 - `include` - API include parameters (see Kinetic CE reference documentation).
 
-Resolves: `{ attributeDefinition: { /* ... */ } }`
+### deleteUser
+
+Deletes the user specified by the `username` option.
+
+`CoreAPI.deleteUser(options)`
+
+`options`:
+
+- `username` - (required) the username of the user to be deleted.
+
+Resolves: nothing.
 
 ## Version
 
@@ -823,3 +919,58 @@ Resolves:
   }
 }
 ```
+
+## Webhooks
+
+### fetchWebhooks
+
+Fetches all webhooks for the space, or kapp if kappSlug is provided.
+
+`CoreAPI.fetchWebhooks(options)`
+
+`options`:
+
+- `kappSlug` - The slug of the kapp to find webhooks in (if searching for kapp webhooks).
+- `include` - API include parameters (see Kinetic CE reference documentation).
+
+Resolves: `{ webhooks: [{ /* ... */ }] }`
+
+### fetchWebhook
+
+Fetches a webhook by the `webhookName` option.
+
+`CoreAPI.fetchWebhook(options)`
+
+`options`:
+
+- `webhookName` - (required) The name of the webhook to fetch.
+- `kappSlug` - The slug of the kapp this swebhook is located in (if a kapp security policy).
+
+Resolves: `{ webhook: { /* ... */ } }`
+
+### createWebhook
+
+Creates a webhook.
+
+`CoreAPI.createWebhook(options)`
+
+`options`:
+
+- `kappSlug` - (required sometimes) The slug of the kapp this webhook should be upated in (if a kapp webhook).
+- `webhook` - (required) The webhook body (see Kinetic CE reference documentation)
+
+Resolves: `{ webhook: { /* ... */ } }`
+
+### updateWebhook
+
+Updates a webhook definition by the `webhookName` option.
+
+`CoreAPI.updateWebhook(options)`
+
+`options`:
+
+- `kappSlug` - (required sometimes) The slug of the kapp this webhook should be upated in (if a kapp webhook).
+- `webhookName` - (required) The name of the webhook to update
+- `webhook` - (required) The webhook body (see Kinetic CE reference documentation)
+
+Resolves: `{ webhook: { /* ... */ } }`

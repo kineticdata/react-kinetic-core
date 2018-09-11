@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-import { fetchCategory, fetchCategories } from './categories';
+import {
+  fetchCategory,
+  fetchCategories,
+  createCategory,
+  updateCategory,
+} from './categories';
 import { CategoryBuilder } from '../test_utils/category_builder';
 import { rejectPromiseWith, resolvePromiseWith } from '../test_utils/promises';
 import { fetchDocMarkdown } from '../test_utils/docs';
@@ -15,13 +20,11 @@ jest.mock('../core-helpers', () => ({
 
 describe('categories api', () => {
   test('documentation', () => {
-    const methods = [
-      'fetchCategories', 'fetchCategory',
-    ];
+    const methods = ['fetchCategories', 'fetchCategory'];
 
     expect.assertions(methods.length);
-    return fetchDocMarkdown('API.md').then((result) => {
-      methods.forEach((method) => {
+    return fetchDocMarkdown('API.md').then(result => {
+      methods.forEach(method => {
         const matches = result.filter(line => line.endsWith(method));
         expect(matches).toHaveLength(1);
       });
@@ -39,7 +42,10 @@ describe('categories api', () => {
             categories: [],
           },
         };
-        testCategory = new CategoryBuilder().stub().withAttribute('Attribute', 'value').build();
+        testCategory = new CategoryBuilder()
+          .stub()
+          .withAttribute('Attribute', 'value')
+          .build();
         response.data.categories.push(testCategory);
         axios.get = resolvePromiseWith(response);
       });
@@ -85,7 +91,10 @@ describe('categories api', () => {
             category: {},
           },
         };
-        testCategory = new CategoryBuilder().stub().withAttribute('Attribute', 'value').build();
+        testCategory = new CategoryBuilder()
+          .stub()
+          .withAttribute('Attribute', 'value')
+          .build();
         categorySlug = testCategory.slug;
         response.data.category = testCategory;
         axios.get = resolvePromiseWith(response);
@@ -128,14 +137,174 @@ describe('categories api', () => {
       });
 
       test('throws an exception when no category slug is provided', () => {
-        expect(() => { fetchCategory({}); }).toThrow();
+        expect(() => {
+          fetchCategory({});
+        }).toThrow();
       });
 
       test('does return errors', () => {
         expect.assertions(1);
-        return fetchCategory({ categorySlug: 'fake' }).then(({ serverError }) => {
+        return fetchCategory({ categorySlug: 'fake' }).then(
+          ({ serverError }) => {
+            expect(serverError).toBeDefined();
+          },
+        );
+      });
+    });
+  });
+
+  describe('#createCategory', () => {
+    describe('when successful', () => {
+      let response;
+      let testCategory;
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+            category: {},
+          },
+        };
+        testCategory = new CategoryBuilder()
+          .stub()
+          .withAttribute('Attribute', 'value')
+          .build();
+        response.data.category = testCategory;
+        axios.post = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return createCategory({ category: testCategory }).then(({ errors }) => {
+          expect(errors).toBeUndefined();
+        });
+      });
+
+      test('returns a category', () => {
+        expect.assertions(1);
+        return createCategory({ category: testCategory }).then(
+          ({ category }) => {
+            expect(category).toMatchObject({
+              name: testCategory.name,
+              slug: testCategory.slug,
+            });
+          },
+        );
+      });
+
+      test('translates attributes', () => {
+        expect.assertions(2);
+        return createCategory({ category: testCategory }).then(
+          ({ category }) => {
+            expect(category.attributes).toBeDefined();
+            expect(category.attributes).not.toBeInstanceOf(Array);
+          },
+        );
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.post = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no category slug is provided', () => {
+        expect(() => {
+          createCategory({});
+        }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return createCategory({ category: 'fake' }).then(({ serverError }) => {
           expect(serverError).toBeDefined();
         });
+      });
+    });
+  });
+
+  describe('#updateCategory', () => {
+    describe('when successful', () => {
+      let response;
+      let testCategory;
+      let categorySlug;
+
+      beforeEach(() => {
+        response = {
+          status: 200,
+          data: {
+            category: {},
+          },
+        };
+        testCategory = new CategoryBuilder()
+          .stub()
+          .withAttribute('Attribute', 'value')
+          .build();
+        categorySlug = testCategory.slug;
+        response.data.category = testCategory;
+        axios.put = resolvePromiseWith(response);
+      });
+
+      test('does not return errors', () => {
+        expect.assertions(1);
+        return updateCategory({ categorySlug, category: testCategory }).then(
+          ({ errors }) => {
+            expect(errors).toBeUndefined();
+          },
+        );
+      });
+
+      test('returns a category', () => {
+        expect.assertions(1);
+        return updateCategory({ categorySlug, category: testCategory }).then(
+          ({ category }) => {
+            expect(category).toMatchObject({
+              name: testCategory.name,
+              slug: testCategory.slug,
+            });
+          },
+        );
+      });
+
+      test('translates attributes', () => {
+        expect.assertions(2);
+        return updateCategory({ categorySlug, category: testCategory }).then(
+          ({ category }) => {
+            expect(category.attributes).toBeDefined();
+            expect(category.attributes).not.toBeInstanceOf(Array);
+          },
+        );
+      });
+    });
+
+    describe('when unsuccessful', () => {
+      let response;
+
+      beforeEach(() => {
+        response = {
+          status: 500,
+        };
+        axios.put = rejectPromiseWith({ response });
+      });
+
+      test('throws an exception when no category slug is provided', () => {
+        expect(() => {
+          updateCategory({});
+        }).toThrow();
+      });
+
+      test('does return errors', () => {
+        expect.assertions(1);
+        return updateCategory({ categorySlug: 'fake', category: 'fake' }).then(
+          ({ serverError }) => {
+            expect(serverError).toBeDefined();
+          },
+        );
       });
     });
   });

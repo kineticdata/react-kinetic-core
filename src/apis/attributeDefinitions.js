@@ -14,14 +14,14 @@ const validateOptions = (functionName, requiredOptions, options) => {
     'datastoreFormAttributeDefinitions',
   ];
 
-  const attributesRequiringKapp = [
+  const attributesRequiringKappSlug = [
     'categoryAttributeDefinitions',
     'kappAttributeDefinitions',
     'formAttributeDefinitions',
   ];
 
   const kappSlugMissing =
-    attributesRequiringKapp.includes(options.attributeType) &&
+    attributesRequiringKappSlug.includes(options.attributeType) &&
     !options.kappSlug;
 
   const invalidType = !validAttributes.includes(options.attributeType);
@@ -51,22 +51,16 @@ const validateOptions = (functionName, requiredOptions, options) => {
   }
 };
 
-const buildEndpoint = ({ attributeType, kappSlug, name }) => {
+const buildEndpoint = ({ attributeType, kappSlug, attributeName }) => {
   const basePath = kappSlug
     ? `${bundle.apiLocation()}/kapps/${kappSlug}/${attributeType}`
     : `${bundle.apiLocation()}/${attributeType}`;
-  return name ? `${basePath}/${name}` : basePath;
+  return attributeName ? `${basePath}/${attributeName}` : basePath;
 };
 
-const buildBody = options => ({
-  ...(options.name && { name: options.name }),
-  ...(options.allowsMultiple && { allowsMultiple: options.allowsMultiple }),
-  ...(options.description && { description: options.description }),
-});
-
 export const fetchAttributeDefinitions = (options = {}) => {
-  validateOptions('fetchAttributeDefinitions', ['attributeType'], options);
   const { attributeType } = options;
+  validateOptions('fetchAttributeDefinitions', ['attributeType'], options);
   return axios
     .get(buildEndpoint(options), {
       params: paramBuilder(options),
@@ -77,12 +71,12 @@ export const fetchAttributeDefinitions = (options = {}) => {
 };
 
 export const fetchAttributeDefinition = (options = {}) => {
+  const { attributeType } = options;
   validateOptions(
     'fetchAttributeDefinition',
-    ['attributeType', 'name'],
+    ['attributeType', 'attributeName'],
     options,
   );
-  const { attributeType } = options;
   // The API returns the singular name of the attribute type, so we remove the "s"
   const responseEnvelope = attributeType.slice(0, -1);
   return axios
@@ -97,21 +91,21 @@ export const fetchAttributeDefinition = (options = {}) => {
 };
 
 export const createAttributeDefinition = (options = {}) => {
+  const { kappSlug, attributeType, attributeDefinition } = options;
   validateOptions(
     'createAttributeDefinition',
-    ['attributeType', 'name'],
+    ['attributeType', 'attributeDefinition'],
     options,
   );
-  const { attributeType } = options;
   // For Creates, we don't append the name to the basePath (it goes in the body)
   // so not using the buildEndpoint function
-  const basePath = options.kappSlug
-    ? `${bundle.apiLocation()}/kapps/${options.kappSlug}/${attributeType}`
+  const basePath = kappSlug
+    ? `${bundle.apiLocation()}/kapps/${kappSlug}/${attributeType}`
     : `${bundle.apiLocation()}/${attributeType}`;
   // The API returns the singular name of the attribute type, so we remove the "s"
   const responseEnvelope = attributeType.slice(0, -1);
   return axios
-    .post(basePath, buildBody(options), {
+    .post(basePath, attributeDefinition, {
       params: paramBuilder(options),
       headers: headerBuilder(options),
     })
@@ -122,16 +116,16 @@ export const createAttributeDefinition = (options = {}) => {
 };
 
 export const updateAttributeDefinition = (options = {}) => {
+  const { attributeType, attributeDefinition } = options;
   validateOptions(
     'updateAttributeDefinition',
-    ['attributeType', 'name'],
+    ['attributeType', 'attributeName'],
     options,
   );
-  const { attributeType } = options;
   // The API returns the singular name of the attribute type, so we remove the "s"
   const responseEnvelope = attributeType.slice(0, -1);
   return axios
-    .put(buildEndpoint(options), buildBody(options), {
+    .put(buildEndpoint(options), attributeDefinition, {
       params: paramBuilder(options),
       headers: headerBuilder(options),
     })

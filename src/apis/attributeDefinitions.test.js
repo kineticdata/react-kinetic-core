@@ -158,7 +158,7 @@ describe('attributeDefinitions api', () => {
       });
       const result = await fetchAttributeDefinition({
         attributeType: 'spaceAttributeDefinitions',
-        name: 'Foo',
+        attributeName: 'Foo',
       });
       expect(axios.get.mock.calls).toEqual([
         [
@@ -178,7 +178,7 @@ describe('attributeDefinitions api', () => {
       expect(() => {
         fetchAttributeDefinition({
           attributeType: 'notAValidAttributeType',
-          name: 'Foo',
+          attributeName: 'Foo',
         });
       }).toThrowError(
         'fetchAttributeDefinition failed! The provided attributeType (notAValidAttributeType) is not valid',
@@ -203,10 +203,12 @@ describe('attributeDefinitions api', () => {
         },
       });
       const result = await createAttributeDefinition({
-        name: 'Test Attribute',
-        description: 'Test Attr Desc',
-        allowsMultiple: true,
         attributeType: 'spaceAttributeDefinitions',
+        attributeDefinition: {
+          name: 'Test Attribute',
+          description: 'Test Attr Desc',
+          allowsMultiple: true,
+        },
       });
       expect(axios.post.mock.calls).toEqual([
         [
@@ -234,7 +236,7 @@ describe('attributeDefinitions api', () => {
           attributeType: 'spaceAttributeDefinitions',
         });
       }).toThrowError(
-        'createAttributeDefinition failed! The following required options are missing: name',
+        'createAttributeDefinition failed! The following required options are missing: attributeDefinition',
       );
     });
   });
@@ -256,10 +258,13 @@ describe('attributeDefinitions api', () => {
         },
       });
       const result = await updateAttributeDefinition({
-        name: 'Test Attribute',
-        description: 'Test Attr Desc',
-        allowsMultiple: true,
         attributeType: 'spaceAttributeDefinitions',
+        attributeName: 'Test Attribute',
+        attributeDefinition: {
+          name: 'Test Attribute',
+          description: 'Test Attr Desc',
+          allowsMultiple: true,
+        },
       });
       expect(axios.put.mock.calls).toEqual([
         [
