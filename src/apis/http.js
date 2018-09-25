@@ -98,6 +98,10 @@ export const paramBuilder = options => {
     params.manage = options.manage;
   }
 
+  if (options.export) {
+    params.export = options.export;
+  }
+
   return params;
 };
 
