@@ -16,6 +16,7 @@ import * as SecurityPolicyDefinitionsAPI from './apis/securityPolicyDefinitions'
 import * as SpaceAPI from './apis/space';
 import * as SubmissionsAPI from './apis/submissions';
 import * as TeamsAPI from './apis/teams';
+import * as TranslationsAPI from './apis/translations';
 import * as UsersAPI from './apis/users';
 import * as VersionAPI from './apis/version';
 import * as WebhooksAPI from './apis/webhooks';
@@ -49,6 +50,7 @@ export const CoreAPI = {
   ...SpaceAPI,
   ...SubmissionsAPI,
   ...TeamsAPI,
+  ...TranslationsAPI,
   ...UsersAPI,
   ...VersionAPI,
   ...WebhooksAPI,
