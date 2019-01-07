@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 import { bundle } from '../core-helpers';
 import { handleErrors, headerBuilder, paramBuilder } from './http';
 
@@ -354,6 +355,7 @@ export const searchSubmissions = options => {
 
   // Fetch the submissions.
   let promise = axios.get(path, {
+    paramsSerializer: params => qs.stringify(params),
     params: { ...meta, ...paramBuilder(options) },
     headers: headerBuilder(options),
   });
