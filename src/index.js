@@ -61,6 +61,15 @@ export const CoreAPI = {
   setDefaultAuthAssumed,
 };
 
+export const LockHelper = {
+  isLockable: Form.isLockable,
+  isLocked: Form.isLocked,
+  isLockedByMe: Form.isLockedByMe,
+  getLockedBy: Form.getLockedBy,
+  getTimeLeft: Form.getTimeLeft,
+  unlockSubmission: Form.unlockSubmission,
+};
+
 // Export Components.
 export const CoreForm = Form.CoreForm;
 export const CoreFormModal = FormModal.CoreFormModal;

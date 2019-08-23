@@ -72,6 +72,7 @@
     "deepequal": "^0.0.1",
     "lodash.isplainobject": "^4.0.6",
     "lodash.isstring": "^4.0.1",
+    "moment": "^2.24.0",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0"
   },
