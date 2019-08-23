@@ -16,9 +16,9 @@ export const LOCK_TIME_ATTRIBUTE = 'Lock Time';
 export const LOCK_CHECK_INTERVAL_ATTRIBUTE = 'Lock Check Interval';
 export const LOCK_PROMPT_TIME_ATTRIBUTE = 'Lock Prompt Time';
 
-export const LOCK_TIME_DEFAULT_VALUE = 30; // seconds
-export const LOCK_CHECK_INTERVAL_DEFAULT_VALUE = 10; // seconds
-export const LOCK_PROMPT_TIME_DEFAULT_VALUE = 20; // seconds
+export const LOCK_TIME_DEFAULT_VALUE = 1800; // seconds
+export const LOCK_CHECK_INTERVAL_DEFAULT_VALUE = 30; // seconds
+export const LOCK_PROMPT_TIME_DEFAULT_VALUE = 120; // seconds
 
 const submissionIncludes =
   'values,form,form.fields,form.attributesMap,form.kapp,form.kapp.attributesMap,form.kapp.space,form.kapp.space.attributesMap';
